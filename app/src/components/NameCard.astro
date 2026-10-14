@@ -1,8 +1,10 @@
 ---
 /**
  * Name card: the large lead Cel with the name, tagline, live clock, vertical
- * katakana and the ASCII coin flip. Static here; the Motion controller fills the
- * clock and later adds the name glitch, blob drift and coin flip (mvd-034.7).
+ * katakana and the ASCII coin flip. The Motion controller fills the clock and
+ * moves the ghosts with the cursor (--mx/--my); the entrance script in Boot.astro
+ * sets `html.glitching` (name glitch) and `html[data-ascii]` (coin flip). Without
+ * JavaScript the name is static and the fish shows.
  */
 import { site } from '../lib/content.ts';
 
@@ -55,7 +57,7 @@ const ghostOpacity = 0.55; // ghost strength 1 × 0.55, frozen from the board
     </div>
     <div class="aq">
       <span class="fish" role="img" aria-label={nameCard.ascii.fish.label}>{nameCard.ascii.fish.art}</span>
-      <span class="shades" role="img" aria-label={nameCard.ascii.shades.label} hidden>
+      <span class="shades" role="img" aria-label={nameCard.ascii.shades.label}>
         {nameCard.ascii.shades.frames.map((frame, i) => <span class={`fr f${i + 1}`}>{frame}</span>)}
       </span>
     </div>
@@ -96,6 +98,7 @@ const ghostOpacity = 0.55; // ghost strength 1 × 0.55, frozen from the board
       left: -14%;
       top: -24%;
       background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 25%, transparent), transparent);
+      animation: lbA 24s ease-in-out infinite alternate;
     }
     .lb.b {
       width: 62%;
@@ -103,6 +106,7 @@ const ghostOpacity = 0.55; // ghost strength 1 × 0.55, frozen from the board
       right: -16%;
       bottom: -28%;
       background: radial-gradient(closest-side, color-mix(in srgb, var(--second) 21%, transparent), transparent);
+      animation: lbB 29s ease-in-out infinite alternate;
     }
     .lb.c {
       width: 44%;
@@ -110,6 +114,7 @@ const ghostOpacity = 0.55; // ghost strength 1 × 0.55, frozen from the board
       left: 38%;
       top: 18%;
       background: radial-gradient(closest-side, color-mix(in srgb, var(--third) 12%, transparent), transparent);
+      animation: lbC 19s ease-in-out infinite alternate;
     }
     .lg {
       position: absolute;
@@ -182,6 +187,7 @@ const ghostOpacity = 0.55; // ghost strength 1 × 0.55, frozen from the board
       display: block;
       white-space: nowrap;
       pointer-events: none;
+      transition: transform 0.8s var(--ease-out);
     }
     .gh.ga {
       color: var(--accent);
@@ -191,6 +197,16 @@ const ghostOpacity = 0.55; // ghost strength 1 × 0.55, frozen from the board
       color: var(--second);
       transform: translate(calc(2px + (var(--mx) - 720) * 0.0015px), calc((var(--my) - 400) * 0.001px));
     }
+    /* Split hover: the ghosts pull further apart while the cursor is on the name. */
+    .hv-split:hover .gh {
+      transition-duration: 0.3s;
+    }
+    .hv-split:hover .gh.ga {
+      transform: translate(calc(-9px + (var(--mx) - 720) * -0.0015px), calc(-2px + (var(--my) - 400) * -0.001px));
+    }
+    .hv-split:hover .gh.gb {
+      transform: translate(calc(9px + (var(--mx) - 720) * 0.0015px), calc(2px + (var(--my) - 400) * 0.001px));
+    }
     .ln {
       display: block;
       overflow: visible;
@@ -198,6 +214,19 @@ const ghostOpacity = 0.55; // ghost strength 1 × 0.55, frozen from the board
     }
     .ln-i {
       display: block;
+    }
+    /* Glitch intro (board: .intro.go.gl): starts after the Boot, line 2 just behind. */
+    :global(html.glitching) .ln-i {
+      animation: glin 0.95s steps(1, end) 2.05s both;
+    }
+    :global(html.glitching) .ln-i.d2 {
+      animation-delay: 2.14s;
+    }
+    :global(html.glitching) .ga .ln-i {
+      animation-name: glA;
+    }
+    :global(html.glitching) .gb .ln-i {
+      animation-name: glB;
     }
 
     .nc-bottom {
@@ -242,25 +271,50 @@ const ghostOpacity = 0.55; // ghost strength 1 × 0.55, frozen from the board
       position: absolute;
       left: 0;
       bottom: 0;
+      animation: swim 11s steps(17, end) infinite;
+    }
+    .fish::after {
+      content: '°';
+      position: absolute;
+      right: -0.6ch;
+      top: -0.75em;
+      font-size: 0.85em;
+      opacity: 0;
+      animation: bub 1.8s steps(4, end) infinite;
     }
     .shades {
+      display: none;
       position: absolute;
       right: 0;
       bottom: 0;
       width: 11ch;
       height: 1.7em;
     }
-    .shades[hidden] {
+    /* Coin flip: the fish shows unless the entrance script landed on shades. */
+    :global(html[data-ascii='shades']) .fish {
       display: none;
+    }
+    :global(html[data-ascii='shades']) .shades {
+      display: block;
     }
     .fr {
       position: absolute;
       left: 0;
       bottom: 0;
       opacity: 0;
+      animation-duration: 5s;
+      animation-timing-function: step-end;
+      animation-iteration-count: infinite;
+    }
+    .fr.f1 {
+      animation-name: fr1;
+    }
+    .fr.f2 {
+      animation-name: fr2;
     }
     .fr.f3 {
       opacity: 1;
+      animation-name: fr3;
     }
   }
 </style>

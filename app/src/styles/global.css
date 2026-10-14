@@ -113,15 +113,311 @@
   }
 }
 
+/* ---- Entrance and ambient keyframes (board lines 135-137, 167-169, 184-191, 244-253) */
+
+/* Boot: the overlay hides itself at 1.35s; the panels split open from the line. */
+@keyframes bootgone {
+  to {
+    visibility: hidden;
+  }
+}
+@keyframes bootT {
+  to {
+    transform: translateY(-100%);
+  }
+}
+@keyframes bootB {
+  to {
+    transform: translateY(100%);
+  }
+}
+@keyframes bootL {
+  0% {
+    transform: scaleX(0);
+  }
+  38%,
+  52% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  72%,
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+@keyframes bootC {
+  0%,
+  12% {
+    opacity: 0;
+  }
+  16%,
+  44% {
+    opacity: 1;
+  }
+  52%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Name glitch: the real name (glin) and its two Accent ghosts (glA, glB). */
+@keyframes glin {
+  0% {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    transform: none;
+  }
+  6% {
+    opacity: 1;
+    clip-path: inset(42% 0 36% 0);
+    transform: translateX(-16px);
+  }
+  12% {
+    clip-path: inset(8% 0 66% 0);
+    transform: translateX(11px);
+  }
+  18% {
+    opacity: 0;
+  }
+  24% {
+    opacity: 1;
+    clip-path: inset(58% 0 4% 0);
+    transform: translateX(-7px) skewX(-10deg);
+  }
+  32% {
+    clip-path: inset(0);
+    transform: translateX(5px);
+  }
+  38% {
+    clip-path: inset(28% 0 50% 0);
+    transform: translateX(-20px);
+  }
+  44% {
+    opacity: 0.35;
+    clip-path: inset(0);
+    transform: none;
+  }
+  50% {
+    opacity: 1;
+  }
+  58% {
+    clip-path: inset(74% 0 0 0);
+    transform: translateX(9px);
+  }
+  64% {
+    clip-path: inset(0 0 82% 0);
+    transform: translateX(-3px);
+  }
+  70%,
+  100% {
+    opacity: 1;
+    clip-path: inset(0);
+    transform: none;
+  }
+}
+@keyframes glA {
+  0% {
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+    transform: translate(-26px, 0);
+  }
+  12% {
+    transform: translate(10px, -3px);
+  }
+  18% {
+    opacity: 0;
+  }
+  24% {
+    opacity: 1;
+    transform: translate(-14px, 2px);
+  }
+  32% {
+    transform: translate(18px, 0);
+  }
+  40% {
+    transform: translate(-8px, 0);
+  }
+  50% {
+    transform: translate(4px, 0);
+  }
+  58% {
+    transform: translate(-12px, 0);
+  }
+  66%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes glB {
+  0% {
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+    transform: translate(22px, 0);
+  }
+  12% {
+    transform: translate(-12px, 3px);
+  }
+  18% {
+    opacity: 0;
+  }
+  24% {
+    opacity: 1;
+    transform: translate(16px, -2px);
+  }
+  32% {
+    transform: translate(-14px, 0);
+  }
+  40% {
+    transform: translate(9px, 0);
+  }
+  50% {
+    transform: translate(-5px, 0);
+  }
+  58% {
+    transform: translate(12px, 0);
+  }
+  66%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Name card blobs. */
+@keyframes lbA {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1, 1);
+  }
+  50% {
+    transform: translate(30%, 22%) rotate(35deg) scale(1.25, 0.8);
+  }
+  100% {
+    transform: translate(62%, 4%) rotate(-15deg) scale(0.9, 1.15);
+  }
+}
+@keyframes lbB {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1, 1);
+  }
+  50% {
+    transform: translate(-34%, -18%) rotate(-30deg) scale(0.85, 1.3);
+  }
+  100% {
+    transform: translate(-58%, -40%) rotate(20deg) scale(1.2, 0.9);
+  }
+}
+@keyframes lbC {
+  0% {
+    transform: translate(0, 0) scale(1, 1);
+  }
+  50% {
+    transform: translate(-40%, 30%) scale(1.4, 0.9);
+  }
+  100% {
+    transform: translate(20%, -35%) scale(0.8, 1.2);
+  }
+}
+
+/* ASCII fish: swims across its box (container units), turns, swims back; bubbles. */
+@keyframes swim {
+  0% {
+    transform: translateX(0) scaleX(1);
+  }
+  46%,
+  50% {
+    transform: translateX(calc(100cqw - 7ch)) scaleX(1);
+  }
+  50.01% {
+    transform: translateX(calc(100cqw - 7ch)) scaleX(-1);
+  }
+  96%,
+  100% {
+    transform: translateX(0) scaleX(-1);
+  }
+}
+@keyframes bub {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  25% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* ASCII kaomoji: three frames putting the shades on. */
+@keyframes fr1 {
+  0% {
+    opacity: 1;
+  }
+  30%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fr2 {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  55%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fr3 {
+  0% {
+    opacity: 0;
+  }
+  55%,
+  100% {
+    opacity: 1;
+  }
+}
+
 /* ---- Responsive (unlayered: overrides components) ----------------------------
    Breakpoints are the design's: 760px phone, 900px Episode reflow,
    (hover: hover) and (pointer: fine) for the Crosshair.
    The phone layout (mvd-034.10) adds its rules here. */
 
 /* ---- Reduced motion (unlayered) -------------------------------------------- */
+/* The board's two reduced-motion blocks (lines 181 and 306), minus deleted variants.
+   The entrance script also skips the Boot and the name glitch under reduced motion;
+   these rules make that hold even if its classes were present. */
 @media (prefers-reduced-motion: reduce) {
+  .lb,
+  .lg {
+    animation: none;
+  }
+  .blob.a,
+  .blob.b {
+    transform: none;
+    transition: none;
+  }
+  .boot {
+    display: none;
+  }
+  .ln-i,
+  .fish,
+  .fish::after,
+  .fr,
   .cur {
     animation: none;
+  }
+  .gh {
+    transition: none;
   }
   .cel {
     transition: none;

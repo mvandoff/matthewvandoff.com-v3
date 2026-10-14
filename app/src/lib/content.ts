@@ -44,6 +44,9 @@ export const site = {
     home: '[ mvd ]',
   },
 
+  /** The caption under the Boot line. */
+  boot: '~/home $ boot',
+
   nameCard: {
     prompt: '01 · ~/home $ whoami',
     /** The name as it breaks across the two display lines. */

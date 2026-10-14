@@ -12,8 +12,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout>
-  <BackgroundField />
+  {/* Boot first: its inline script starts the entrance before anything paints. */}
   <Boot />
+  <BackgroundField />
   <Crosshair />
   <Header />
   <Strip />

@@ -1,8 +1,9 @@
 ---
 /**
- * Background field: two large Accent-tinted blobs fixed behind the page. Their
- * resting position comes from --mx/--my (registered in global.css) and --sp
- * (scroll progress); the Motion controller moves them (mvd-034.7).
+ * Background field: two large Accent-tinted blobs fixed behind the page. They
+ * ease after the cursor (--mx/--my, registered in global.css) and slide and scale
+ * with scroll progress (--sp); the Motion controller sets all three on <html>
+ * (scripts/motion/pointer.ts, scripts/motion/track.ts). Still under reduced motion.
  */
 ---
 
@@ -26,6 +27,7 @@
       width: 72vmax;
       height: 72vmax;
       border-radius: 50%;
+      transition: transform 1.4s var(--ease-out);
     }
     .blob.a {
       left: -22vmax;

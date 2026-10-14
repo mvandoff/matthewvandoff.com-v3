@@ -1,6 +1,93 @@
 ---
 /**
- * Boot: the CRT-style intro overlay that plays on every page load.
- * Placeholder: mvd-034.7 (Entrance and ambient motion) implements it.
+ * Boot: the CRT-style intro that plays on every page load. Two dark panels split
+ * open from a glowing Accent line while "~/home $ boot" flashes beneath it.
+ *
+ * Render this first in <body>. Its inline script starts the entrance before first
+ * paint (see scripts/motion/entrance.ts): unless the visitor prefers reduced motion
+ * it adds `booting` and `glitching` to <html>, removes them on the board's timers,
+ * and flips the ASCII coin (`data-ascii` on <html>). Without JavaScript the overlay
+ * never shows.
  */
+import { site } from '../lib/content.ts';
+import { entrance } from '../scripts/motion/entrance.ts';
+
+const { bootMs, introMs } = entrance;
 ---
+
+<script is:inline define:vars={{ bootMs, introMs }}>
+  var d = document.documentElement;
+  d.setAttribute('data-ascii', Math.floor(Math.random() * 2) ? 'shades' : 'fish');
+  var reduced = false;
+  try {
+    reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  } catch (e) {}
+  if (!reduced) {
+    d.classList.add('booting', 'glitching');
+    setTimeout(function () {
+      d.classList.remove('booting');
+    }, bootMs);
+    setTimeout(function () {
+      d.classList.remove('glitching');
+    }, introMs);
+  }
+</script>
+
+<div class="boot" aria-hidden="true">
+  <div class="boot-p t"></div>
+  <div class="boot-p b"></div>
+  <div class="boot-l"></div>
+  <div class="boot-c">{site.boot}</div>
+</div>
+
+<style>
+  @layer components {
+    .boot {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      pointer-events: none;
+      animation: bootgone 0s linear 1.35s forwards;
+    }
+    :global(html.booting) .boot {
+      display: block;
+    }
+    .boot-p {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 50.5%;
+      background: var(--boot-panel);
+    }
+    .boot-p.t {
+      top: 0;
+      animation: bootT 0.75s var(--ease-snap) 0.55s both;
+    }
+    .boot-p.b {
+      bottom: 0;
+      animation: bootB 0.75s var(--ease-snap) 0.55s both;
+    }
+    .boot-l {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      background: var(--accent);
+      box-shadow: 0 0 24px var(--accent);
+      animation: bootL 1.2s var(--ease-snap) both;
+    }
+    .boot-c {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(50% + 18px);
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+      animation: bootC 1.2s linear both;
+    }
+  }
+</style>
