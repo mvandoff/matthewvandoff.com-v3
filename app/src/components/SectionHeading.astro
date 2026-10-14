@@ -2,7 +2,7 @@
 /**
  * Section heading: "02 / 04", a rule drawn in the Accent, then the Section name
  * and its Japanese label. The title block hosts the Lock-on (mvd-034.6), which
- * also gates the rule's draw-in behind reveal-on-scroll; without JS it is drawn.
+ * draws the rule in once the Section is revealed (.rv.in); without JS it is drawn.
  */
 import { site, type SectionCopy } from '../lib/content.ts';
 
@@ -56,6 +56,14 @@ const { section } = Astro.props;
       background: var(--accent);
       opacity: 0.55;
       transform-origin: left;
+    }
+    /* Reveal on scroll (board 208-209): undrawn until the Section is seen. */
+    :global(.rv) .sh-r::after {
+      transform: scaleX(0);
+      transition: transform 1.4s var(--ease-snap) 0.25s;
+    }
+    :global(.rv.in) .sh-r::after {
+      transform: scaleX(1);
     }
     .sh-t {
       position: relative;

@@ -198,10 +198,12 @@ test.describe('cd', () => {
     for (const name of ['about', 'experience', 'links']) {
       await t.run(`cd ${name}`);
       await expect.poll(() => t.lines()).toEqual([`→ ~/${name}`]);
-      // Lands with the Section at the top of the viewport, or as far as the page scrolls.
-      const landing = await page.locator(`section#${name}`).evaluate((el) =>
-        Math.min(Math.round(el.getBoundingClientRect().top + scrollY), document.documentElement.scrollHeight - innerHeight),
-      );
+      // Lands with the Section at the top of the viewport, or as far as the page scrolls
+      // (measured without the reveal's offset, which a Section not yet seen still has).
+      const landing = await page.locator(`section#${name}`).evaluate((el) => {
+        const top = el.getBoundingClientRect().top + scrollY - new DOMMatrix(getComputedStyle(el).transform).f;
+        return Math.min(Math.round(top), document.documentElement.scrollHeight - innerHeight);
+      });
       await expect.poll(() => page.evaluate(() => Math.round(scrollY))).toBe(landing);
     }
     await t.run('cd ~/');

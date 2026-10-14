@@ -11,11 +11,16 @@
  * mvd-034.6 adds the rest of `track()` to `update`: the current Section for the
  * header prompt, the `.down` header border, reveal-on-scroll.
  */
+const SECTIONS = ['about', 'experience', 'links'] as const;
+
 export function startTracking(): void {
   const root = document.getElementById('top');
   if (!root) return;
   const html = document.documentElement;
   const foot = document.getElementById('foot');
+  const bar = document.querySelector<HTMLElement>('.bar');
+  const here = document.querySelector<HTMLElement>('.bar .here');
+  const sections = SECTIONS.map((id) => document.getElementById(id)).filter((el) => el !== null);
 
   const update = () => {
     const rect = root.getBoundingClientRect();
@@ -26,7 +31,28 @@ export function startTracking(): void {
     html.style.setProperty('--spi', String(Math.round(progress * 100)));
     const lift = foot && vh ? Math.max(0, Math.round(vh - foot.getBoundingClientRect().top)) : 0;
     html.style.setProperty('--hlift', String(lift));
+
+    // Current Section: the last one whose top has passed 200px; links at the very bottom.
+    let current = 'home';
+    for (const section of sections) if (section.getBoundingClientRect().top <= 200) current = section.id;
+    const scrolled = rect.top < -8;
+    if (scrolled && vh && rect.bottom <= vh + 4) current = 'links';
+    if (here && here.textContent !== current) here.textContent = current;
+    bar?.classList.toggle('down', scrolled);
+
+    // Reveal: a Section is seen once its top is above 88% of the viewport, for good.
+    for (const section of sections) {
+      if (!section.classList.contains('in') && section.getBoundingClientRect().top < vh * 0.88) {
+        section.classList.add('in');
+      }
+    }
   };
+
+  // Hidden-until-seen only once JS runs; Sections already in view get .in in this
+  // same task. A Section named by the URL hash is where the browser is about to
+  // land, so it starts seen: offset by the reveal, the landing would be 32px short.
+  const landing = decodeURIComponent(location.hash.slice(1));
+  for (const section of sections) section.classList.add('rv', ...(section.id === landing ? ['in'] : []));
 
   let frame = 0;
   const schedule = () => {
@@ -38,5 +64,7 @@ export function startTracking(): void {
   };
   document.addEventListener('scroll', schedule, { capture: true, passive: true });
   window.addEventListener('resize', schedule, { passive: true });
+  // Layout settles as the fonts arrive; re-check what's in view then.
+  document.fonts?.ready.then(schedule, () => {});
   update();
 }

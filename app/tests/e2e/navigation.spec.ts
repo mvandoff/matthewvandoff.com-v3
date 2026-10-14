@@ -8,13 +8,15 @@ import { expect, test, type Page } from '@playwright/test';
 
 const SECTIONS = ['about', 'experience', 'links'] as const;
 
-/** Where a page scrolled to `#id` ends up: the Section at the top, or as far as the page scrolls. */
+/**
+ * Where a page scrolled to `#id` should end up: the Section's layout box at the top
+ * of the viewport (ignoring the reveal's 32px offset), or as far as the page scrolls.
+ */
 const landingFor = (page: Page, id: string) =>
-  page
-    .locator(`#${id}`)
-    .evaluate((el) =>
-      Math.min(Math.round(el.getBoundingClientRect().top + scrollY), document.documentElement.scrollHeight - innerHeight),
-    );
+  page.locator(`#${id}`).evaluate((el) => {
+    const top = el.getBoundingClientRect().top + scrollY - new DOMMatrix(getComputedStyle(el).transform).f;
+    return Math.min(Math.round(top), document.documentElement.scrollHeight - innerHeight);
+  });
 
 const scrollTop = (page: Page) => page.evaluate(() => Math.round(scrollY));
 
@@ -37,6 +39,16 @@ test.describe('Cels', () => {
       await expect(page).toHaveURL(/\/$/);
     });
   }
+});
+
+test('a Section not yet revealed is still landed on exactly', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 500 });
+  await page.goto('/');
+  const landing = await landingFor(page, 'experience');
+  await cel(page, 'experience').click();
+  await expect.poll(() => scrollTop(page)).toBe(landing);
+  await page.waitForTimeout(500);
+  expect(await scrollTop(page)).toBe(landing);
 });
 
 test.describe('home', () => {
@@ -78,5 +90,149 @@ test.describe('cd', () => {
     await input.press('Enter');
     await expect(lockTag(page, 'links')).toBeVisible();
     await expect(page.locator('.locktag:visible')).toHaveCount(1);
+  });
+});
+
+test.describe('header', () => {
+  const prompt = (page: Page) => page.getByRole('banner').locator('.prompt');
+  const progress = (page: Page) =>
+    page.locator('.prog').evaluate((el) => el.getBoundingClientRect().width / document.documentElement.clientWidth);
+  const scrollTo = (page: Page, y: number) => page.evaluate((top) => window.scrollTo(0, top), y);
+
+  test('the prompt follows the Section being read', async ({ page }) => {
+    await page.goto('/');
+    await expect(prompt(page)).toHaveText('~/home $');
+    for (const id of SECTIONS) {
+      // A Section becomes current once its top passes 200px from the top of the viewport.
+      const top = await page.locator(`#${id}`).evaluate((el) => el.getBoundingClientRect().top + scrollY);
+      await scrollTo(page, top - 190);
+      await expect(prompt(page)).toHaveText(`~/${id} $`);
+    }
+    await scrollTo(page, 0);
+    await expect(prompt(page)).toHaveText('~/home $');
+  });
+
+  test('links is current at the very bottom of the page', async ({ page }) => {
+    await page.goto('/');
+    await page.setViewportSize({ width: 1440, height: 1400 });
+    await scrollTo(page, 99_999);
+    await expect(prompt(page)).toHaveText('~/links $');
+  });
+
+  test('the progress line scales with the scroll', async ({ page }) => {
+    await page.goto('/');
+    expect(await progress(page)).toBe(0);
+    const max = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+    await scrollTo(page, max / 2);
+    await expect.poll(() => progress(page)).toBeCloseTo(0.5, 2);
+    await scrollTo(page, max);
+    await expect.poll(() => progress(page)).toBeCloseTo(1, 3);
+  });
+
+  test('the border shows once the page has scrolled', async ({ page }) => {
+    await page.goto('/');
+    const bar = page.getByRole('banner');
+    await expect(bar).not.toHaveClass(/\bdown\b/);
+    await scrollTo(page, 8);
+    await page.waitForTimeout(100);
+    await expect(bar).not.toHaveClass(/\bdown\b/);
+    await scrollTo(page, 9);
+    await expect(bar).toHaveClass(/\bdown\b/);
+    await expect(bar).toHaveCSS('border-bottom-color', 'rgb(46, 47, 56)');
+    await scrollTo(page, 0);
+    await expect(bar).not.toHaveClass(/\bdown\b/);
+  });
+});
+
+/** A Section's opacity, its vertical offset and how far its heading rule has drawn (0-1). */
+const revealState = (page: Page, id: string) =>
+  page.locator(`#${id}`).evaluate((el) => {
+    const style = getComputedStyle(el);
+    const rule = getComputedStyle(el.querySelector('.sh-r')!, '::after').transform;
+    const scale = rule === 'none' ? 1 : new DOMMatrix(rule).a;
+    return { opacity: Number(style.opacity), y: new DOMMatrix(style.transform).f, rule: scale };
+  });
+
+test.describe('reveal on scroll', () => {
+  test('Sections below the fold wait, then rise in with the rule drawing across', async ({ page }) => {
+    await page.goto('/');
+    await expect.poll(() => revealState(page, 'links')).toEqual({ opacity: 0, y: 32, rule: 0 });
+    await page.locator('#links').evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + scrollY - 500));
+    await expect.poll(() => revealState(page, 'links')).toEqual({ opacity: 1, y: 0, rule: 1 });
+    // Once seen, a Section stays revealed.
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(1000);
+    expect(await revealState(page, 'links')).toEqual({ opacity: 1, y: 0, rule: 1 });
+  });
+
+  test('a Section in view on load is revealed', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1200 });
+    await page.goto('/');
+    await expect.poll(() => revealState(page, 'about')).toEqual({ opacity: 1, y: 0, rule: 1 });
+  });
+});
+
+test.describe('hash URLs', () => {
+  for (const id of SECTIONS) {
+    test(`/#${id} lands on the Section`, async ({ page }) => {
+      await page.goto(`/#${id}`);
+      await page.evaluate(() => document.fonts.ready);
+      await expect.poll(() => scrollTop(page)).toBe(await landingFor(page, id));
+      await expect(page.getByRole('banner').locator('.prompt')).toHaveText(`~/${id} $`);
+      await expect.poll(() => revealState(page, id)).toEqual({ opacity: 1, y: 0, rule: 1 });
+      // ...and stays there once everything has settled.
+      await page.waitForTimeout(1500);
+      expect(await scrollTop(page)).toBe(await landingFor(page, id));
+    });
+  }
+
+  test('changing the hash on the page lands on the Section too', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => (location.hash = '#experience'));
+    await expect.poll(() => scrollTop(page)).toBe(await landingFor(page, 'experience'));
+    await page.waitForTimeout(1200);
+    expect(await scrollTop(page)).toBe(await landingFor(page, 'experience'));
+  });
+
+  test.describe('without JavaScript', () => {
+    test.use({ javaScriptEnabled: false });
+    test('/#links lands on the Section', async ({ page }) => {
+      await page.goto('/#links');
+      await expect.poll(() => scrollTop(page)).toBe(await landingFor(page, 'links'));
+    });
+  });
+});
+
+test.describe('reduced motion', () => {
+  test.use({ reducedMotion: 'reduce' });
+
+  test('Cels, [ mvd ] and cd jump instantly with no Lock-on', async ({ page }) => {
+    await page.goto('/');
+    const locks = page.locator('.lock:visible, .locktag:visible');
+    await cel(page, 'experience').click();
+    expect(await scrollTop(page)).toBe(await landingFor(page, 'experience'));
+    const input = page.getByRole('textbox', { name: 'terminal command, type help' });
+    await page.getByRole('banner').getByRole('link', { name: '[ mvd ]' }).click();
+    expect(await scrollTop(page)).toBe(0);
+    await input.fill('cd links');
+    await input.press('Enter');
+    await expect.poll(() => scrollTop(page)).toBe(await landingFor(page, 'links'));
+    for (let i = 0; i < 6; i++) {
+      await page.waitForTimeout(400);
+      await expect(locks).toHaveCount(0);
+    }
+  });
+
+  test('Sections are visible immediately, rules drawn, with nothing animating', async ({ page }) => {
+    await page.goto('/');
+    for (const id of SECTIONS) {
+      expect(await revealState(page, id)).toEqual({ opacity: 1, y: 0, rule: 1 });
+    }
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await page.waitForTimeout(100);
+    const running = await page.evaluate(
+      () => [...document.querySelectorAll('main section')].flatMap((s) => s.getAnimations({ subtree: true })).length,
+    );
+    expect(running).toBe(0);
   });
 });

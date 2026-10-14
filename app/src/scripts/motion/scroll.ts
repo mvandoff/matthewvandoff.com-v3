@@ -30,9 +30,20 @@ function setLock(target: ScrollTarget | null): void {
   if (target) for (const el of lockParts(target)) el.hidden = false;
 }
 
+/**
+ * The element's page offset without its transform. A Section not yet revealed
+ * sits 32px low (.rv); the board's scrollIntoView lands that much short, the
+ * site lands on the Section itself.
+ */
+function layoutTop(el: HTMLElement): number {
+  const shift = new DOMMatrixReadOnly(getComputedStyle(el).transform).f;
+  return el.getBoundingClientRect().top + window.scrollY - shift;
+}
+
 export function goTo(target: ScrollTarget): void {
   const reduce = reducedMotion();
-  document.getElementById(target)?.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' });
+  const el = document.getElementById(target);
+  if (el) window.scrollTo({ top: layoutTop(el), behavior: reduce ? 'auto' : 'smooth' });
   if (reduce) return;
   clearTimeout(showTimer);
   clearTimeout(hideTimer);
@@ -57,5 +68,11 @@ export function startNavigation(): void {
     if (!isTarget(id)) return;
     event.preventDefault();
     goTo(id);
+  });
+  // A hash typed on the page: the browser jumps to the Section's offset box (32px
+  // short if it isn't revealed yet); settle it on the Section itself.
+  window.addEventListener('hashchange', () => {
+    const el = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (el && isTarget(el.id)) window.scrollTo({ top: layoutTop(el), behavior: 'auto' });
   });
 }

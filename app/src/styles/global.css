@@ -101,6 +101,20 @@
     color: var(--accent);
   }
 
+  /* Reveal on scroll (board 226-227): the Motion controller adds .rv to each
+     Section once it runs (so without JS they stay visible) and .in once seen. */
+  .rv {
+    opacity: 0;
+    transform: translateY(32px);
+    transition:
+      opacity 0.9s var(--ease-out),
+      transform 0.9s var(--ease-out);
+  }
+  .rv.in {
+    opacity: 1;
+    transform: none;
+  }
+
   /* Lock-on (board 238-241): a brief Accent bracket, with a "found ~/<id>" tag on
      Section headings, shown after a smooth scroll lands. Rendered `hidden`; the
      scroll helper (scripts/motion/scroll.ts) unhides it, which restarts the run. */
@@ -477,6 +491,16 @@
     animation: none;
   }
   .gh {
+    transition: none;
+  }
+  /* No reveal: Sections and their heading rules are simply there. */
+  .rv {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .rv .sh-r::after {
+    transform: none;
     transition: none;
   }
   .cel,
