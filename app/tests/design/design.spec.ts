@@ -18,7 +18,6 @@ for (const { name, width, height } of WIDTHS) {
     test.use({ viewport: { width, height } });
 
     test(`full page matches the board`, async ({ page }) => {
-      test.fail(width === 390, 'phone layout lands in mvd-034.10, which removes this marker');
       await prepare(page);
       await page.goto('/');
       await freeze(page);
@@ -36,6 +35,10 @@ const PROBES: Record<string, Probe> = {
   'Section heading': { selector: '.sh > span:last-child > span:first-child', props: TEXT },
   'Episode title': { selector: '.ep-t', props: TEXT },
   'about body': { selector: '.ab-p', props: TEXT },
+  'Episode number': { selector: '.ep > :nth-child(1)', props: TEXT },
+  'Episode description': { selector: '.ep > :nth-child(4)', props: [...TEXT, 'marginTop'] },
+  'Cel label': { selector: 'a.cel .vlabel', props: ['fontSize', 'writingMode', 'transform'] },
+  'Cel': { selector: 'a.cel', props: ['flexDirection', 'minHeight', 'paddingLeft', 'paddingRight'] },
   'Terminal input': { selector: '#term-in', props: TEXT },
   'Terminal hint': { selector: '.t-hint', props: TEXT },
   'Terminal body': { selector: '.now dd', props: TEXT },
@@ -64,24 +67,26 @@ async function probe(page: Page) {
   }, PROBES);
 }
 
-test.describe('computed styles at 1440px', () => {
-  test.use({ viewport: { width: 1440, height: 900 } });
+for (const { width, height } of WIDTHS) {
+  test.describe(`computed styles at ${width}px`, () => {
+    test.use({ viewport: { width, height } });
 
-  test('key elements match the board', async ({ page, browser }) => {
-    await prepare(page);
-    await page.goto('/');
-    await freeze(page);
-    const site = await probe(page);
+    test('key elements match the board', async ({ page, browser }) => {
+      await prepare(page);
+      await page.goto('/');
+      await freeze(page);
+      const site = await probe(page);
 
-    const boardPage = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
-    await serveBoard(boardPage);
-    await prepare(boardPage);
-    await boardPage.goto(BOARD_URL);
-    await freeze(boardPage);
-    const board = await probe(boardPage);
+      const boardPage = await (await browser.newContext({ viewport: { width, height } })).newPage();
+      await serveBoard(boardPage);
+      await prepare(boardPage);
+      await boardPage.goto(BOARD_URL);
+      await freeze(boardPage);
+      const board = await probe(boardPage);
 
-    for (const label of Object.keys(PROBES)) {
-      expect.soft(site[label], label).toEqual(board[label]);
-    }
+      for (const label of Object.keys(PROBES)) {
+        expect.soft(site[label], label).toEqual(board[label]);
+      }
+    });
   });
-});
+}

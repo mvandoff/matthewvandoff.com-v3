@@ -477,6 +477,167 @@
 /* The board's two reduced-motion blocks (lines 181 and 306), minus deleted variants.
    The entrance script also skips the Boot and the name glitch under reduced motion;
    these rules make that hold even if its classes were present. */
+/*
+ * Narrow screens (board 180, 282-305, 308): the Episode reflow at ≤900px, then the
+ * phone layout at ≤760px. Unlayered, so these beat the component rules; the board
+ * needed !important only to beat its own inline styles.
+ */
+@media (max-width: 900px) {
+  /* Episode: number and years on one row, the title and the description below. */
+  .ep {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: 'n d' 't t' 'x x';
+    gap: 0 16px;
+    padding: 40px 0 44px;
+  }
+  .ep-n {
+    grid-area: n;
+    line-height: 1;
+  }
+  .ep-y {
+    grid-area: d;
+    justify-self: end;
+  }
+  .ep-h {
+    grid-area: t;
+    margin-top: 24px;
+    gap: 8px;
+  }
+  .ep-d {
+    grid-area: x;
+    margin-top: 18px;
+    line-height: 1.75;
+  }
+}
+
+@media (max-width: 760px) {
+  /* Strip: one column. The lead column dissolves so its Name card and Terminal
+     become Strip items; the Terminal is moved after the Cels. */
+  .strip {
+    flex-direction: column;
+    height: auto;
+  }
+  .cel {
+    flex: none;
+    min-height: 96px;
+  }
+  .lead-col {
+    display: contents;
+  }
+  .cel.lead {
+    height: auto;
+    min-height: 360px;
+    padding: 24px 22px;
+  }
+  /* In flow, so it can't expand upward (the .xp rules are ≥761px only). */
+  .cel.sig {
+    position: relative;
+    inset: auto;
+    flex: none;
+    order: 9;
+    margin-top: 16px;
+    min-height: 180px;
+  }
+
+  /* Cels: full-width 60px rows with a horizontal label and a → at the end. */
+  a.cel {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+    min-height: 60px;
+    padding: 0 20px;
+  }
+  .vlabel {
+    writing-mode: horizontal-tb;
+    transform: none;
+  }
+  a.cel .vlabel {
+    font-size: 22px;
+  }
+  a.cel::after {
+    content: '→';
+    position: relative;
+    margin-left: auto;
+    font-size: 16px;
+    color: var(--dim);
+    transition: color 0.1s;
+  }
+  a.cel:hover::after,
+  a.cel:focus-visible::after {
+    color: var(--accent);
+  }
+
+  /* Name card: the name scales and may wrap; katakana gone; short clock. */
+  .nmh {
+    font-size: clamp(48px, 14vw, 100px);
+  }
+  .nm,
+  .gh {
+    white-space: normal;
+  }
+  .kana,
+  .prompt,
+  .sh-x,
+  .st-l,
+  .t-hint {
+    display: none;
+  }
+  .st-s {
+    display: inline;
+  }
+
+  /* Terminal: 16px input so iOS doesn't zoom on focus. */
+  .term-in input {
+    font-size: 16px;
+  }
+
+  /* Sections: tighter top padding, Geist for long copy, roomier Episodes. */
+  .about,
+  .experience,
+  .links {
+    padding-top: 112px;
+  }
+  .about,
+  .links {
+    gap: 40px;
+  }
+  .exp-head {
+    margin-bottom: 24px;
+  }
+  .ep-n {
+    color: var(--dim);
+    font-size: 16px;
+  }
+  .experience .ep {
+    padding: 52px 0 56px;
+  }
+  .experience .ep-h {
+    margin-top: 28px;
+    gap: 10px;
+  }
+  .experience .ep-d {
+    margin-top: 22px;
+  }
+  .ep-d,
+  .ab-p {
+    font-family: var(--font-phone);
+    font-size: 15px;
+    line-height: 1.6;
+    letter-spacing: 0;
+  }
+
+  /* Footer: stacked and centred. */
+  #foot {
+    margin-top: 112px;
+  }
+  .foot {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .lb,
   .lg {
