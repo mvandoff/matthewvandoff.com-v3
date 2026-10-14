@@ -8,6 +8,23 @@ import { expect, test, type Page } from '@playwright/test';
 
 const SECTIONS = ['about', 'experience', 'links'] as const;
 
+/** Lock-on timings (src/scripts/motion/scroll.ts): the bracket mounts at 650ms and unmounts at 2250ms. */
+const LOCK_SHOW_MS = 650;
+const LOCK_HIDE_MS = 2250;
+
+/**
+ * Opens the page on a paused fake clock, past the entrance. The Lock-on bracket's
+ * 1.6s window then only moves when the test runs the clock, however loaded the
+ * machine is. (The smooth scroll itself is the browser's and still runs in real time.)
+ */
+async function openOnPausedClock(page: Page) {
+  const start = new Date(2026, 9, 14, 9, 30, 0);
+  await page.clock.install({ time: start });
+  await page.clock.pauseAt(new Date(start.getTime() + 1000));
+  await page.goto('/');
+  await page.clock.runFor(4000);
+}
+
 /**
  * Where a page scrolled to `#id` should end up: the Section's layout box at the top
  * of the viewport (ignoring the reveal's 32px offset), or as far as the page scrolls.
@@ -28,14 +45,19 @@ const lockTag = (page: Page, id: string) => page.locator(`#${id} .locktag`);
 test.describe('Cels', () => {
   for (const id of SECTIONS) {
     test(`clicking the ${id} Cel scrolls to it and locks on`, async ({ page }) => {
-      await page.goto('/');
+      await openOnPausedClock(page);
       await cel(page, id).click();
       await expect.poll(() => scrollTop(page)).toBe(await landingFor(page, id));
+      await expect(lockTag(page, id)).toBeHidden(); // not before 650ms
+      await page.clock.runFor(LOCK_SHOW_MS);
       await expect(lockTag(page, id)).toHaveText(`found ~/${id}`);
-      // Bracket and tag show together (checked in one go: the window is only 1.6s).
-      await expect(page.locator(`#${id}`).locator('.lock:visible, .locktag:visible')).toHaveCount(2);
-      // The bracket is brief: gone again after its 1.5s run.
-      await expect(lockTag(page, id)).toBeHidden({ timeout: 4000 });
+      // Bracket and tag show together.
+      // (Checked on the `hidden` attribute the helper toggles: the bracket's own CSS
+      // animation runs in real time and may be at a zero-size frame on a loaded machine.)
+      await expect(page.locator(`#${id} [data-lock="${id}"]:not([hidden])`)).toHaveCount(2);
+      // The bracket is brief: gone again after its 1.6s run.
+      await page.clock.runFor(LOCK_HIDE_MS - LOCK_SHOW_MS);
+      await expect(lockTag(page, id)).toBeHidden();
       await expect(page).toHaveURL(/\/$/);
     });
   }
@@ -57,13 +79,16 @@ test.describe('home', () => {
     ['back to top', (page: Page) => page.getByRole('link', { name: '[ back to top ↑ ]' })],
   ] as const) {
     test(`${name} scrolls back to the top and locks on the whoami line`, async ({ page }) => {
-      await page.goto('/');
+      await openOnPausedClock(page);
       await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
       await link(page).click();
       await expect.poll(() => scrollTop(page)).toBe(0);
-      const lock = page.locator('.nc-prompt .lock');
-      await expect(lock).toBeVisible();
-      await expect(lock).toBeHidden({ timeout: 4000 });
+      const lock = page.locator('.nc-prompt .lock[data-lock="top"]');
+      await expect(lock).toBeHidden();
+      await page.clock.runFor(LOCK_SHOW_MS);
+      await expect(page.locator('.nc-prompt .lock:not([hidden])')).toHaveCount(1);
+      await page.clock.runFor(LOCK_HIDE_MS - LOCK_SHOW_MS);
+      await expect(lock).toBeHidden();
       await expect(page).toHaveURL(/\/$/);
     });
   }
@@ -72,24 +97,26 @@ test.describe('home', () => {
 test.describe('cd', () => {
   for (const id of SECTIONS) {
     test(`cd ${id} locks on its heading`, async ({ page }) => {
-      await page.goto('/');
+      await openOnPausedClock(page);
       const input = page.getByRole('textbox', { name: 'terminal command, type help' });
       await input.fill(`cd ${id}`);
       await input.press('Enter');
       await expect.poll(() => scrollTop(page)).toBe(await landingFor(page, id));
-      await expect(lockTag(page, id)).toBeVisible();
+      await page.clock.runFor(LOCK_SHOW_MS);
+      await expect(page.locator(`#${id} .locktag:not([hidden])`)).toHaveCount(1);
     });
   }
 
   test('only the latest target locks on', async ({ page }) => {
-    await page.goto('/');
+    await openOnPausedClock(page);
     const input = page.getByRole('textbox', { name: 'terminal command, type help' });
     await input.fill('cd about');
     await input.press('Enter');
     await input.fill('cd links');
     await input.press('Enter');
-    await expect(lockTag(page, 'links')).toBeVisible();
-    await expect(page.locator('.locktag:visible')).toHaveCount(1);
+    await page.clock.runFor(LOCK_SHOW_MS);
+    await expect(page.locator('#links .locktag:not([hidden])')).toHaveCount(1);
+    await expect(page.locator('.locktag:not([hidden])')).toHaveCount(1);
   });
 });
 

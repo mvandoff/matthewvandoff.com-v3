@@ -82,6 +82,45 @@ const seekLock = (page: Page, t: number) =>
     }
   }, t);
 
+/**
+ * Starts recording every transition that begins inside `selector`, as it starts.
+ * Reading running transitions afterwards would race their (real-time) 0.6s run on a
+ * loaded machine; the `transitionrun` event fires whenever they began, and the
+ * animation is still there to describe when it does.
+ */
+const recordTransitionRuns = (page: Page, selector: string) =>
+  page.evaluate((sel) => {
+    const runs = new Set<string>();
+    (window as unknown as { __runs: Set<string> }).__runs = runs;
+    document.querySelector(sel)!.addEventListener(
+      'transitionrun',
+      (event) => {
+        const e = event as TransitionEvent;
+        const pseudo = e.pseudoElement;
+        const target = e.target as Element;
+        for (const a of target.getAnimations()) {
+          const effect = a.effect as KeyframeEffect;
+          if ((a as CSSTransition).transitionProperty !== e.propertyName || (effect.pseudoElement ?? '') !== pseudo) continue;
+          const t = effect.getTiming();
+          runs.add(`${e.propertyName}${pseudo} ${t.duration}ms ${t.delay}ms ${t.easing}`);
+        }
+      },
+      true,
+    );
+  }, selector);
+
+/** The runs recorded so far, once the reveal has started some. */
+async function recordedTransitionRuns(page: Page): Promise<string[]> {
+  const read = () =>
+    page.evaluate(() => [...(window as unknown as { __runs: Set<string> }).__runs].sort());
+  // (Under reduced motion nothing transitions, so there is nothing to wait for.)
+  if (!(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches))) {
+    await expect.poll(async () => (await read()).length).toBeGreaterThan(0);
+  }
+  await page.clock.runFor(20);
+  return read();
+}
+
 /** Scrolls and lets the (rAF-throttled, fake-clock) scroll tracking catch up. */
 async function scrollTo(page: Page, y: number) {
   await page.evaluate((top) => window.scrollTo(0, top), y);
@@ -145,22 +184,12 @@ async function drive(page: Page) {
   states['at load'] = await snapshot(page);
 
   for (const y of [8, 9, 700, 1350, 1700, 99_999]) {
+    if (y === 700) await recordTransitionRuns(page, '#experience');
     await scrollTo(page, y);
     if (y === 700) {
       // Experience is revealed here: compare the transitions that start (their progress
       // depends on real time, so only what runs and how).
-      states['revealing experience'] = {
-        transitions: await page.locator('#experience').evaluate((el) =>
-          el
-            .getAnimations({ subtree: true })
-            .map((a) => {
-              const t = (a.effect as KeyframeEffect).getTiming();
-              const pseudo = (a.effect as KeyframeEffect).pseudoElement ?? '';
-              return `${(a as CSSTransition).transitionProperty}${pseudo} ${t.duration}ms ${t.delay}ms ${t.easing}`;
-            })
-            .sort(),
-        ),
-      };
+      states['revealing experience'] = { transitions: await recordedTransitionRuns(page) };
     }
     await finishTransitions(page);
     states[`scrolled to ${y}`] = await snapshot(page);

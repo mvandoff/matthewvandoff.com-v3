@@ -74,10 +74,13 @@ const settled = (page: Page) =>
 
 /** Scrolls to the top or bottom and waits until scroll tracking has caught up. */
 async function scrollTo(page: Page, where: 'top' | 'bottom') {
-  await page.evaluate((w) => window.scrollTo(0, w === 'top' ? 0 : document.documentElement.scrollHeight), where);
+  const jump = () =>
+    page.evaluate((w) => window.scrollTo(0, w === 'top' ? 0 : document.documentElement.scrollHeight), where);
   // The scroll event fires on a later real frame; its throttled rAF then needs fake time.
+  // Jumping again on every poll keeps us at the end if late-loading fonts change the page height.
   await expect
     .poll(async () => {
+      await jump();
       await page.clock.runFor(20);
       const sp = Number(await page.evaluate(() => document.documentElement.style.getPropertyValue('--sp')));
       return where === 'top' ? sp === 0 : sp > 0.99;

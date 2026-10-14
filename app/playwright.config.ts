@@ -10,6 +10,11 @@ export default defineConfig({
   testDir: 'tests/e2e',
   fullyParallel: true,
   forbidOnly: !!process.env['CI'],
+  // Headroom for a loaded machine (many workers, or a busy laptop). The design specs
+  // drive two pages through long scripted flows; timing assertions are all driven by
+  // fake clocks, so this changes how long a slow run may take, never what passes.
+  timeout: 90_000,
+  expect: { timeout: 15_000 },
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
     baseURL: `http://127.0.0.1:${port}`,
