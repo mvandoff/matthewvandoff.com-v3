@@ -1,7 +1,209 @@
 ---
 /**
- * Crosshair: cursor-tracking lines, centre square and coordinate HUD, shown only
- * on hover-capable fine pointers.
- * Placeholder: mvd-034.8 (Crosshair and hover effects) implements it.
+ * Crosshair: faint cursor-tracking lines, a centre square that grows over clickable
+ * things, and a HUD (bottom right) with zero-padded x/y, rulers and a mini-map with
+ * a scroll marker. Board: warm-terminal.html 255-280 (CSS), 328-339 (markup).
+ *
+ * Shown only on hover-capable fine pointers, and only once the mouse has moved
+ * (opacity is --cv, set by scripts/motion/pointer.ts, which also writes the HUD
+ * values). Hidden under reduced motion (global.css). Without JS it never shows.
+ * data-freeze-hide: the design harness hides it (tests/design/freeze.ts).
+ *
+ * DEVIATION: the board prints the x/y values with CSS counters; the site writes them
+ * as text (same glyphs, same box) so they can be read and tested.
  */
 ---
+
+<div class="xh" aria-hidden="true" data-freeze-hide>
+  <div class="xh-v"></div>
+  <div class="xh-h"></div>
+  <div class="xh-s"></div>
+  <div class="hud">
+    <div class="hud-ax ax-x">
+      <span class="hud-k">x</span><span class="hud-v vx" data-hud="x"></span><span class="hud-rl rx"><i></i></span>
+    </div>
+    <div class="hud-ax ax-y">
+      <span class="hud-k">y</span><span class="hud-v vy" data-hud="y"></span><span class="hud-rl ry"><i></i></span>
+    </div>
+    <div class="hud-map"><i class="mv"></i><i class="mh"></i><i class="md"></i><i class="mr"></i><i class="ms"></i></div>
+  </div>
+</div>
+
+<style>
+  @layer components {
+    .xh {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 55;
+      pointer-events: none;
+      opacity: var(--cv, 0);
+      transition: opacity 0.25s;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .xh {
+        display: block;
+      }
+    }
+    .xh-v {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 1px;
+      background: color-mix(in srgb, var(--accent) 16%, transparent);
+      transform: translateX(calc(var(--mx) * 1px));
+    }
+    .xh-h {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 1px;
+      background: color-mix(in srgb, var(--accent) 16%, transparent);
+      transform: translateY(calc(var(--my) * 1px));
+    }
+    .xh-s {
+      position: absolute;
+      left: -5px;
+      top: -5px;
+      width: 9px;
+      height: 9px;
+      transform: translate(calc(var(--mx) * 1px), calc(var(--my) * 1px));
+    }
+    .xh-s::before {
+      content: '';
+      position: absolute;
+      inset: calc(var(--xh, 0) * -6px);
+      border: 1px solid var(--accent);
+      background: color-mix(in srgb, var(--accent) calc(var(--xh, 0) * 10%), transparent);
+      transition:
+        inset 0.2s var(--ease-out),
+        background-color 0.2s;
+    }
+    .hud {
+      position: absolute;
+      right: clamp(16px, 3vw, 40px);
+      bottom: 20px;
+      transform: translateY(calc(var(--hlift, 0) * -1px));
+      display: grid;
+      grid-template-columns: auto 34px;
+      grid-template-areas: 'x map' 'y map';
+      gap: 4px 10px;
+      padding: 10px 12px;
+      font-size: 10px;
+      line-height: 1.3;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      background: color-mix(in srgb, var(--ground) 62%, transparent);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+    }
+    .hud-ax {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ax-x {
+      grid-area: x;
+    }
+    .ax-y {
+      grid-area: y;
+    }
+    .hud-k {
+      color: var(--accent);
+    }
+    .hud-v {
+      width: 4ch;
+      font-size: 11px;
+      line-height: 1;
+      color: var(--ink);
+    }
+    .hud-rl {
+      position: relative;
+      width: 40px;
+      height: 8px;
+      background:
+        repeating-linear-gradient(
+            to right,
+            color-mix(in srgb, var(--accent) 40%, transparent) 0 1px,
+            transparent 1px 6px
+          )
+          0 100% / 100% 3px no-repeat,
+        repeating-linear-gradient(
+            to right,
+            color-mix(in srgb, var(--accent) 70%, transparent) 0 1px,
+            transparent 1px 24px
+          )
+          0 100% / 100% 6px no-repeat;
+    }
+    .hud-rl i {
+      position: absolute;
+      bottom: 0;
+      width: 1px;
+      height: 10px;
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+    }
+    .rx i {
+      left: calc(var(--mfx, 0) * 100%);
+    }
+    .ry i {
+      left: calc(var(--mfy, 0) * 100%);
+    }
+    .hud-map {
+      grid-area: map;
+      position: relative;
+      border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+      background: radial-gradient(circle, var(--rule-2) 0.8px, transparent 1.2px) 0 0 / 5px 5px;
+    }
+    .hud-map .mr {
+      width: 9px;
+      height: 9px;
+      box-sizing: border-box;
+      left: calc(var(--mfx, 0) * 100%);
+      top: calc(var(--mfy, 0) * 100%);
+      border: 1px solid var(--accent);
+      opacity: var(--xh, 0);
+      transform: translate(-50%, -50%) scale(calc(2.2 - var(--xh, 0) * 1.2));
+      transition:
+        opacity 0.15s,
+        transform 0.2s var(--ease-out);
+    }
+    .hud-map i {
+      position: absolute;
+      display: block;
+    }
+    .hud-map .mv {
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      left: calc(var(--mfx, 0) * 100%);
+      background: color-mix(in srgb, var(--accent) calc(45% + var(--xh, 0) * 55%), transparent);
+    }
+    .hud-map .mh {
+      left: 0;
+      right: 0;
+      height: 1px;
+      top: calc(var(--mfy, 0) * 100%);
+      background: color-mix(in srgb, var(--accent) calc(45% + var(--xh, 0) * 55%), transparent);
+    }
+    .hud-map .md {
+      width: 3px;
+      height: 3px;
+      margin: -1px 0 0 -1px;
+      left: calc(var(--mfx, 0) * 100%);
+      top: calc(var(--mfy, 0) * 100%);
+      background: var(--accent);
+    }
+    .hud-map .ms {
+      right: -4px;
+      width: 2px;
+      height: 22%;
+      top: calc(var(--sp, 0) * 78%);
+      background: var(--second);
+    }
+  }
+</style>

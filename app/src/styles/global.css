@@ -406,7 +406,8 @@
     transform: none;
     transition: none;
   }
-  .boot {
+  .boot,
+  .xh {
     display: none;
   }
   .ln-i,
