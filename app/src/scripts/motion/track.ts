@@ -2,14 +2,15 @@
  * Scroll tracking (board `track()`, warm-terminal.html 690-722), run on load and
  * on scroll/resize, throttled to one run per animation frame.
  *
- * So far it writes to <html>: --sp (scroll progress 0-1, 4 decimals; the background
- * field, the header progress line and the HUD mini-map's scroll marker read it),
- * --spi (0-100) and --hlift (px of footer showing, so the Crosshair HUD lifts
- * above it). Runs under reduced motion too, as on the board (CSS keeps the field
- * still).
+ * Writes to <html>: --sp (scroll progress 0-1, 4 decimals; the background field,
+ * the header progress line and the HUD mini-map's scroll marker read it), --spi
+ * (0-100) and --hlift (px of footer showing, so the Crosshair HUD lifts above it).
+ * Sets the header prompt's current Section (`.bar .here`), the header border
+ * (`.bar.down` once scrolled past 8px) and reveal-on-scroll (`.rv` on each Section
+ * once JS runs, `.in` once seen, for good).
  *
- * mvd-034.6 adds the rest of `track()` to `update`: the current Section for the
- * header prompt, the `.down` header border, reveal-on-scroll.
+ * Runs under reduced motion too, as on the board; CSS keeps the field still and
+ * shows every Section outright.
  */
 const SECTIONS = ['about', 'experience', 'links'] as const;
 
@@ -48,11 +49,14 @@ export function startTracking(): void {
     }
   };
 
-  // Hidden-until-seen only once JS runs; Sections already in view get .in in this
-  // same task. A Section named by the URL hash is where the browser is about to
-  // land, so it starts seen: offset by the reveal, the landing would be 32px short.
+  // Hidden-until-seen only once JS runs. As on the board (which first renders every
+  // Section revealed), what's in view is measured before .rv offsets anything, and
+  // stays revealed. A Section named by the URL hash is where the browser is about
+  // to land, so it starts seen too: offset by the reveal, the landing would be 32px short.
   const landing = decodeURIComponent(location.hash.slice(1));
-  for (const section of sections) section.classList.add('rv', ...(section.id === landing ? ['in'] : []));
+  const vh = window.innerHeight || 0;
+  const seen = sections.map((s) => s.id === landing || s.getBoundingClientRect().top < vh * 0.88);
+  sections.forEach((section, i) => section.classList.add('rv', ...(seen[i] ? ['in'] : [])));
 
   let frame = 0;
   const schedule = () => {

@@ -166,7 +166,8 @@ test.describe('reveal on scroll', () => {
   });
 
   test('a Section in view on load is revealed', async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 1200 });
+    // At 1440x900 the about Section's top (777px) is just inside the 88% line (792px),
+    // and would fall outside it if measured with the reveal's 32px offset.
     await page.goto('/');
     await expect.poll(() => revealState(page, 'about')).toEqual({ opacity: 1, y: 0, rule: 1 });
   });

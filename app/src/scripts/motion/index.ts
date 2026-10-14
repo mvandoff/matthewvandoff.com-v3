@@ -9,15 +9,14 @@
  *   pointer   --mx/--my/--cv/--mfx/--mfy/--xh on <html> and the HUD values (name
  *             ghosts, background field, Crosshair)
  *   track     scroll progress --sp/--spi and --hlift on <html> (background field,
- *             progress line, HUD)
+ *             progress line, HUD), header prompt and border, reveal-on-scroll
+ *   scroll    smooth scroll + Lock-on for in-page links (Cels, [ mvd ], back to
+ *             top) and the Terminal's cd (goTo); hash landing
  *   scramble  the github/linkedin glyph scramble on hover and focus
  * Looping ambience (blob drift, fish, kaomoji, cursor blink) is pure CSS.
  *
  * Reduced motion: each piece is skipped or short-circuited as on the board; the
  * CSS side is the reduced-motion block at the bottom of styles/global.css.
- *
- * Still to come:
- *   mvd-034.6  track: header prompt, header border, reveal; scroll.ts: Lock-on
  */
 import { startClock } from './clock.ts';
 import { startPointer } from './pointer.ts';
