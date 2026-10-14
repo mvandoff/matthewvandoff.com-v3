@@ -193,9 +193,9 @@ A new Astro site in `app/` that faithfully reproduces the Warm Terminal board:
 - Self-hosted woff2 only, with no Google Fonts requests:
   - Gridular, reused from the v2 site. Matthew has confirmed web use is licensed.
   - Martian Mono, as a variable font at the weights used.
-  - DotGothic16, subset to the katakana and kanji the page shows.
-  - Geist, for phone body copy.
-- The display fonts are preloaded, with `font-display: swap`.
+  - DotGothic16, subset to exactly the glyphs it renders: the katakana and kanji labels plus the Latin `ep.` and digits of the Episode numbers. A test fails if any text set in DotGothic16 contains a glyph missing from the subset, so editing that copy can't silently fall back to a system font.
+  - Geist, Latin subset at weight 400 only, used just for phone body copy. It is not preloaded, so desktop visitors never download it.
+- Gridular and Martian Mono are preloaded. Every font uses `font-display: swap`.
 
 ### Head
 
