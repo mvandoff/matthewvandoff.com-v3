@@ -120,6 +120,10 @@ for (const job of jobs) {
   const source = await fetchCached(job.source);
   const subset = await subsetFont(source, job.text, {
     targetFormat: 'woff2',
+    // Keep the post table's glyph names (format 2, as Google Fonts serves them).
+    // Without them (format 3) Chrome rasterises the glyphs differently: Geist
+    // body copy and DotGothic16 kana visibly differ from the board (mvd-034.10).
+    glyphNames: true,
     ...(job.variationAxes ? { variationAxes: job.variationAxes } : {}),
   });
   const out = join(publicDir, job.out);
