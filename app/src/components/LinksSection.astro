@@ -1,0 +1,80 @@
+---
+/**
+ * The links Section: big github ↗ and linkedin ↗ links. Each word sits in a
+ * width-reserving ghost so the glyph scramble (mvd-034.8) never shifts layout:
+ * .dw-live holds the resolved prefix plus a .nz noise tail while scrambling.
+ */
+import { site } from '../lib/content.ts';
+import SectionHeading from './SectionHeading.astro';
+
+const section = site.sections[2];
+---
+
+<section id={section.id} class="section links">
+  <SectionHeading section={section} />
+  <div class="big-list">
+    {
+      site.links.map((link) => (
+        <a class="big" href={link.href} aria-label={link.label}>
+          <span class="dw" aria-hidden="true">
+            <span class="dw-ghost">{link.label}</span>
+            <span class="dw-live">{link.label}</span>
+          </span>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </a>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 56px;
+      padding-top: 200px;
+    }
+    .big-list {
+      width: 100%;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 28px;
+    }
+    .big {
+      position: relative;
+      isolation: isolate;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 16px;
+      min-height: 44px;
+      font-family: var(--font-head);
+      font-weight: 500;
+      font-size: clamp(40px, 6vw, 88px);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      transition: color 0.15s;
+    }
+    .dw {
+      position: relative;
+      display: inline-block;
+      white-space: pre;
+    }
+    .dw-ghost {
+      visibility: hidden;
+    }
+    .dw-live {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      white-space: pre;
+    }
+    .arrow {
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.32em;
+      color: var(--accent);
+    }
+  }
+</style>

@@ -1,0 +1,196 @@
+---
+/**
+ * Terminal: the command-line box beneath the Name card, rendered in its idle
+ * status (`cat status.txt`). Without JavaScript it stays like this. The Terminal
+ * controller (src/scripts/terminal/controller.ts, mvd-034.3) makes it typeable and
+ * renders command output into #term-body.
+ */
+import { site } from '../lib/content.ts';
+import { mockMusic } from '../lib/music/mock.ts';
+
+const { terminal } = site;
+const listening = await mockMusic.nowPlaying();
+---
+
+<div class="cel sig tgt">
+  <div class="sig-in">
+    <div class="sig-row">
+      <span class="sig-cmd">{terminal.prompt} {terminal.idleCommand}</span>
+      <span class="sig-kana" lang="ja" aria-hidden="true">{terminal.jp}</span>
+    </div>
+    <div class="term-body" id="term-body" aria-live="polite">
+      <dl class="now">
+        <div>
+          <dt>{terminal.status.building.key}</dt>
+          <dd>{terminal.status.building.value}</dd>
+        </div>
+        <div>
+          <dt>{terminal.status.listeningKey}</dt>
+          <dd>
+            {listening.track.title} — {listening.track.artist}{
+              !listening.playing && <span class="ago"> · {listening.ago}</span>
+            }
+          </dd>
+        </div>
+      </dl>
+    </div>
+    <div class="sig-row">
+      <label class="term-in">
+        <span>{terminal.inputPrompt}</span>
+        <span class="cur" aria-hidden="true"></span>
+        <input
+          id="term-in"
+          type="text"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label={terminal.inputLabel}
+        />
+      </label>
+      <span class="t-hint">{terminal.hint}</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  @layer components {
+    .sig {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: calc(var(--lead-h) + 8px);
+      z-index: 2;
+      padding: 0;
+      background: color-mix(in srgb, var(--panel) 50%, transparent);
+      transition:
+        top 0.5s var(--ease-snap),
+        background-color 0.3s,
+        border-color 0.1s;
+    }
+    .sig.tgt {
+      cursor: text;
+    }
+    .sig.tgt:hover,
+    .sig.tgt:focus-within {
+      border-color: var(--accent);
+    }
+    .sig:focus-within {
+      border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    }
+
+    .sig-in {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 20px;
+    }
+    .sig-row {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+      white-space: nowrap;
+    }
+    .sig-kana {
+      font-family: var(--font-jp);
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: var(--dim);
+    }
+
+    .term-body {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+      padding-right: 10px;
+      font-size: 12px;
+      line-height: 1.55;
+      scrollbar-width: thin;
+      scrollbar-color: var(--rule-2) transparent;
+      cursor: text;
+    }
+
+    /* Idle status: cat status.txt */
+    .now {
+      position: relative;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .now > div {
+      display: grid;
+      grid-template-columns: 10ch minmax(0, 1fr);
+      gap: 16px;
+    }
+    .now dt {
+      color: var(--second);
+    }
+    .now dd {
+      margin: 0;
+      color: var(--ink-2);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .ago {
+      color: var(--dim);
+    }
+
+    /* Input row */
+    .term-in {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1 1 auto;
+      min-width: 0;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      color: var(--dim);
+      cursor: text;
+    }
+    .term-in input {
+      flex: 1 1 auto;
+      min-width: 0;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      font: inherit;
+      letter-spacing: inherit;
+      color: var(--ink);
+      caret-color: var(--accent);
+    }
+    .term-in input:focus-visible {
+      outline: 0;
+    }
+    .term-in input::placeholder {
+      color: var(--placeholder);
+      opacity: 1;
+    }
+    .t-hint {
+      color: var(--dim);
+    }
+    .cur {
+      display: inline-block;
+      flex: none;
+      width: 0.6em;
+      height: 1.1em;
+      vertical-align: -0.15em;
+      background: var(--accent);
+      animation: blink 1s steps(1, end) infinite;
+    }
+  }
+</style>

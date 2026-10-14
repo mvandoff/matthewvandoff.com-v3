@@ -1,0 +1,75 @@
+---
+/**
+ * One Episode in the experience Section: number, years, role and company, and a
+ * description. The row hover comes in mvd-034.8; the ≤900px reflow in mvd-034.10.
+ */
+import { episodeLabel, type Episode } from '../lib/content.ts';
+
+interface Props {
+  episode: Episode;
+}
+
+const { episode } = Astro.props;
+---
+
+<article class="ep">
+  <span class="ep-n">{episodeLabel(episode)}</span>
+  <span class="ep-y">{episode.years}</span>
+  <div class="ep-h">
+    <h3 class="ep-t">{episode.role}</h3>
+    <p class="ep-c">{episode.company}</p>
+  </div>
+  <p class="ep-d">{episode.description}</p>
+</article>
+
+<style>
+  @layer components {
+    .ep {
+      display: grid;
+      grid-template-columns: 110px 150px minmax(0, 1fr) minmax(0, 1.3fr);
+      gap: 12px 40px;
+      align-items: baseline;
+      padding: 40px 16px;
+      border-top: 1px solid var(--rule);
+      transition: background-color 0.12s;
+    }
+    .ep:last-child {
+      border-bottom: 1px solid var(--rule);
+    }
+    .ep-n {
+      font-family: var(--font-jp);
+      font-size: 20px;
+      color: var(--accent);
+    }
+    .ep-y {
+      font-size: 12px;
+      color: var(--dim);
+      letter-spacing: 0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+    .ep-h {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .ep-t {
+      margin: 0;
+      font-family: var(--font-head);
+      font-weight: 600;
+      font-size: clamp(20px, 2vw, 27px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      transition: color 0.12s;
+    }
+    .ep-c {
+      margin: 0;
+      font-size: 13px;
+      color: var(--second);
+    }
+    .ep-d {
+      margin: 0;
+      color: var(--ink-2);
+      text-wrap: pretty;
+    }
+  }
+</style>

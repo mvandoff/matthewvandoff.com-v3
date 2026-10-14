@@ -1,0 +1,266 @@
+---
+/**
+ * Name card: the large lead Cel with the name, tagline, live clock, vertical
+ * katakana and the ASCII coin flip. Static here; the Motion controller fills the
+ * clock and later adds the name glitch, blob drift and coin flip (mvd-034.7).
+ */
+import { site } from '../lib/content.ts';
+
+const { nameCard } = site;
+const [line1, line2] = nameCard.nameLines;
+const ghostOpacity = 0.55; // ghost strength 1 × 0.55, frozen from the board
+---
+
+<div class="cel lead">
+  <div class="lead-bg" aria-hidden="true">
+    <div class="lead-blobs">
+      <div class="lb a"></div>
+      <div class="lb b"></div>
+      <div class="lb c"></div>
+    </div>
+    <svg class="lg">
+      <filter id="grain-l">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"></feTurbulence>
+        <feColorMatrix type="saturate" values="0"></feColorMatrix>
+      </filter>
+      <rect width="100%" height="100%" filter="url(#grain-l)"></rect>
+    </svg>
+  </div>
+
+  <span class="kana" lang="ja" aria-hidden="true">{nameCard.katakana}</span>
+
+  <div class="nc-top">
+    <span class="nc-prompt">{nameCard.prompt}</span>
+    <span class="stamp">
+      <span class="st-l" data-clock="long"></span><span class="st-s" data-clock="short"></span>
+    </span>
+  </div>
+
+  <h1 class="nmh hv-split">
+    <span class="gh ga" aria-hidden="true" style={`opacity: ${ghostOpacity}`}>
+      <span class="ln"><span class="ln-i">{line1}</span></span><span class="ln"><span class="ln-i d2">{line2}</span></span>
+    </span>
+    <span class="gh gb" aria-hidden="true" style={`opacity: ${ghostOpacity}`}>
+      <span class="ln"><span class="ln-i">{line1}</span></span><span class="ln"><span class="ln-i d2">{line2}</span></span>
+    </span>
+    <span class="nm">
+      <span class="ln"><span class="ln-i">{line1}</span></span><span class="ln"><span class="ln-i d2">{line2}</span></span>
+    </span>
+  </h1>
+
+  <div class="nc-bottom">
+    <div class="tagline">
+      <p class="role">{nameCard.role}</p>
+      <p class="line">{nameCard.tagline}</p>
+    </div>
+    <div class="aq">
+      <span class="fish" role="img" aria-label={nameCard.ascii.fish.label}>{nameCard.ascii.fish.art}</span>
+      <span class="shades" role="img" aria-label={nameCard.ascii.shades.label} hidden>
+        {nameCard.ascii.shades.frames.map((frame, i) => <span class={`fr f${i + 1}`}>{frame}</span>)}
+      </span>
+    </div>
+  </div>
+</div>
+
+<style>
+  @layer components {
+    .lead {
+      flex: none;
+      height: var(--lead-h);
+      transition: opacity 0.35s;
+      box-sizing: border-box;
+      padding: 28px 34px;
+      background: color-mix(in srgb, var(--panel) 72%, transparent);
+    }
+
+    /* Background: Accent blobs and a grain texture. */
+    .lead-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .lead-blobs {
+      position: absolute;
+      inset: 0;
+      filter: saturate(0.65);
+      opacity: 0.2;
+    }
+    .lb {
+      position: absolute;
+      border-radius: 50%;
+    }
+    .lb.a {
+      width: 70%;
+      height: 95%;
+      left: -14%;
+      top: -24%;
+      background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 25%, transparent), transparent);
+    }
+    .lb.b {
+      width: 62%;
+      height: 85%;
+      right: -16%;
+      bottom: -28%;
+      background: radial-gradient(closest-side, color-mix(in srgb, var(--second) 21%, transparent), transparent);
+    }
+    .lb.c {
+      width: 44%;
+      height: 62%;
+      left: 38%;
+      top: 18%;
+      background: radial-gradient(closest-side, color-mix(in srgb, var(--third) 12%, transparent), transparent);
+    }
+    .lg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      mix-blend-mode: overlay;
+      opacity: 0.6;
+    }
+
+    .kana {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      writing-mode: vertical-rl;
+      font-family: var(--font-jp);
+      font-size: 12px;
+      letter-spacing: 0.35em;
+      color: var(--dim);
+      opacity: 0.55;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .nc-top {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+    }
+    .nc-prompt {
+      position: relative; /* hosts the home Lock-on (mvd-034.6) */
+    }
+    .stamp {
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .st-s {
+      display: none;
+    }
+
+    /* The name, with two Accent ghost copies behind it. */
+    .nmh {
+      position: relative;
+      margin: 0;
+      text-align: center;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(36px, 5vw, 76px);
+      line-height: 0.9;
+      letter-spacing: -0.05em;
+      color: var(--ink);
+      isolation: isolate;
+    }
+    .nm {
+      display: block;
+      white-space: nowrap;
+    }
+    .gh {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      z-index: -1;
+      display: block;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .gh.ga {
+      color: var(--accent);
+      transform: translate(calc(-2px + (var(--mx) - 720) * -0.0015px), calc((var(--my) - 400) * -0.001px));
+    }
+    .gh.gb {
+      color: var(--second);
+      transform: translate(calc(2px + (var(--mx) - 720) * 0.0015px), calc((var(--my) - 400) * 0.001px));
+    }
+    .ln {
+      display: block;
+      overflow: visible;
+      padding-bottom: 0.04em;
+    }
+    .ln-i {
+      display: block;
+    }
+
+    .nc-bottom {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+    }
+    .tagline {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .tagline p {
+      margin: 0;
+    }
+    .role {
+      font-size: 16px;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+    .line {
+      font-size: 13px;
+      color: var(--dim);
+    }
+
+    /* ASCII art: the fish, or the kaomoji putting on sunglasses. */
+    .aq {
+      position: relative;
+      flex: 1 1 12ch;
+      max-width: 24ch;
+      height: 1.7em;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--second);
+      white-space: pre;
+      container-type: inline-size;
+    }
+    .fish {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+    }
+    .shades {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 11ch;
+      height: 1.7em;
+    }
+    .shades[hidden] {
+      display: none;
+    }
+    .fr {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      opacity: 0;
+    }
+    .fr.f3 {
+      opacity: 1;
+    }
+  }
+</style>

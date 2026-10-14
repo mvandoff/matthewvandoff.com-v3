@@ -1,0 +1,129 @@
+/*
+ * Global sheet: page basics, shared primitives, keyframes, and the responsive and
+ * reduced-motion rules.
+ *
+ * Cascade layers (order declared inline at the top of <head> in BaseLayout):
+ *   base        this file's basics and shared primitives (.wrap, .cel, .navlink)
+ *   components  every component's scoped <style>, wrapped in @layer components {}
+ *   (unlayered) the responsive and reduced-motion rules at the bottom of this file,
+ *               which therefore override any component rule without !important.
+ */
+@import './tokens.css';
+@import './fonts.css';
+
+/* Registered so the pointer-driven transforms (name ghosts, background field)
+   have a defined resting value before any pointer moves. */
+@property --mx {
+  syntax: '<integer>';
+  inherits: true;
+  initial-value: -200;
+}
+@property --my {
+  syntax: '<integer>';
+  inherits: true;
+  initial-value: -200;
+}
+
+@layer base {
+  body {
+    margin: 0;
+    background: var(--ground);
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--ground);
+  }
+
+  a {
+    color: var(--ink);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  a:hover {
+    color: var(--accent);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  /* The page root: every page renders inside <div id="top" class="root">. */
+  .root {
+    position: relative;
+    isolation: isolate;
+    min-height: 100vh;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.65;
+    overflow-x: clip;
+  }
+
+  /* Centred content column. */
+  .wrap {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding-inline: var(--gutter);
+    box-sizing: border-box;
+  }
+
+  /* One bordered panel in the Strip: the Name card, the Terminal and the nav Cels. */
+  .cel {
+    flex: 1 1 0;
+    min-width: 0;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 16px;
+    border: 1px solid var(--rule);
+    color: var(--ink);
+    transition: border-color 0.1s;
+  }
+
+  /* Bracketed text links: [ mvd ], [ back to top ↑ ]. */
+  .navlink {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 4px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    white-space: pre;
+  }
+
+  .acc {
+    color: var(--accent);
+  }
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.15;
+  }
+}
+
+/* ---- Responsive (unlayered: overrides components) ----------------------------
+   Breakpoints are the design's: 760px phone, 900px Episode reflow,
+   (hover: hover) and (pointer: fine) for the Crosshair.
+   The phone layout (mvd-034.10) adds its rules here. */
+
+/* ---- Reduced motion (unlayered) -------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .cur {
+    animation: none;
+  }
+  .cel {
+    transition: none;
+  }
+}

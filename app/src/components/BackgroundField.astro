@@ -1,0 +1,45 @@
+---
+/**
+ * Background field: two large Accent-tinted blobs fixed behind the page. Their
+ * resting position comes from --mx/--my (registered in global.css) and --sp
+ * (scroll progress); the Motion controller moves them (mvd-034.7).
+ */
+---
+
+<div class="fld" aria-hidden="true">
+  <div class="blob a"></div>
+  <div class="blob b"></div>
+</div>
+
+<style>
+  @layer components {
+    .fld {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0.7;
+    }
+    .blob {
+      position: absolute;
+      width: 72vmax;
+      height: 72vmax;
+      border-radius: 50%;
+    }
+    .blob.a {
+      left: -22vmax;
+      top: -28vmax;
+      background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 24%, transparent), transparent);
+      transform: translate(calc(var(--mx) * 0.06px + var(--sp, 0) * 30vmax), calc(var(--my) * 0.06px + var(--sp, 0) * 24vmax))
+        scale(calc(1 + var(--sp, 0) * 0.15));
+    }
+    .blob.b {
+      right: -26vmax;
+      bottom: -32vmax;
+      background: radial-gradient(closest-side, color-mix(in srgb, var(--second) 24%, transparent), transparent);
+      transform: translate(calc(var(--mx) * -0.05px - var(--sp, 0) * 32vmax), calc(var(--my) * -0.05px - var(--sp, 0) * 20vmax))
+        scale(calc(1 - var(--sp, 0) * 0.12));
+    }
+  }
+</style>

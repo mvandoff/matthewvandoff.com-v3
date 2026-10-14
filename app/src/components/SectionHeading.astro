@@ -1,0 +1,71 @@
+---
+/**
+ * Section heading: "02 / 04", a rule drawn in the Accent, then the Section name
+ * and its Japanese label. The title block hosts the Lock-on (mvd-034.6), which
+ * also gates the rule's draw-in behind reveal-on-scroll; without JS it is drawn.
+ */
+import { site, type SectionCopy } from '../lib/content.ts';
+
+interface Props {
+  section: SectionCopy;
+}
+
+const { section } = Astro.props;
+---
+
+<div class="sh">
+  <span class="sh-n"><span class="acc">{section.number}</span><span>/ {site.sectionTotal}</span></span>
+  <span class="sh-r" aria-hidden="true"></span>
+  <span class="sh-t">
+    <span>{section.label}{section.headingSuffix && <span class="sh-x">{section.headingSuffix}</span>}</span>
+    <span class="sh-jp" lang="ja">{section.jp}</span>
+  </span>
+</div>
+
+<style>
+  @layer components {
+    .sh {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 11px;
+      line-height: 1;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+      white-space: nowrap;
+    }
+    .sh-n {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .sh-r {
+      flex: 1 1 auto;
+      min-width: 24px;
+      height: 1px;
+      background: var(--rule);
+      position: relative;
+      overflow: hidden;
+    }
+    .sh-r::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      opacity: 0.55;
+      transform-origin: left;
+    }
+    .sh-t {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sh-jp {
+      font-family: var(--font-jp);
+      font-size: 16px;
+      letter-spacing: 0;
+      color: var(--accent);
+    }
+  }
+</style>

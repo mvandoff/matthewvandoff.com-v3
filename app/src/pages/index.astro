@@ -1,0 +1,30 @@
+---
+import AboutSection from '../components/AboutSection.astro';
+import BackgroundField from '../components/BackgroundField.astro';
+import Boot from '../components/Boot.astro';
+import Crosshair from '../components/Crosshair.astro';
+import ExperienceSection from '../components/ExperienceSection.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import LinksSection from '../components/LinksSection.astro';
+import Strip from '../components/Strip.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout>
+  <BackgroundField />
+  <Boot />
+  <Crosshair />
+  <Header />
+  <Strip />
+  <main class="wrap">
+    <AboutSection />
+    <ExperienceSection />
+    <LinksSection />
+  </main>
+  <Footer />
+</BaseLayout>
+
+<script>
+  import '../scripts/motion/index.ts';
+</script>

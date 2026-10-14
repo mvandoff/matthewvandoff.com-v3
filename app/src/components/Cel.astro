@@ -1,0 +1,54 @@
+---
+/**
+ * A narrow navigation Cel in the Strip: a plain anchor link to a Section, with
+ * its number and a vertical label (English plus Japanese). Hover/focus effects
+ * come in mvd-034.8; smooth scroll and Lock-on in mvd-034.6.
+ */
+import type { SectionCopy } from '../lib/content.ts';
+
+interface Props {
+  section: SectionCopy;
+}
+
+const { section } = Astro.props;
+---
+
+<a class="cel nav" href={`#${section.id}`}>
+  <span class="cel-n">{section.number}</span>
+  <span class="vlabel">{section.label} <span class="vlabel-jp" lang="ja">{section.jp}</span></span>
+</a>
+
+<style>
+  @layer components {
+    .nav:hover,
+    .nav:focus-visible {
+      color: var(--ink);
+    }
+    .cel-n {
+      position: relative;
+      font-size: 11px;
+      color: var(--dim);
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+    .vlabel {
+      position: relative;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      white-space: nowrap;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 28px;
+      letter-spacing: -0.01em;
+      transition: color 0.1s;
+    }
+    .vlabel-jp {
+      margin-inline-start: 10px;
+      font-family: var(--font-jp);
+      font-weight: 400;
+      font-size: 14px;
+      color: var(--dim);
+      letter-spacing: 0;
+    }
+  }
+</style>

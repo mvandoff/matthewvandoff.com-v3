@@ -1,0 +1,42 @@
+---
+/**
+ * Page shell: the document head (title, description, favicon, font preloads) and
+ * the page root that every page renders inside. Pages put their content in the
+ * default slot.
+ */
+import '../styles/global.css';
+import { site } from '../lib/content.ts';
+import { fontFiles } from '../lib/fonts.ts';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = site.meta.title, description = site.meta.description } = Astro.props;
+// Gridular and Martian Mono render above the fold on every page; DotGothic16 is
+// tiny and Geist is phone-only, so neither is preloaded.
+const preloads = [fontFiles.gridular, fontFiles.martianMono];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* Fixes cascade layer order before any stylesheet loads (see styles/global.css). */}
+    <style is:inline>
+      @layer base, components;
+    </style>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {preloads.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
+    {/* mvd-034.5: the Accent store's inline script goes here, before first paint. */}
+  </head>
+  <body>
+    <div id="top" class="root">
+      <slot />
+    </div>
+  </body>
+</html>

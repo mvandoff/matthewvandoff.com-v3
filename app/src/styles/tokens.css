@@ -1,0 +1,46 @@
+/*
+ * Design tokens. Every colour, font stack and layout constant the components use.
+ * Values are frozen from the Warm Terminal board (design/reference/warm-terminal.html).
+ */
+:root {
+  /* Ground: page and panel fills. */
+  --ground: #1b1c21;
+  --panel: #202128;
+  --panel-xp: #1d1e24; /* the expanded Terminal */
+  --boot-panel: #111216;
+
+  /* Ink: text, brightest first. */
+  --ink: #e4ddcf;
+  --ink-2: #bdb8ad; /* Terminal text, status values, Episode descriptions */
+  --ink-3: #a6a2ae; /* about paragraphs */
+  --dim: #9692a0; /* labels, years, hints, kana */
+  --placeholder: #6a6875;
+
+  /* Rules: borders and dividers. */
+  --rule: #2e2f38;
+  --rule-2: #3a3b46;
+
+  /*
+   * Accent. The mono palette makes the second and third colours equal the Accent,
+   * so overriding --accent on :root (the Accent store) recolours all three.
+   */
+  --accent-default: #8fb3ad;
+  --accent: var(--accent-default);
+  --second: var(--accent);
+  --third: var(--accent);
+
+  /* Font stacks. Headings use the display font. */
+  --font-display: 'Gridular', 'Geist', ui-sans-serif, sans-serif;
+  --font-head: var(--font-display);
+  --font-body: 'Martian Mono', ui-monospace, monospace;
+  --font-jp: 'DotGothic16', sans-serif;
+  --font-phone: 'Geist', system-ui, sans-serif; /* phone body copy only */
+
+  /* Layout. */
+  --container: 1360px;
+  --gutter: clamp(16px, 3vw, 40px);
+
+  /* Easing. */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --ease-snap: cubic-bezier(0.77, 0, 0.18, 1);
+}

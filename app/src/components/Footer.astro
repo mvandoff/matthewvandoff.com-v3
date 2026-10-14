@@ -1,0 +1,39 @@
+---
+/** Centred footer: copyright with the current year, thanks line, back to top. */
+import { site } from '../lib/content.ts';
+
+const year = new Date().getFullYear();
+---
+
+<footer id="foot" class="wrap">
+  <div class="foot ctr">
+    <span>© {year} {site.footer.owner}</span>
+    <span>{site.footer.thanks}</span>
+    <a class="navlink" href="#top">{site.footer.backToTop}</a>
+  </div>
+</footer>
+
+<style>
+  @layer components {
+    #foot {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      margin-top: 180px;
+    }
+    .foot {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px 24px;
+      padding: 18px 0 32px;
+      border-top: 1px solid var(--rule);
+      font-size: 12px;
+      color: var(--dim);
+    }
+    .foot .navlink {
+      margin: 0 -4px;
+    }
+  }
+</style>

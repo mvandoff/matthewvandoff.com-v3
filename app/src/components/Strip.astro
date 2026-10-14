@@ -1,0 +1,46 @@
+---
+/**
+ * The Strip: the full-height row of Cels at the top of the page. The lead column
+ * stacks the Name card over the Terminal; one narrow Cel per Section follows.
+ */
+import { site } from '../lib/content.ts';
+import Cel from './Cel.astro';
+import NameCard from './NameCard.astro';
+import Terminal from './Terminal.astro';
+---
+
+<div class="wrap strip-wrap">
+  <div class="strip">
+    <div class="lead-col">
+      <NameCard />
+      <Terminal />
+    </div>
+    {site.sections.map((section) => <Cel section={section} />)}
+  </div>
+</div>
+
+<style>
+  @layer components {
+    .strip-wrap {
+      padding-top: 12px;
+    }
+    .strip {
+      --strip-h: clamp(560px, 82vh, 700px);
+      display: flex;
+      gap: 8px;
+      height: var(--strip-h);
+    }
+    /* The Terminal is absolutely positioned under the Name card so that it can
+       expand upward over it (mvd-034.3). */
+    .lead-col {
+      --sig-min: 160px;
+      --lead-h: min(clamp(440px, 36vw, 530px), calc(var(--strip-h, 700px) - var(--sig-min) - 8px));
+      position: relative;
+      flex: 6 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+</style>
