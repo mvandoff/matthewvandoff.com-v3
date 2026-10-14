@@ -1,7 +1,9 @@
 ---
 /**
  * One Episode in the experience Section: number, years, role and company, and a
- * description. The row hover comes in mvd-034.8; the ≤900px reflow in mvd-034.10.
+ * description. On hover the row tints and the title turns Accent (board 214-218;
+ * not on focus: the row isn't focusable, as on the board). The ≤900px reflow is
+ * mvd-034.10.
  */
 import { episodeLabel, type Episode } from '../lib/content.ts';
 
@@ -32,6 +34,12 @@ const { episode } = Astro.props;
       padding: 40px 16px;
       border-top: 1px solid var(--rule);
       transition: background-color 0.12s;
+    }
+    .ep:hover {
+      background: color-mix(in srgb, var(--panel) 55%, transparent);
+    }
+    .ep:hover .ep-t {
+      color: var(--accent);
     }
     .ep:last-child {
       border-bottom: 1px solid var(--rule);

@@ -420,7 +420,10 @@
   .gh {
     transition: none;
   }
-  .cel {
+  .cel,
+  .ep,
+  .big,
+  .hov {
     transition: none;
   }
 }

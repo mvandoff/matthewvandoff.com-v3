@@ -1,8 +1,9 @@
 ---
 /**
  * A narrow navigation Cel in the Strip: a plain anchor link to a Section, with
- * its number and a vertical label (English plus Japanese). Hover/focus effects
- * come in mvd-034.8; smooth scroll and Lock-on in mvd-034.6.
+ * its number and a vertical label (English plus Japanese). On hover or keyboard
+ * focus the .hov dotted Accent wash wipes down, the border and the label turn
+ * Accent (board 40-42, 120, 123-124). Smooth scroll and Lock-on in mvd-034.6.
  */
 import type { SectionCopy } from '../lib/content.ts';
 
@@ -14,6 +15,7 @@ const { section } = Astro.props;
 ---
 
 <a class="cel nav" href={`#${section.id}`}>
+  <span class="hov" aria-hidden="true"></span>
   <span class="cel-n">{section.number}</span>
   <span class="vlabel">{section.label} <span class="vlabel-jp" lang="ja">{section.jp}</span></span>
 </a>
@@ -22,7 +24,27 @@ const { section } = Astro.props;
   @layer components {
     .nav:hover,
     .nav:focus-visible {
+      border-color: var(--accent);
       color: var(--ink);
+    }
+    .nav:hover .vlabel,
+    .nav:focus-visible .vlabel {
+      color: var(--accent);
+    }
+    .hov {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, color-mix(in srgb, var(--accent) 60%, transparent) 1px, transparent 1.6px) 0
+        0 / 7px 7px;
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.35) 45%, transparent 80%);
+      mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.35) 45%, transparent 80%);
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path 0.3s var(--ease-out);
+      pointer-events: none;
+    }
+    .nav:hover .hov,
+    .nav:focus-visible .hov {
+      clip-path: inset(0 0 0 0);
     }
     .cel-n {
       position: relative;

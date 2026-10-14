@@ -90,3 +90,49 @@ test.describe('Crosshair', () => {
     });
   });
 });
+
+const ACCENT = 'rgb(143, 179, 173)';
+
+test.describe('Cel', () => {
+  const cel = (page: Page) => page.getByRole('link', { name: /^02 about/ });
+  const wash = (page: Page) => cel(page).locator('.hov');
+
+  async function expectLit(page: Page) {
+    await expect(cel(page)).toHaveCSS('border-color', ACCENT);
+    await expect(cel(page).locator('.vlabel')).toHaveCSS('color', ACCENT);
+    await expect(wash(page)).toHaveCSS('clip-path', 'inset(0px)');
+  }
+
+  test('at rest: no wash, rule border, ink label', async ({ page }) => {
+    await page.goto('/');
+    await expect(cel(page)).toHaveCSS('border-color', 'rgb(46, 47, 56)');
+    await expect(cel(page).locator('.vlabel')).toHaveCSS('color', 'rgb(228, 221, 207)');
+    await expect(wash(page)).toHaveCSS('clip-path', 'inset(0px 0px 100%)');
+  });
+
+  test('hover shows the dotted Accent wash, an Accent border and an Accent label', async ({ page }) => {
+    await page.goto('/');
+    await cel(page).hover();
+    await expectLit(page);
+  });
+
+  test('keyboard focus gets the same treatment as hover', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('#term-in').focus();
+    await page.keyboard.press('Tab'); // Terminal input -> first Cel
+    await expect(cel(page)).toBeFocused();
+    await expectLit(page);
+  });
+});
+
+test.describe('Episode', () => {
+  test('hovering a row tints it and turns its title Accent', async ({ page }) => {
+    await page.goto('/');
+    const ep = page.locator('.ep').first();
+    await ep.scrollIntoViewIfNeeded();
+    await expect(ep).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+    await ep.hover();
+    await expect(ep).toHaveCSS('background-color', 'color(srgb 0.12549 0.129412 0.156863 / 0.55)');
+    await expect(ep.locator('.ep-t')).toHaveCSS('color', ACCENT);
+  });
+});
