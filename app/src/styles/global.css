@@ -150,6 +150,16 @@
   }
 }
 
+/* Terminal EQ bars, shown while a track plays (board line 82). */
+@keyframes eqb {
+  0% {
+    transform: scaleY(0.2);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
 /* ---- Entrance and ambient keyframes (board lines 135-137, 167-169, 184-191, 244-253) */
 
 /* Boot: the overlay hides itself at 1.35s; the panels split open from the line. */
@@ -487,7 +497,8 @@
   .fish,
   .fish::after,
   .fr,
-  .cur {
+  .cur,
+  .eq i {
     animation: none;
   }
   .gh {

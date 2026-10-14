@@ -1,19 +1,20 @@
 /**
  * Terminal command module (pure, no DOM): execute, complete and history, per the
  * spec's "Modules" section. All Terminal output wording lives here. Unit-tested
- * with Vitest in tests/unit/terminal-commands.test.ts.
+ * with Vitest in tests/unit/terminal-commands.test.ts and terminal-music.test.ts.
  *
- * Extension points for later tickets:
- *   mvd-034.4  music: add `top`, `np` and `recent` to `commands` (rows go in
- *              `Output.rows`; meta via `out(..., { meta })`) and a `music`
- *              field to `TerminalContext`.
+ * Music (`top`, `np`, `recent` and the idle `listening` line) reads only the
+ * `MusicSource` in the context, so another source needs no changes here.
+ *
+ * Extension point for later tickets:
  *   mvd-034.5  accent: add `accent` to `commands`, returning `set-accent` /
  *              `clear-accent` effects; add the current Accent and the injected
  *              CSS-colour parser to `TerminalContext`.
- * Both are already in `help` and in completion (`completions`), as designed.
+ * It is already in `help` and in completion (`completions`), as designed.
  */
 
 import { site } from '../content.ts';
+import type { MusicSource, Period, TopKind } from '../music/source.ts';
 
 /** Colour of a span: Accent, dim, or the second (artist) colour. Unset = ink-2. */
 export type Tone = 'acc' | 'dim' | 'tl';
@@ -61,8 +62,10 @@ export interface Result {
 
 /** What commands may read from the outside world. */
 export interface TerminalContext {
-  /** The visitor's clock (`date`). */
+  /** The visitor's clock (`date`, and relative times for music). */
   now(): Date;
+  /** Where `top`, `np` and `recent` read listening data. */
+  music: MusicSource;
 }
 
 /** A parsed input line, as handed to each command. */
@@ -134,12 +137,107 @@ const whoami: Command = (call) =>
 
 const date: Command = (call, ctx) => small(call, [line([ctx.now().toString().toLowerCase().slice(0, 24)])]);
 
+/** `top` periods: the meta label for each. */
+const periodLabels: Record<Period, string> = {
+  week: '7 days',
+  month: '30 days',
+  year: '12 months',
+  all: 'all time',
+};
+
+/** Meta suffix for placeholder data. */
+const mockLabel = (mock: boolean) => (mock ? ' · mock data' : '');
+
+/**
+ * `top [artists|tracks|albums] [--week|--month|--year|--all]`, as on the board:
+ * the words may come in any order and anything else is ignored; tracks beat
+ * albums beat artists, --week beats --month beats --all; otherwise 12 months.
+ */
+const top: Command = async (call, ctx) => {
+  const has = (word: string) => call.args.includes(word);
+  const kind: TopKind = has('tracks') ? 'tracks' : has('albums') ? 'albums' : 'artists';
+  const period: Period = has('--week') ? 'week' : has('--month') ? 'month' : has('--all') ? 'all' : 'year';
+  const list = await ctx.music.top(kind, period);
+  const items = list.items.slice(0, 10);
+  const max = items[0]?.plays || 1;
+  const rows = items.map(
+    (item, i): Row => ({
+      rank: String(i + 1).padStart(2, '0'),
+      name: item.artist ? `${item.name} — ${item.artist}` : item.name,
+      pct: Math.max(4, Math.round((item.plays / max) * 100)),
+      count: String(Math.max(1, Math.round(item.plays))),
+    }),
+  );
+  return out(call, [], { meta: `top ${kind} · ${periodLabels[period]}${mockLabel(list.mock)}`, rows });
+};
+
+/**
+ * How long ago `at` was, in the Terminal's short form: whole minutes under an
+ * hour (`4m`), whole hours under a day (`2h`), then days (`3d`).
+ */
+export function ago(at: Date, now: Date): string {
+  const minutes = Math.max(0, Math.floor((now.getTime() - at.getTime()) / 60_000));
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  return hours < 24 ? `${hours}h` : `${Math.floor(hours / 24)}d`;
+}
+
+const np: Command = async (call, ctx) => {
+  const np = await ctx.music.nowPlaying();
+  const { title, artist, album } = np.track;
+  const when = ago(np.at, ctx.now());
+  const lines = np.playing
+    ? [
+        line(['▶ ', 'acc'], [`${title} — ${artist}`]),
+        line([`  ${album ? `on ${album} · ` : ''}started ${when} ago`, 'dim']),
+      ]
+    : [
+        line(['■ ', 'dim'], [`${title} — ${artist}`]),
+        line([`  last played ${when} ago · nothing on right now`, 'dim']),
+      ];
+  return out(call, lines, { meta: `last.fm${mockLabel(np.mock)}` });
+};
+
+/** The idle status's "listening" line: the track, the trailing time, and whether the EQ shows. */
+export interface Listening {
+  track: string;
+  /** ' · 2h ago' when last played; '' while playing. */
+  ago: string;
+  /** The animated EQ bars, shown only while playing. */
+  eq: boolean;
+}
+
+export async function listening(ctx: TerminalContext): Promise<Listening> {
+  const np = await ctx.music.nowPlaying();
+  return {
+    track: `${np.track.title} — ${np.track.artist}`,
+    ago: np.playing ? '' : ` · ${ago(np.at, ctx.now())} ago`,
+    eq: np.playing,
+  };
+}
+
+const recent: Command = async (call, ctx) => {
+  const recent = await ctx.music.recent();
+  const now = ctx.now();
+  const lines = recent.tracks.slice(0, 10).map(({ track, playing, at }) =>
+    line(
+      playing ? [pad('now', 5), 'acc'] : [pad(ago(at, now), 5), 'dim'],
+      [`${track.title} — `],
+      [track.artist, 'tl'],
+    ),
+  );
+  return out(call, lines, { meta: `last.fm${mockLabel(recent.mock)}` });
+};
+
 const sudo: Command = (call) => small(call, [line(['nice try. this incident will be reported.', 'dim'])]);
 
 /** Commands by lower-cased name, aliases included. */
 export const commands: Record<string, Command> = {
   help,
   '?': help,
+  top,
+  np,
+  recent,
   ls,
   cd,
   whoami,

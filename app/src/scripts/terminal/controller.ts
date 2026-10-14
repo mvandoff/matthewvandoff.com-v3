@@ -11,15 +11,38 @@ import {
   complete,
   execute,
   History,
+  listening,
   type Effect,
   type Line,
+  type Listening,
   type Result,
   type Row,
   type TerminalContext,
 } from '../../lib/terminal/commands.ts';
+import { music } from '../../lib/music/index.ts';
 import { goTo } from '../motion/scroll.ts';
 
-const context: TerminalContext = { now: () => new Date() };
+const context: TerminalContext = { now: () => new Date(), music };
+
+/** Fills the idle status's "listening" line (same markup as Terminal.astro renders). */
+function renderListening(dd: HTMLElement, status: Listening): void {
+  const nodes: Array<Node | string> = [];
+  if (status.eq) {
+    const eq = document.createElement('span');
+    eq.className = 'eq';
+    eq.setAttribute('aria-hidden', 'true');
+    eq.append(...Array.from({ length: 4 }, () => document.createElement('i')));
+    nodes.push(eq);
+  }
+  nodes.push(status.track);
+  if (status.ago) {
+    const ago = document.createElement('span');
+    ago.className = 'ago';
+    ago.textContent = status.ago;
+    nodes.push(ago);
+  }
+  dd.replaceChildren(...nodes);
+}
 
 function renderLine(spans: Line): HTMLElement {
   const el = document.createElement('div');
@@ -76,6 +99,15 @@ export function startTerminal(box = document.querySelector<HTMLElement>('[data-t
 
   const { prompt = '', idleCommand = '', hint: idleHint = '', closeHint = '' } = box.dataset;
   const idleStatus = [...body.childNodes];
+  // The build rendered the listening line; refresh it from the music source so
+  // it is current (a failing source keeps the built line).
+  const listeningLine = body.querySelector<HTMLElement>('[data-listening]');
+  if (listeningLine) {
+    listening(context).then(
+      (status) => renderListening(listeningLine, status),
+      () => {},
+    );
+  }
   const history = new History();
   let showingOutput = false;
   /** Bumped on every run, Tab listing and Esc, so a stale async result is dropped. */

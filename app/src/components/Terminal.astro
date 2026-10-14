@@ -7,10 +7,12 @@
  * swaps in.
  */
 import { site } from '../lib/content.ts';
-import { mockMusic } from '../lib/music/mock.ts';
+import { music } from '../lib/music/index.ts';
+import { listening } from '../lib/terminal/commands.ts';
 
 const { terminal } = site;
-const listening = await mockMusic.nowPlaying();
+// Rendered at build time for no-JS visitors; the controller refreshes it on load.
+const status = await listening({ now: () => new Date(), music });
 ---
 
 <div
@@ -35,10 +37,14 @@ const listening = await mockMusic.nowPlaying();
         </div>
         <div>
           <dt>{terminal.status.listeningKey}</dt>
-          <dd>
-            {listening.track.title} — {listening.track.artist}{
-              !listening.playing && <span class="ago"> · {listening.ago}</span>
-            }
+          <dd data-listening>
+            {
+              status.eq && (
+                <span class="eq" aria-hidden="true">
+                  <i></i><i></i><i></i><i></i>
+                </span>
+              )
+            }{status.track}{status.ago && <span class="ago">{status.ago}</span>}
           </dd>
         </div>
       </dl>
@@ -173,8 +179,38 @@ const listening = await mockMusic.nowPlaying();
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .ago {
+    .now :global(.ago) {
       color: var(--dim);
+    }
+    /* While a track plays: four animated EQ bars before it (the controller may
+       render them, hence :global). */
+    .now :global(.eq) {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 11px;
+      margin-right: 10px;
+      vertical-align: -1px;
+    }
+    .now :global(.eq i) {
+      display: block;
+      width: 2px;
+      height: 100%;
+      background: var(--accent);
+      transform-origin: bottom;
+      animation: eqb 0.9s ease-in-out infinite alternate;
+    }
+    .now :global(.eq i:nth-child(2)) {
+      animation-duration: 0.7s;
+      animation-delay: -0.3s;
+    }
+    .now :global(.eq i:nth-child(3)) {
+      animation-duration: 1.1s;
+      animation-delay: -0.6s;
+    }
+    .now :global(.eq i:nth-child(4)) {
+      animation-duration: 0.8s;
+      animation-delay: -0.15s;
     }
 
     /* Command output, rendered by the controller (hence :global). */

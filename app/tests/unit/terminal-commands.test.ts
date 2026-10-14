@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
+import { createMockMusic } from '../../src/lib/music/mock.ts';
 import { complete, execute, History, line, type Line, type TerminalContext } from '../../src/lib/terminal/commands.ts';
 
-const ctx: TerminalContext = { now: () => new Date(2026, 9, 14, 9, 30, 5) };
+const now = () => new Date(2026, 9, 14, 9, 30, 5);
+const ctx: TerminalContext = { now, music: createMockMusic({ now }) };
 
 /** A line as `[text, tone]` pairs, tone '' when unstyled. */
 const pairs = (line: Line) => line.map((span) => [span.text, span.tone ?? '']);
