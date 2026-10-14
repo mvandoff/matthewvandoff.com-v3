@@ -64,7 +64,10 @@ test.describe('Crosshair', () => {
   test('the HUD lifts above the footer once it scrolls into view', async ({ page }) => {
     await page.goto('/');
     await page.mouse.move(400, 300);
-    const hudBottom = async () => (await page.locator('.hud').boundingBox())!.y + (await page.locator('.hud').boundingBox())!.height;
+    const hudBottom = async () => {
+      const box = (await page.locator('.hud').boundingBox())!;
+      return box.y + box.height;
+    };
     expect(await hudBottom()).toBeCloseTo(900 - 20, 0);
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     const footTop = async () => (await page.locator('#foot').boundingBox())!.y;

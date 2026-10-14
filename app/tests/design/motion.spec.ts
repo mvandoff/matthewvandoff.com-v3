@@ -1,5 +1,5 @@
-import { expect, test, type Browser, type Page } from '@playwright/test';
-import { BOARD_URL, serveBoard } from './board.ts';
+import { expect, test, type Page } from '@playwright/test';
+import { open, type Side } from './board.ts';
 
 /**
  * Motion against the live board: the same elements must carry the same animations
@@ -9,32 +9,6 @@ import { BOARD_URL, serveBoard } from './board.ts';
  */
 
 test.use({ viewport: { width: 1440, height: 900 } });
-
-type Side = 'site' | 'board';
-const START = new Date(2026, 9, 14, 9, 30, 0);
-
-async function open(browser: Browser, side: Side, opts: { random?: number; reduced?: boolean } = {}) {
-  const context = await browser.newContext({
-    viewport: { width: 1440, height: 900 },
-    reducedMotion: opts.reduced ? 'reduce' : 'no-preference',
-  });
-  const page = await context.newPage();
-  // A paused fake clock keeps the Boot and intro state in place while we read them,
-  // however slowly the page loads; tests advance it with runFor.
-  await page.clock.install({ time: START });
-  await page.clock.pauseAt(START.getTime() + 10_000);
-  await page.addInitScript((r) => {
-    Math.random = () => r;
-  }, opts.random ?? 0.1);
-  if (side === 'board') {
-    await serveBoard(page);
-    await page.goto(BOARD_URL);
-    await page.locator('.nmh').waitFor(); // the canvas runtime mounts after load
-  } else {
-    await page.goto('/');
-  }
-  return page;
-}
 
 /**
  * Every animation on (and inside) the matching elements, in a comparable form.

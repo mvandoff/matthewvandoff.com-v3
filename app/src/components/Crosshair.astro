@@ -10,7 +10,8 @@
  * data-freeze-hide: the design harness hides it (tests/design/freeze.ts).
  *
  * DEVIATION: the board prints the x/y values with CSS counters; the site writes them
- * as text (same glyphs, same box) so they can be read and tested.
+ * as text (same glyphs, same box) so they can be read and tested. They start at
+ * -200, the resting --mx/--my, as the board's counters do.
  */
 ---
 
@@ -20,10 +21,10 @@
   <div class="xh-s"></div>
   <div class="hud">
     <div class="hud-ax ax-x">
-      <span class="hud-k">x</span><span class="hud-v vx" data-hud="x"></span><span class="hud-rl rx"><i></i></span>
+      <span class="hud-k">x</span><span class="hud-v vx" data-hud="x">-200</span><span class="hud-rl rx"><i></i></span>
     </div>
     <div class="hud-ax ax-y">
-      <span class="hud-k">y</span><span class="hud-v vy" data-hud="y"></span><span class="hud-rl ry"><i></i></span>
+      <span class="hud-k">y</span><span class="hud-v vy" data-hud="y">-200</span><span class="hud-rl ry"><i></i></span>
     </div>
     <div class="hud-map"><i class="mv"></i><i class="mh"></i><i class="md"></i><i class="mr"></i><i class="ms"></i></div>
   </div>
