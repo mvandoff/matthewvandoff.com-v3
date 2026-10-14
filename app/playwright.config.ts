@@ -15,9 +15,16 @@ export default defineConfig({
     baseURL: `http://127.0.0.1:${port}`,
     trace: 'retain-on-failure',
   },
+  snapshotPathTemplate: '{testDir}/baselines/{arg}{ext}',
   projects: [
     {
       name: 'desktop',
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
+    },
+    {
+      // Site vs the Warm Terminal board in a frozen state; see tests/design/freeze.ts.
+      name: 'design',
+      testDir: 'tests/design',
       use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
     },
   ],
