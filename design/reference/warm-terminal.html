@@ -1,0 +1,1136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>home — faded crt premium</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@300..800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@400..900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&amp;display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Gridular';src:url(./fonts/Gridular-Regular.woff2) format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+@property --mx{syntax:'<integer>';inherits:true;initial-value:-200}
+@property --my{syntax:'<integer>';inherits:true;initial-value:-200}
+body{margin:0;background:#1b1c21}
+::selection{background:var(--accent);color:#1b1c21}
+a{color:#e4ddcf;text-decoration:none;cursor:pointer}a:hover{color:var(--accent)}
+:focus-visible{outline:1px solid var(--accent);outline-offset:4px}
+
+.bar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,#1b1c21 80%,transparent);-webkit-backdrop-filter:blur(12px) saturate(1.2);backdrop-filter:blur(12px) saturate(1.2);border-bottom:1px solid transparent;transition:border-color .2s}
+.bar.down{border-bottom-color:#2e2f38}
+.prog{position:absolute;left:0;bottom:-1px;width:100%;height:1px;background:var(--accent);transform-origin:left;transform:scaleX(var(--sp,0))}
+.navlink{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font-size:12px;letter-spacing:.1em;white-space:pre}
+.navlink.on{color:var(--accent)}
+button.navlink{background:none;border:0;margin:0;font-family:inherit;color:#e4ddcf;cursor:pointer}
+button.navlink:hover{color:var(--accent)}
+@keyframes menuopen{0%{transform:scaleY(0)}100%{transform:scaleY(1)}}
+.menu{transform-origin:top;animation:menuopen .12s steps(3,end) both}
+.chev{transition:transform .12s}
+.navlink.on .chev{transform:rotate(180deg)}
+.smooth .menu{animation-timing-function:cubic-bezier(.77,0,.18,1)}
+
+.strip{--strip-h:clamp(560px,82vh,700px);display:flex;gap:8px;height:var(--strip-h)}
+.cel{flex:1 1 0;min-width:0;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:20px 16px;border:1px solid #2e2f38;color:#e4ddcf;transition:border-color .1s}
+a.cel:hover,a.cel:focus-visible{border-color:var(--accent);color:#e4ddcf}
+a.cel:hover .vlabel,a.cel:focus-visible .vlabel{color:var(--accent)}
+.lead-col{--sig-min:160px;--lead-h:min(clamp(440px,36vw,530px),calc(var(--strip-h,700px) - var(--sig-min) - 8px));position:relative;flex:6 1 0;min-width:0;display:flex;flex-direction:column;gap:8px}
+@media (min-width:761px){
+.lead-col.xp .cel.sig{top:0;background:#1d1e24}
+.lead-col.xp .cel.lead{opacity:0}
+.lead-col.xp .term-body{font-size:13px;line-height:1.8}
+}
+.cel.lead{flex:none;height:var(--lead-h);transition:opacity .35s;box-sizing:border-box;padding:28px 34px;background:color-mix(in srgb,#202128 72%,transparent)}
+.cel.sig{position:absolute;left:0;right:0;bottom:0;top:calc(var(--lead-h) + 8px);z-index:2;padding:0;background:color-mix(in srgb,#202128 50%,transparent);transition:top .5s cubic-bezier(.77,0,.18,1),background-color .3s,border-color .1s}
+.cel.sig.tgt{cursor:text}
+.cel.sig.tgt:hover,.cel.sig.tgt:focus-within{border-color:var(--accent)}
+.sig-in{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;gap:12px;padding:16px 20px}
+.sig-row{position:relative;display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:11px;letter-spacing:.08em;color:#9692a0;white-space:nowrap}
+.sig-kana{font-family:'DotGothic16',sans-serif;font-size:12px;letter-spacing:.2em;color:#9692a0}
+.sig-lg{display:inline-flex;gap:16px}
+.sig-lg>span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:1px}
+.sw.a{background:var(--accent)}.sw.b{background:var(--second)}
+.sig-live{display:inline-flex;align-items:center;gap:8px;color:var(--accent)}
+.scope{position:absolute;inset:0;overflow:hidden}
+.scope::before{content:"";position:absolute;inset:0;background:linear-gradient(to right,#2a2b33 1px,transparent 1px) 0 0/calc(100% / 16) 100%,linear-gradient(to bottom,#2a2b33 1px,transparent 1px) 0 0/100% calc(100% / 6)}
+.scope::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:#3a3b46}
+.trc{position:absolute;left:0;top:16%;bottom:16%;width:200%;animation:trace 7s linear infinite}
+.trc svg{display:block;width:100%;height:100%;overflow:visible}
+.trc.t1{color:var(--accent);opacity:.85}
+.trc.t2{color:var(--second);opacity:.55;animation-duration:12s}
+.trc path{filter:drop-shadow(0 0 3px currentColor)}
+@keyframes trace{to{transform:translateX(-50%)}}
+.sweep{position:absolute;top:0;bottom:0;left:0;width:28%;background:linear-gradient(to right,transparent,color-mix(in srgb,var(--accent) 10%,transparent));border-right:1px solid color-mix(in srgb,var(--accent) 55%,transparent);animation:sweep 5s linear infinite}
+@keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(358%)}}
+.now{position:relative;margin:0;display:flex;flex-direction:column;gap:8px;font-size:13px}
+.now>div{display:grid;grid-template-columns:10ch minmax(0,1fr);gap:16px}
+.now dt{color:var(--second)}
+.now dd{margin:0;color:#bdb8ad;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eq{display:inline-flex;align-items:flex-end;gap:2px;height:11px;margin-right:10px;vertical-align:-1px}
+.eq i{display:block;width:2px;height:100%;background:var(--accent);transform-origin:bottom;animation:eqb .9s ease-in-out infinite alternate}
+.eq i:nth-child(2){animation-duration:.7s;animation-delay:-.3s}
+.eq i:nth-child(3){animation-duration:1.1s;animation-delay:-.6s}
+.eq i:nth-child(4){animation-duration:.8s;animation-delay:-.15s}
+@keyframes eqb{0%{transform:scaleY(.2)}100%{transform:scaleY(1)}}
+.eq.off{display:none}
+.ago{color:#9692a0}
+.term-body{position:relative;flex:1 1 auto;min-height:0;overflow-y:auto;scrollbar-gutter:stable;padding-right:10px;font-size:12px;line-height:1.55;scrollbar-width:thin;scrollbar-color:#3a3b46 transparent;cursor:text}
+.t-ln{white-space:pre;overflow:hidden;text-overflow:ellipsis;color:#bdb8ad}
+.t-dim{color:#9692a0}
+.t-acc{color:var(--accent)}
+.t-tl{color:var(--second)}
+.t-row{display:grid;grid-template-columns:3ch minmax(0,24ch) minmax(40px,1fr) 5ch;gap:14px;align-items:center;color:#bdb8ad}
+.t-n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.t-b{height:7px;background:repeating-linear-gradient(to right,#2e2f38 0 3px,transparent 3px 4px)}
+.t-b i{display:block;height:100%;background:repeating-linear-gradient(to right,var(--accent) 0 3px,transparent 3px 4px)}
+.t-c{text-align:right;color:#9692a0;font-variant-numeric:tabular-nums}
+.term-in{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;font-size:13px;letter-spacing:.04em;color:#9692a0;cursor:text}
+.term-in input{flex:1 1 auto;min-width:0;width:100%;margin:0;padding:0;border:0;outline:0;background:transparent;font:inherit;letter-spacing:inherit;color:#e4ddcf;caret-color:var(--accent)}
+.term-in input:focus-visible{outline:0}
+.term-in input::placeholder{color:#6a6875;opacity:1}
+.t-hint{color:#9692a0}
+.cel.sig:focus-within{border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.cur{display:inline-block;flex:none;width:.6em;height:1.1em;vertical-align:-.15em;background:var(--accent);animation:blink 1s steps(1,end) infinite}
+.ph{position:absolute;inset:0;background:repeating-linear-gradient(135deg,#25262e 0 1px,transparent 1px 9px)}
+.art{position:absolute;inset:0;width:100%;height:100%;display:block}
+.sg circle{fill:none;stroke-width:1}
+.sg .o{fill:#1c1d22}
+.sg.ink circle{stroke:#4d4c58}
+.sgh-sun{fill:var(--accent);opacity:.85}
+.sgh-w{animation:sghd 9s linear infinite}
+@keyframes sghd{to{transform:translateX(48px)}}
+.asa{fill:none;stroke-width:1}
+.asa.ink{stroke:#4d4c58}
+.asa.cut{stroke:#1b1c21;stroke-width:1.5}
+.asa-moon{fill:var(--accent);opacity:.88}
+.asa-w{animation:asad 16s linear infinite}
+@keyframes asad{to{transform:translateX(40px)}}
+.shp circle{fill:none;stroke-width:1}
+.shp.ink circle{stroke:#45444f}
+.shp.acc circle{stroke:var(--accent);stroke-width:1.5}
+.shp-band{transform-box:fill-box;animation:shpd 8s cubic-bezier(.45,0,.25,1) infinite}
+@keyframes shpd{0%{transform:translateX(0)}70%,100%{transform:translateX(434%)}}
+.vlabel{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;transition:color .1s}
+.peek{font-size:11px;letter-spacing:.1em;color:var(--accent);white-space:nowrap;opacity:0;transform:translateY(6px);transition:opacity .25s .2s,transform .25s .2s}
+a.cel:hover .peek,a.cel:focus-visible .peek{opacity:1;transform:none}
+.hov{position:absolute;inset:0;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 60%,transparent) 1px,transparent 1.6px) 0 0/7px 7px;-webkit-mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.35) 45%,transparent 80%);mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.35) 45%,transparent 80%);clip-path:inset(0 0 100% 0);transition:clip-path .3s cubic-bezier(.2,.7,.1,1);pointer-events:none}
+a.cel:hover .hov,a.cel:focus-visible .hov{clip-path:inset(0 0 0 0)}
+.lead-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.crn{position:absolute;width:10px;height:10px;border-color:var(--accent);border-style:solid;border-width:0;opacity:.55;pointer-events:none}
+.crn.tl{left:10px;top:10px;border-left-width:2px;border-top-width:2px}
+.crn.tr{right:10px;top:10px;border-right-width:2px;border-top-width:2px}
+.crn.bl{left:10px;bottom:10px;border-left-width:2px;border-bottom-width:2px}
+.crn.br{right:10px;bottom:10px;border-right-width:2px;border-bottom-width:2px}
+.lb{position:absolute;border-radius:50%}
+.lb.a{width:70%;height:95%;left:-14%;top:-24%;background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 25%,transparent),transparent);animation:lbA 24s ease-in-out infinite alternate}
+.lb.b{width:62%;height:85%;right:-16%;bottom:-28%;background:radial-gradient(closest-side,color-mix(in srgb,var(--second) 21%,transparent),transparent);animation:lbB 29s ease-in-out infinite alternate}
+.lb.c{width:44%;height:62%;left:38%;top:18%;background:radial-gradient(closest-side,color-mix(in srgb,var(--third) 12%,transparent),transparent);animation:lbC 19s ease-in-out infinite alternate}
+@keyframes lbA{0%{transform:translate(0,0) rotate(0deg) scale(1,1)}50%{transform:translate(30%,22%) rotate(35deg) scale(1.25,.8)}100%{transform:translate(62%,4%) rotate(-15deg) scale(.9,1.15)}}
+@keyframes lbB{0%{transform:translate(0,0) rotate(0deg) scale(1,1)}50%{transform:translate(-34%,-18%) rotate(-30deg) scale(.85,1.3)}100%{transform:translate(-58%,-40%) rotate(20deg) scale(1.2,.9)}}
+@keyframes lbC{0%{transform:translate(0,0) scale(1,1)}50%{transform:translate(-40%,30%) scale(1.4,.9)}100%{transform:translate(20%,-35%) scale(.8,1.2)}}
+.lg{position:absolute;inset:0;width:100%;height:100%;mix-blend-mode:overlay;opacity:.6}
+@keyframes roll{0%{transform:translateY(-160px)}100%{transform:translateY(760px)}}
+.fld{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.blob{position:absolute;width:72vmax;height:72vmax;border-radius:50%;transition:transform 1.4s cubic-bezier(.2,.7,.1,1)}
+.blob.a{left:-22vmax;top:-28vmax;background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 24%,transparent),transparent);transform:translate(calc(var(--mx) * .06px + var(--sp,0) * 30vmax),calc(var(--my) * .06px + var(--sp,0) * 24vmax)) scale(calc(1 + var(--sp,0) * .15))}
+.blob.b{right:-26vmax;bottom:-32vmax;background:radial-gradient(closest-side,color-mix(in srgb,var(--second) 24%,transparent),transparent);transform:translate(calc(var(--mx) * -.05px - var(--sp,0) * 32vmax),calc(var(--my) * -.05px - var(--sp,0) * 20vmax)) scale(calc(1 - var(--sp,0) * .12))}
+.gr{position:fixed;inset:0;width:100%;height:100%;z-index:59;pointer-events:none;mix-blend-mode:overlay}
+@keyframes grain{0%{transform:translate(0,0)}10%{transform:translate(-5%,-8%)}20%{transform:translate(-12%,4%)}30%{transform:translate(6%,-14%)}40%{transform:translate(-4%,16%)}50%{transform:translate(-14%,6%)}60%{transform:translate(12%,0)}70%{transform:translate(0,10%)}80%{transform:translate(2%,-10%)}90%{transform:translate(-8%,6%)}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:.15}}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1s steps(1,end) infinite}
+.nm{display:block;white-space:nowrap}
+.gh{position:absolute;left:0;top:0;right:0;z-index:-1;display:block;white-space:nowrap;pointer-events:none;transition:transform .8s cubic-bezier(.2,.7,.1,1)}
+.gh.ga{color:var(--accent);transform:translate(calc(-2px + (var(--mx) - 720) * -.0015px),calc((var(--my) - 400) * -.001px))}
+.gh.gb{color:var(--second);transform:translate(calc(2px + (var(--mx) - 720) * .0015px),calc((var(--my) - 400) * .001px))}
+.kana{position:absolute;right:14px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;font-family:'DotGothic16',sans-serif;font-size:12px;letter-spacing:.35em;color:#9692a0;opacity:.55;white-space:nowrap;pointer-events:none}
+.ln{display:block;overflow:hidden;padding-bottom:.04em}
+.ln-i{display:block}
+.go .ln-i{animation:rise 1s cubic-bezier(.77,0,.18,1) 1.15s both}
+.go .ln-i.d2{animation-delay:1.27s}
+.intro .ln-i{animation-delay:2.05s}
+.intro .ln-i.d2{animation-delay:2.17s}
+@keyframes rise{0%{transform:translateY(105%)}100%{transform:none}}
+.gl .ln{overflow:visible}
+.go.gl .ln-i{animation:glin .95s steps(1,end) 1.15s both}
+.go.gl .ln-i.d2{animation-delay:1.24s}
+.go.gl .gh.ga .ln-i{animation-name:glA}
+.go.gl .gh.gb .ln-i{animation-name:glB}
+.intro.go.gl .ln-i{animation-delay:2.05s}
+.intro.go.gl .ln-i.d2{animation-delay:2.14s}
+@keyframes glin{0%{opacity:0;clip-path:inset(0 0 100% 0);transform:none}6%{opacity:1;clip-path:inset(42% 0 36% 0);transform:translateX(-16px)}12%{clip-path:inset(8% 0 66% 0);transform:translateX(11px)}18%{opacity:0}24%{opacity:1;clip-path:inset(58% 0 4% 0);transform:translateX(-7px) skewX(-10deg)}32%{clip-path:inset(0);transform:translateX(5px)}38%{clip-path:inset(28% 0 50% 0);transform:translateX(-20px)}44%{opacity:.35;clip-path:inset(0);transform:none}50%{opacity:1}58%{clip-path:inset(74% 0 0 0);transform:translateX(9px)}64%{clip-path:inset(0 0 82% 0);transform:translateX(-3px)}70%,100%{opacity:1;clip-path:inset(0);transform:none}}
+@keyframes glA{0%{opacity:0}6%{opacity:1;transform:translate(-26px,0)}12%{transform:translate(10px,-3px)}18%{opacity:0}24%{opacity:1;transform:translate(-14px,2px)}32%{transform:translate(18px,0)}40%{transform:translate(-8px,0)}50%{transform:translate(4px,0)}58%{transform:translate(-12px,0)}66%,100%{opacity:1;transform:none}}
+@keyframes glB{0%{opacity:0}6%{opacity:1;transform:translate(22px,0)}12%{transform:translate(-12px,3px)}18%{opacity:0}24%{opacity:1;transform:translate(16px,-2px)}32%{transform:translate(-14px,0)}40%{transform:translate(9px,0)}50%{transform:translate(-5px,0)}58%{transform:translate(12px,0)}66%,100%{opacity:1;transform:none}}
+.hv-split:hover .gh{transition-duration:.3s}
+.hv-split:hover .gh.ga{transform:translate(calc(-9px + (var(--mx) - 720) * -.0015px),calc(-2px + (var(--my) - 400) * -.001px))}
+.hv-split:hover .gh.gb{transform:translate(calc(9px + (var(--mx) - 720) * .0015px),calc(2px + (var(--my) - 400) * .001px))}
+.hv-slice:hover .nm>.ln{animation:glh .5s steps(1,end)}
+.hv-slice:hover .nm>.ln+.ln{animation-delay:.06s}
+.hv-slice:hover .gh.ga>.ln{animation:glhA .5s steps(1,end)}
+.hv-slice:hover .gh.gb>.ln{animation:glhB .5s steps(1,end)}
+@keyframes glh{0%{clip-path:inset(38% 0 40% 0);transform:translateX(-10px)}15%{clip-path:inset(8% 0 70% 0);transform:translateX(7px)}30%{clip-path:inset(62% 0 6% 0);transform:translateX(-4px)}45%{clip-path:inset(0);transform:translateX(3px)}60%,100%{clip-path:inset(0);transform:none}}
+@keyframes glhA{0%{transform:translateX(-14px)}15%{transform:translateX(6px)}30%{transform:translateX(-8px)}45%{transform:translateX(3px)}60%,100%{transform:none}}
+@keyframes glhB{0%{transform:translateX(12px)}15%{transform:translateX(-7px)}30%{transform:translateX(9px)}45%{transform:translateX(-3px)}60%,100%{transform:none}}
+@media (max-width:760px){h1.nmh{font-size:clamp(48px,14vw,100px) !important}}
+@media (prefers-reduced-motion:reduce){.nm>.ln,.gh>.ln{animation:none}}
+.fish{position:absolute;left:0;bottom:0;animation:swim 11s steps(17,end) infinite}
+.aq{container-type:inline-size}
+@keyframes swim{0%{transform:translateX(0) scaleX(1)}46%,50%{transform:translateX(calc(100cqw - 7ch)) scaleX(1)}50.01%{transform:translateX(calc(100cqw - 7ch)) scaleX(-1)}96%,100%{transform:translateX(0) scaleX(-1)}}
+.fish::after{content:"°";position:absolute;right:-.6ch;top:-.75em;font-size:.85em;opacity:0;animation:bub 1.8s steps(4,end) infinite}
+@keyframes bub{0%{opacity:0;transform:translateY(6px)}25%{opacity:.9}100%{opacity:0;transform:translateY(-10px)}}
+.fr{position:absolute;left:0;bottom:0;opacity:0;animation-duration:5s;animation-timing-function:step-end;animation-iteration-count:infinite}
+.fr.f1{animation-name:fr1}.fr.f2{animation-name:fr2}.fr.f3{opacity:1;animation-name:fr3}
+@keyframes fr1{0%{opacity:1}30%,100%{opacity:0}}
+@keyframes fr2{0%{opacity:0}30%{opacity:1}55%,100%{opacity:0}}
+@keyframes fr3{0%{opacity:0}55%,100%{opacity:1}}
+@keyframes bop{0%{transform:none}50%{transform:translateY(-4px)}}
+.k{display:inline-block;animation:bop 1.2s steps(1,end) infinite}
+.k.k2{animation-delay:.4s}
+.k.k3{animation-delay:.8s}
+.hw{transition:color .15s}
+.hv-color .hw:hover{color:var(--accent)}
+.acc .hv-color .hw:hover{color:#e4ddcf}
+
+.mq{overflow:hidden;border-top:1px solid #2e2f38;border-bottom:1px solid #2e2f38}
+.mq-t{display:flex;width:max-content;animation:mq 42s linear infinite}
+.mq:hover .mq-t{animation-play-state:paused}
+.mq-g{flex:none;display:flex;align-items:center;gap:44px;padding:16px 22px}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+.sh{display:flex;align-items:center;gap:14px;font-size:11px;line-height:1;letter-spacing:.1em;color:#9692a0;white-space:nowrap}
+.sh-r{flex:1 1 auto;min-width:24px;height:1px;background:#2e2f38;position:relative;overflow:hidden}
+.sh-r::after{content:"";position:absolute;inset:0;background:var(--accent);opacity:.55;transform:scaleX(0);transform-origin:left;transition:transform 1.4s cubic-bezier(.77,0,.18,1) .25s}
+.rv.in .sh-r::after{transform:scaleX(1)}
+.sh-n{display:inline-flex;align-items:center;gap:14px}
+.hang{padding-left:0;box-sizing:border-box}
+.sh.flip{flex-direction:row-reverse}
+.sh.flip .sh-r::after{transform-origin:right}
+.ep{display:grid;grid-template-columns:110px 150px minmax(0,1fr) minmax(0,1.3fr);gap:12px 40px;align-items:baseline;padding:40px 16px;border-top:1px solid #2e2f38;transition:background-color .12s}
+.ep:last-child{border-bottom:1px solid #2e2f38}
+.ep:hover{background:color-mix(in srgb,#202128 55%,transparent)}
+.ep-t{transition:color .12s}
+.ep:hover .ep-t{color:var(--accent)}
+.big{position:relative;isolation:isolate;display:inline-flex;align-items:baseline;gap:16px;min-height:44px;font-family:var(--head);font-weight:500;font-size:clamp(40px,6vw,88px);line-height:1;letter-spacing:-.03em;transition:color .15s}
+.dw{position:relative;display:inline-block;white-space:pre}
+.dw-ghost{visibility:hidden}
+.dw-live{position:absolute;left:0;bottom:0;white-space:pre}
+.nz{font-family:'Martian Mono',monospace;font-size:.62em;font-weight:400;letter-spacing:0;color:var(--accent)}
+.mark{font-family:var(--display);font-weight:700;font-size:clamp(72px,16.5vw,240px);line-height:.76;letter-spacing:-.06em;white-space:nowrap;color:#25262e;text-align:center;user-select:none}
+
+.rv{opacity:0;transform:translateY(32px);transition:opacity .9s cubic-bezier(.2,.7,.1,1),transform .9s cubic-bezier(.2,.7,.1,1)}
+.rv.in{opacity:1;transform:none}
+
+@keyframes txgrow{0%{left:var(--x);top:var(--y);width:var(--w);height:var(--h)}42%,58%{left:0;top:0;width:100%;height:100%}100%{left:var(--x);top:var(--y);width:var(--w);height:var(--h)}}
+@keyframes txfill{0%,24%{opacity:0}42%,58%{opacity:1}76%,100%{opacity:0}}
+@keyframes txlabel{0%,42%{opacity:0}46%,55%{opacity:1}58%,100%{opacity:0}}
+.txb,.txf{position:absolute;box-sizing:border-box}
+.txb{border:1px solid var(--accent);animation:txgrow 1.6s cubic-bezier(.77,0,.18,1) both}
+.txb.b2{animation-delay:.08s;opacity:.6}
+.txb.b3{animation-delay:.16s;opacity:.3}
+.txf{overflow:hidden;background:var(--accent);animation:txgrow 1.6s cubic-bezier(.77,0,.18,1) both,txfill 1.6s linear both}
+.txl{animation:txlabel 1.6s linear both}
+@keyframes lockbox{0%{transform:scale(0,.03)}18%{transform:scale(1,.03)}36%,70%{transform:scale(1,1)}86%{transform:scale(1,.03)}100%{transform:scale(0,.03)}}
+@keyframes locktag{0%,34%{opacity:0}38%,68%{opacity:1}72%,100%{opacity:0}}
+.lock{position:absolute;inset:-14px -20px;border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);pointer-events:none;animation:lockbox 1.5s cubic-bezier(.77,0,.18,1) both}
+.locktag{position:absolute;left:-20px;bottom:calc(100% + 20px);font-size:11px;letter-spacing:.08em;color:var(--accent);white-space:nowrap;pointer-events:none;animation:locktag 1.5s linear both}
+
+.boot{position:fixed;inset:0;z-index:70;pointer-events:none;animation:bootgone 0s linear 1.35s forwards}
+@keyframes bootgone{to{visibility:hidden}}
+.boot-p{position:absolute;left:0;right:0;height:50.5%;background:#111216}
+.boot-p.t{top:0;animation:bootT .75s cubic-bezier(.77,0,.18,1) .55s both}
+.boot-p.b{bottom:0;animation:bootB .75s cubic-bezier(.77,0,.18,1) .55s both}
+@keyframes bootT{to{transform:translateY(-100%)}}
+@keyframes bootB{to{transform:translateY(100%)}}
+.boot-l{position:absolute;left:0;right:0;top:50%;height:1px;background:var(--accent);box-shadow:0 0 24px var(--accent);animation:bootL 1.2s cubic-bezier(.77,0,.18,1) both}
+@keyframes bootL{0%{transform:scaleX(0)}38%,52%{transform:scaleX(1);opacity:1}72%,100%{transform:scaleX(1);opacity:0}}
+.boot-c{position:absolute;left:0;right:0;top:calc(50% + 18px);text-align:center;font-size:11px;letter-spacing:.14em;color:#9692a0;animation:bootC 1.2s linear both}
+@keyframes bootC{0%,12%{opacity:0}16%,44%{opacity:1}52%,100%{opacity:0}}
+
+.xh{display:none;position:fixed;inset:0;z-index:55;pointer-events:none;opacity:var(--cv,0);transition:opacity .25s}
+@media (hover:hover) and (pointer:fine){.xh{display:block}}
+.xh-v{position:absolute;top:0;bottom:0;left:0;width:1px;background:color-mix(in srgb,var(--accent) 16%,transparent);transform:translateX(calc(var(--mx) * 1px))}
+.xh-h{position:absolute;left:0;right:0;top:0;height:1px;background:color-mix(in srgb,var(--accent) 16%,transparent);transform:translateY(calc(var(--my) * 1px))}
+.xh-s{position:absolute;left:-5px;top:-5px;width:9px;height:9px;transform:translate(calc(var(--mx) * 1px),calc(var(--my) * 1px))}
+.xh-s::before{content:"";position:absolute;inset:calc(var(--xh,0) * -6px);border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) calc(var(--xh,0) * 10%),transparent);transition:inset .2s cubic-bezier(.2,.7,.1,1),background-color .2s}
+@counter-style z4{system:extends decimal;pad:4 "0"}
+@counter-style z3{system:extends decimal;pad:3 "0"}
+.hud{position:absolute;right:clamp(16px,3vw,40px);bottom:20px;transform:translateY(calc(var(--hlift,0) * -1px));display:grid;grid-template-columns:auto 34px;grid-template-areas:"x map" "y map";gap:4px 10px;padding:10px 12px;font-size:10px;line-height:1.3;letter-spacing:.08em;color:#9692a0;white-space:nowrap;font-variant-numeric:tabular-nums;background:color-mix(in srgb,#1b1c21 62%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);counter-reset:mx var(--mx) my var(--my) sp var(--spi,0)}
+.hud-ax{display:flex;align-items:center;gap:6px}
+.hud-ax.ax-x{grid-area:x}.hud-ax.ax-y{grid-area:y}
+.hud-k{color:var(--accent)}
+.hud-v{width:4ch;font-size:11px;line-height:1;color:#e4ddcf}
+.hud-v.vx::before{content:counter(mx,z4)}
+.hud-v.vy::before{content:counter(my,z4)}
+.hud-rl{position:relative;width:40px;height:8px;background:repeating-linear-gradient(to right,color-mix(in srgb,var(--accent) 40%,transparent) 0 1px,transparent 1px 6px) 0 100%/100% 3px no-repeat,repeating-linear-gradient(to right,color-mix(in srgb,var(--accent) 70%,transparent) 0 1px,transparent 1px 24px) 0 100%/100% 6px no-repeat}
+.hud-rl i{position:absolute;bottom:0;width:1px;height:10px;background:var(--accent);box-shadow:0 0 6px var(--accent)}
+.hud-rl.rx i{left:calc(var(--mfx,0) * 100%)}
+.hud-rl.ry i{left:calc(var(--mfy,0) * 100%)}
+.hud-map{grid-area:map;position:relative;border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);background:radial-gradient(circle,#3a3b46 .8px,transparent 1.2px) 0 0/5px 5px}
+.hud-map .mr{width:9px;height:9px;box-sizing:border-box;left:calc(var(--mfx,0) * 100%);top:calc(var(--mfy,0) * 100%);border:1px solid var(--accent);opacity:var(--xh,0);transform:translate(-50%,-50%) scale(calc(2.2 - var(--xh,0) * 1.2));transition:opacity .15s,transform .2s cubic-bezier(.2,.7,.1,1)}
+.hud-map i{position:absolute;display:block}
+.hud-map .mv{top:0;bottom:0;width:1px;left:calc(var(--mfx,0) * 100%);background:color-mix(in srgb,var(--accent) calc(45% + var(--xh,0) * 55%),transparent)}
+.hud-map .mh{left:0;right:0;height:1px;top:calc(var(--mfy,0) * 100%);background:color-mix(in srgb,var(--accent) calc(45% + var(--xh,0) * 55%),transparent)}
+.hud-map .md{width:3px;height:3px;margin:-1px 0 0 -1px;left:calc(var(--mfx,0) * 100%);top:calc(var(--mfy,0) * 100%);background:var(--accent)}
+.hud-map .ms{right:-4px;width:2px;height:22%;top:calc(var(--sp,0) * 78%);background:var(--second)}
+
+@media (max-width:760px){.strip{flex-direction:column;height:auto}.cel{flex:none;min-height:96px}.lead-col{flex:none}.cel.lead{height:auto;min-height:440px;padding:24px 22px}.cel.sig{position:relative;top:auto;left:auto;right:auto;bottom:auto;flex:none;min-height:200px}a.cel:hover,a.cel:focus-visible{flex-grow:0}.vlabel{writing-mode:horizontal-tb;transform:none}.prompt{display:none}.nm,.gh{white-space:normal}.kana{display:none}.peek{opacity:1;transform:none}}
+@media (max-width:760px){.term-in input{font-size:16px}.t-hint{display:none}}
+@media (max-width:900px){.ep{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"n d" "t t" "x x";gap:0 16px;padding:40px 0 44px}.ep>:nth-child(1){grid-area:n;line-height:1}.ep>:nth-child(2){grid-area:d;justify-self:end}.ep>:nth-child(3){grid-area:t;margin-top:24px;gap:8px !important}.ep>:nth-child(4){grid-area:x;margin-top:18px !important;line-height:1.75}}
+.st-s{display:none}
+@media (max-width:760px){
+.ep-n{color:#9692a0 !important;font-size:16px !important}
+#experience .ep{padding:52px 0 56px}
+#experience .ep>:nth-child(3){margin-top:28px;gap:10px !important}
+#experience .ep>:nth-child(4){margin-top:22px !important}
+.lead-col{display:contents}
+.cel.lead{min-height:360px}
+.cel.sig{order:9;margin-top:16px;min-height:180px}
+.ep>:nth-child(4),.ab-p{font-family:'Geist',system-ui,sans-serif;font-size:15px;line-height:1.6 !important;letter-spacing:0}
+#about,#experience,#links{padding-top:112px !important}
+#about,#links{gap:40px !important}
+#experience>div:first-child{margin-bottom:24px !important}
+#foot{margin-top:112px !important}
+.sh-x{display:none}
+.st-l{display:none}.st-s{display:inline}
+a.cel{flex-direction:row;align-items:center;justify-content:flex-start;gap:16px;min-height:60px;padding:0 20px}
+a.cel .vlabel{font-size:22px !important}
+a.cel::after{content:"→";position:relative;margin-left:auto;font-size:16px;color:#9692a0;transition:color .1s}
+a.cel:hover::after,a.cel:focus-visible::after{color:var(--accent)}
+}
+@media (prefers-reduced-motion:reduce){.gr,.lb,.lg{animation:none}.blob.a,.blob.b{transform:none;transition:none}.boot,.xh,.txb,.txf,.lock,.locktag{display:none}.ln-i,.fish,.fish::after,.fr,.k,.mq-t,.dot,.menu,.trc,.sweep,.cur,.sgh-w,.asa-w,.shp-band,.eq i{animation:none}.hw,.gh{transition:none}.rv{opacity:1;transform:none;transition:none}.cel,.ep,.wipe,.big,.big::before,.hov,.bar,.peek{transition:none}}
+.foot .navlink{margin:0 -4px}
+@media (max-width:760px){.foot{flex-direction:column;align-items:flex-start !important}.foot.ctr{align-items:center !important;text-align:center}}
+</style>
+</helmet>
+<div id="top" class="{{rootClass}}" style="--accent: {{accent}}; --second: {{secondColor}}; --third: {{thirdColor}}; --display: {{displayStack}}; --head: {{headStack}}; position: relative; isolation: isolate; min-height: 100vh; background: #1b1c21; color: #e4ddcf; font-family: 'Martian Mono', ui-monospace, monospace; font-weight: 400; font-size: 14px; line-height: 1.65; overflow-x: clip">
+
+<div class="fld" aria-hidden="true" style="opacity: {{field}}">
+<div class="blob a"></div>
+<div class="blob b"></div>
+</div>
+<svg class="gr" aria-hidden="true" style="opacity: {{grain}}; left: -755px; top: -1248px; position: fixed"><filter id="grain-b"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix></filter><rect width="100%" height="100%" filter="url(#grain-b)"></rect></svg>
+
+<sc-if value="{{bootOn}}" hint-placeholder-val="{{ false }}">
+<div class="boot" aria-hidden="true">
+<div class="boot-p t"></div>
+<div class="boot-p b"></div>
+<div class="boot-l"></div>
+<div class="boot-c">~/home $ boot</div>
+</div>
+</sc-if>
+
+<sc-if value="{{xhOn}}" hint-placeholder-val="{{ false }}">
+<div class="xh" aria-hidden="true">
+<div class="xh-v"></div>
+<div class="xh-h"></div>
+<div class="xh-s"></div>
+<div class="hud">
+<div class="hud-ax ax-x"><span class="hud-k">x</span><span class="hud-v vx"></span><span class="hud-rl rx"><i></i></span></div>
+<div class="hud-ax ax-y"><span class="hud-k">y</span><span class="hud-v vy"></span><span class="hud-rl ry"><i></i></span></div>
+<div class="hud-map"><i class="mv"></i><i class="mh"></i><i class="md"></i><i class="mr"></i><i class="ms"></i></div>
+</div>
+</div>
+</sc-if>
+
+
+<sc-if value="{{tx}}" hint-placeholder-val="{{ false }}">
+<div aria-hidden="true" style="--x: {{txX}}px; --y: {{txY}}px; --w: {{txW}}px; --h: {{txH}}px; position: fixed; inset: 0; z-index: 50; pointer-events: none">
+<div class="txf" style="display: grid; place-items: center"><span class="txl" style="font-size: 12px; color: #1b1c21; letter-spacing: 0.1em; white-space: nowrap">{{txLabel}}</span></div>
+<div class="txb"></div>
+<div class="txb b2"></div>
+<div class="txb b3"></div>
+</div>
+</sc-if>
+
+<header class="{{barClass}}">
+<div style="max-width: 1360px; margin: 0 auto; padding: 10px clamp(16px, 3vw, 40px); box-sizing: border-box; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 24px">
+<div style="display: flex; align-items: center; gap: 20px; min-width: 0">
+<a class="navlink" href="#top" onClick="{{goHome}}" style="padding: 0">[ mvd ]</a>
+<span class="prompt" aria-live="polite" style="font-size: 12px; color: #9692a0; white-space: nowrap; letter-spacing: 0.04em">~/<span style="color: {{accent}}">{{here}}</span> $</span>
+</div>
+</div>
+<span class="prog" aria-hidden="true"></span>
+</header>
+
+<div style="max-width: 1360px; margin: 0 auto; padding: 12px clamp(16px, 3vw, 40px) 0; box-sizing: border-box">
+<div class="strip">
+<div class="{{leadColClass}}">
+<div class="cel lead">
+<div class="lead-bg" aria-hidden="true">
+<div style="position: absolute; inset: 0; filter: saturate({{heroSat}}); opacity: {{heroOpacity}}">
+<div class="lb a"></div>
+<div class="lb b"></div>
+<div class="lb c"></div>
+</div>
+<svg class="lg"><filter id="grain-l"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix></filter><rect width="100%" height="100%" filter="url(#grain-l)"></rect></svg>
+</div>
+<sc-if value="{{corners}}" hint-placeholder-val="{{ false }}">
+<span class="crn tl" aria-hidden="true"></span>
+<span class="crn tr" aria-hidden="true"></span>
+<span class="crn bl" aria-hidden="true"></span>
+<span class="crn br" aria-hidden="true"></span>
+</sc-if>
+<sc-if value="{{katakana}}" hint-placeholder-val="{{ true }}">
+<span class="kana" lang="ja" aria-hidden="true">マシュー・ヴァン・ドフ</span>
+</sc-if>
+<div style="position: relative; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 11px; letter-spacing: 0.08em; color: #9692a0">
+<span style="position: relative">
+<sc-if value="{{lockHome}}" hint-placeholder-val="{{ false }}">
+<span class="lock" aria-hidden="true" style="inset: -8px -12px"></span>
+</sc-if>01 · ~/home $ whoami</span>
+<span style="font-variant-numeric: tabular-nums; white-space: nowrap"><span class="st-l">{{stamp}}</span><span class="st-s">{{stampShort}}</span></span>
+</div>
+<h1 class="{{nameHClass}}" style="position: relative; margin: 0; text-align: center; font-family: var(--display); font-weight: 600; font-size: clamp(36px, 5vw, 76px); line-height: 0.9; letter-spacing: -0.05em; color: #e4ddcf; isolation: isolate">
+<span class="gh ga" aria-hidden="true" style="opacity: {{ghostOp}}"><span class="ln"><span class="ln-i">matthew</span></span><span class="ln"><span class="ln-i d2">van doff</span></span></span>
+<span class="gh gb" aria-hidden="true" style="opacity: {{ghostOp}}"><span class="ln"><span class="ln-i">matthew</span></span><span class="ln"><span class="ln-i d2">van doff</span></span></span>
+<span class="nm"><span class="ln"><span class="ln-i"><span class="hw">matthew</span></span></span><span class="ln"><span class="ln-i d2"><span class="hw">van</span> <span class="hw">doff</span></span></span></span>
+</h1>
+<div style="position: relative; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<p style="margin: 0; font-size: 16px; color: {{accent}}; letter-spacing: 0.02em">software developer</p>
+<p style="margin: 0; font-size: 13px; color: #9692a0">for the information superhighway</p>
+</div>
+<div class="aq" style="position: relative; flex: 1 1 12ch; max-width: 24ch; height: 1.7em; font-size: 15px; line-height: 1.7; color: var(--second); white-space: pre">
+<sc-if value="{{asciiFish}}" hint-placeholder-val="{{ true }}">
+<span class="fish" role="img" aria-label="a little ascii fish swimming back and forth">&gt;&lt;(((º&gt;</span>
+</sc-if>
+<sc-if value="{{asciiShades}}" hint-placeholder-val="{{ false }}">
+<span role="img" aria-label="a kaomoji putting on sunglasses" style="position: absolute; right: 0; bottom: 0; width: 11ch; height: 1.7em"><span class="fr f1">( •_•)</span><span class="fr f2">( •_•)&gt;⌐■-■</span><span class="fr f3">(⌐■_■)</span></span>
+</sc-if></div>
+</div>
+</div>
+<div class="{{sigClass}}" onClick="{{sigClick}}">
+<sc-if value="{{fillScope}}" hint-placeholder-val="{{ true }}">
+<div class="sig-in">
+<div class="scope" aria-hidden="true">
+<div class="trc t1"><svg viewBox="0 0 800 100" preserveAspectRatio="none"><path d="M0 50 C33 12 67 12 100 50 S167 88 200 50 S267 12 300 50 S367 88 400 50 S467 12 500 50 S567 88 600 50 S667 12 700 50 S767 88 800 50" fill="none" stroke="currentColor" stroke-width="1.5" vector-effect="non-scaling-stroke"></path></svg></div>
+<div class="trc t2"><svg viewBox="0 0 800 100" preserveAspectRatio="none"><path d="M0 62.0 L8 70.2 L16 60.1 L24 54.1 L32 61.7 L40 66.1 L48 62.6 L56 63.9 L64 65.8 L72 51.0 L80 28.1 L88 22.0 L96 31.3 L104 36.1 L112 37.7 L120 47.4 L128 54.7 L136 47.7 L144 42.8 L152 56.6 L160 73.5 L168 75.0 L176 70.2 L184 68.4 L192 58.2 L200 38.0 L208 29.8 L216 39.9 L224 45.9 L232 38.3 L240 33.9 L248 37.4 L256 36.1 L264 34.2 L272 49.0 L280 71.9 L288 78.0 L296 68.7 L304 63.9 L312 62.3 L320 52.6 L328 45.3 L336 52.3 L344 57.2 L352 43.4 L360 26.5 L368 25.0 L376 29.8 L384 31.6 L392 41.8 L400 62.0 L408 70.2 L416 60.1 L424 54.1 L432 61.7 L440 66.1 L448 62.6 L456 63.9 L464 65.8 L472 51.0 L480 28.1 L488 22.0 L496 31.3 L504 36.1 L512 37.7 L520 47.4 L528 54.7 L536 47.7 L544 42.8 L552 56.6 L560 73.5 L568 75.0 L576 70.2 L584 68.4 L592 58.2 L600 38.0 L608 29.8 L616 39.9 L624 45.9 L632 38.3 L640 33.9 L648 37.4 L656 36.1 L664 34.2 L672 49.0 L680 71.9 L688 78.0 L696 68.7 L704 63.9 L712 62.3 L720 52.6 L728 45.3 L736 52.3 L744 57.2 L752 43.4 L760 26.5 L768 25.0 L776 29.8 L784 31.6 L792 41.8 L800 62.0" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"></path></svg></div>
+<div class="sweep"></div>
+</div>
+<div class="sig-row"><span>01b · ~/home $ tail -f signal</span><span class="sig-lg" aria-hidden="true"><span><i class="sw a"></i>ch1</span><span><i class="sw b"></i>ch2</span></span></div>
+<div class="sig-row"><span class="sig-live"><span class="dot"></span>live</span><span class="sig-kana" lang="ja" aria-hidden="true">信号</span></div>
+</div>
+</sc-if>
+<sc-if value="{{fillNow}}" hint-placeholder-val="{{ false }}">
+<div class="sig-in">
+<div class="sig-row"><span>01b · ~/now $ {{termCmd}}</span><sc-if value="{{termHasMeta}}" hint-placeholder-val="{{ false }}"><span>{{termMeta}}</span></sc-if><sc-if value="{{termNoMeta}}" hint-placeholder-val="{{ true }}"><span class="sig-kana" lang="ja" aria-hidden="true">現在</span></sc-if></div>
+<div class="term-body" id="term-body" aria-live="polite">
+<sc-if value="{{termShowStatus}}" hint-placeholder-val="{{ true }}">
+<dl class="now">
+<div><dt>building</dt><dd>Insight @ Cyncly</dd></div>
+<div><dt>listening</dt><dd><span class="{{eqClass}}" aria-hidden="true"><i></i><i></i><i></i><i></i></span>[track title] — [artist]<span class="ago">{{listenAgo}}</span></dd></div>
+</dl>
+</sc-if>
+<sc-if value="{{termHasOut}}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{termLines}}" as="ln" hint-placeholder-count="3"><div class="t-ln"><sc-for list="{{ln.parts}}" as="p" hint-placeholder-count="2"><span class="{{p.c}}">{{p.t}}</span></sc-for></div></sc-for>
+<sc-for list="{{termRows}}" as="r" hint-placeholder-count="5"><div class="t-row"><span class="t-dim">{{r.rank}}</span><span class="t-n">{{r.name}}</span><span class="t-b"><i style="width: {{r.pct}}%"></i></span><span class="t-c">{{r.count}}</span></div></sc-for>
+</sc-if>
+</div>
+<div class="sig-row"><label class="term-in"><span>~/now $</span><sc-if value="{{termCurOn}}" hint-placeholder-val="{{ true }}"><span class="cur" aria-hidden="true"></span></sc-if><input id="term-in" type="text" autocomplete="off" spellcheck="false" aria-label="terminal command, type help" value="{{termVal}}" onChange="{{termChange}}" onKeyDown="{{termKey}}" onFocus="{{termFocus}}" onBlur="{{termBlur}}"></label><span class="t-hint">{{termHint}}</span></div>
+</div>
+</sc-if>
+<sc-if value="{{fillPhoto}}" hint-placeholder-val="{{ false }}">
+<div class="sig-in">
+<div class="ph" aria-hidden="true"></div>
+<div class="sig-row"><span>01b · ~/home $ open me.jpg</span><span class="sig-kana" lang="ja" aria-hidden="true">写真</span></div>
+<div class="sig-row" style="justify-content: center; color: #bdb8ad">[ your photo — shown as an accent duotone with scanlines ]</div>
+<div class="sig-row"><span>img.01</span><span>[ upload ]</span></div>
+</div>
+</sc-if>
+<sc-if value="{{fillSeigaiha}}" hint-placeholder-val="{{ false }}">
+<div class="sig-in">
+<svg class="art" aria-hidden="true">
+<defs>
+<pattern id="sgh-ink" width="48" height="24" patternUnits="userSpaceOnUse"><g class="sg ink"><circle class="o" cx="0" cy="0" r="24"></circle><circle cx="0" cy="0" r="18"></circle><circle cx="0" cy="0" r="12"></circle><circle cx="0" cy="0" r="6"></circle><circle class="o" cx="48" cy="0" r="24"></circle><circle cx="48" cy="0" r="18"></circle><circle cx="48" cy="0" r="12"></circle><circle cx="48" cy="0" r="6"></circle><circle class="o" cx="24" cy="12" r="24"></circle><circle cx="24" cy="12" r="18"></circle><circle cx="24" cy="12" r="12"></circle><circle cx="24" cy="12" r="6"></circle><circle class="o" cx="0" cy="24" r="24"></circle><circle cx="0" cy="24" r="18"></circle><circle cx="0" cy="24" r="12"></circle><circle cx="0" cy="24" r="6"></circle><circle class="o" cx="48" cy="24" r="24"></circle><circle cx="48" cy="24" r="18"></circle><circle cx="48" cy="24" r="12"></circle><circle cx="48" cy="24" r="6"></circle></g></pattern>
+<linearGradient id="sgh-fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"></stop><stop offset="0.55" stop-color="#fff" stop-opacity="1"></stop></linearGradient>
+<mask id="sgh-m"><rect width="100%" height="100%" fill="url(#sgh-fade)"></rect></mask>
+</defs>
+<circle class="sgh-sun" cx="80%" cy="36%" r="40"></circle>
+<g mask="url(#sgh-m)"><rect class="sgh-w" x="-48" y="0" width="120%" height="100%" fill="url(#sgh-ink)"></rect></g>
+</svg>
+<div class="sig-row"><span>01b · ~/edo $ ./seigaiha</span><span class="sig-kana" lang="ja" aria-hidden="true">青海波</span></div>
+</div>
+</sc-if>
+<sc-if value="{{fillAsanoha}}" hint-placeholder-val="{{ false }}">
+<div class="sig-in">
+<svg class="art" aria-hidden="true">
+<defs>
+<pattern id="asa-ink" width="40" height="69.28" patternUnits="userSpaceOnUse"><path class="asa ink" d="M-20 34.64L0 0 M-20 34.64L0 23.09 M-20 34.64L0 46.19 M-20 34.64L0 69.28 M-20 34.64L20 34.64 M0 0L0 23.09 M0 0L20 11.55 M0 0L20 34.64 M0 0L40 0 M0 23.09L20 34.64 M0 46.19L0 69.28 M0 46.19L20 34.64 M0 69.28L20 34.64 M0 69.28L20 57.74 M0 69.28L40 69.28 M20 11.55L20 34.64 M20 11.55L40 0 M20 34.64L20 57.74 M20 34.64L40 0 M20 34.64L40 23.09 M20 34.64L40 46.19 M20 34.64L40 69.28 M20 34.64L60 34.64 M20 57.74L40 69.28 M40 0L40 23.09 M40 0L60 34.64 M40 23.09L60 34.64 M40 46.19L40 69.28 M40 46.19L60 34.64 M40 69.28L60 34.64"></path></pattern>
+<pattern id="asa-cut" width="40" height="69.28" patternUnits="userSpaceOnUse"><path class="asa cut" d="M-20 34.64L0 0 M-20 34.64L0 23.09 M-20 34.64L0 46.19 M-20 34.64L0 69.28 M-20 34.64L20 34.64 M0 0L0 23.09 M0 0L20 11.55 M0 0L20 34.64 M0 0L40 0 M0 23.09L20 34.64 M0 46.19L0 69.28 M0 46.19L20 34.64 M0 69.28L20 34.64 M0 69.28L20 57.74 M0 69.28L40 69.28 M20 11.55L20 34.64 M20 11.55L40 0 M20 34.64L20 57.74 M20 34.64L40 0 M20 34.64L40 23.09 M20 34.64L40 46.19 M20 34.64L40 69.28 M20 34.64L60 34.64 M20 57.74L40 69.28 M40 0L40 23.09 M40 0L60 34.64 M40 23.09L60 34.64 M40 46.19L40 69.28 M40 46.19L60 34.64 M40 69.28L60 34.64"></path></pattern>
+<clipPath id="asa-clip"><circle cx="24%" cy="56%" r="58"></circle></clipPath>
+<linearGradient id="asa-fade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0.95"></stop><stop offset="1" stop-color="#fff" stop-opacity="0.2"></stop></linearGradient>
+<mask id="asa-m"><rect width="100%" height="100%" fill="url(#asa-fade)"></rect></mask>
+</defs>
+<g mask="url(#asa-m)"><rect class="asa-w" x="-40" y="0" width="120%" height="100%" fill="url(#asa-ink)"></rect></g>
+<circle class="asa-moon" cx="24%" cy="56%" r="58"></circle>
+<g clip-path="url(#asa-clip)"><rect class="asa-w" x="-40" y="0" width="120%" height="100%" fill="url(#asa-cut)"></rect></g>
+</svg>
+<div class="sig-row"><span>01b · ~/edo $ ./asanoha</span><span class="sig-kana" lang="ja" aria-hidden="true">麻の葉</span></div>
+</div>
+</sc-if>
+<sc-if value="{{fillShippo}}" hint-placeholder-val="{{ false }}">
+<div class="sig-in">
+<svg class="art" aria-hidden="true">
+<defs>
+<pattern id="shp-ink" width="44" height="44" patternUnits="userSpaceOnUse"><g class="shp ink"><circle cx="0" cy="0" r="22"></circle><circle cx="44" cy="0" r="22"></circle><circle cx="22" cy="22" r="22"></circle><circle cx="0" cy="44" r="22"></circle><circle cx="44" cy="44" r="22"></circle></g></pattern>
+<pattern id="shp-acc" width="44" height="44" patternUnits="userSpaceOnUse"><g class="shp acc"><circle cx="0" cy="0" r="22"></circle><circle cx="44" cy="0" r="22"></circle><circle cx="22" cy="22" r="22"></circle><circle cx="0" cy="44" r="22"></circle><circle cx="44" cy="44" r="22"></circle></g></pattern>
+<linearGradient id="shp-g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"></stop><stop offset="0.5" stop-color="#fff" stop-opacity="1"></stop><stop offset="1" stop-color="#fff" stop-opacity="0"></stop></linearGradient>
+<mask id="shp-m"><rect class="shp-band" x="-30%" y="0" width="30%" height="100%" fill="url(#shp-g)"></rect></mask>
+</defs>
+<rect width="100%" height="100%" fill="url(#shp-ink)"></rect>
+<rect width="100%" height="100%" fill="url(#shp-acc)" mask="url(#shp-m)"></rect>
+</svg>
+<div class="sig-row"><span>01b · ~/edo $ ./shippo</span><span class="sig-kana" lang="ja" aria-hidden="true">七宝</span></div>
+</div>
+</sc-if>
+</div>
+</div>
+<a class="cel" href="#about" onClick="{{goAbout}}">
+<span class="hov" aria-hidden="true"></span>
+<span style="position: relative; font-size: 11px; color: #9692a0; letter-spacing: 0.08em; white-space: nowrap">02</span>
+<span class="vlabel" style="position: relative; font-family: var(--display); font-weight: 600; font-size: 28px; letter-spacing: -0.01em">about <span style="margin-inline-start: 10px; font-family: 'DotGothic16', sans-serif; font-size: 14px; color: #9692a0; letter-spacing: 0">自己紹介</span></span>
+</a>
+<a class="cel" href="#experience" onClick="{{goExp}}">
+<span class="hov" aria-hidden="true"></span>
+<span style="position: relative; font-size: 11px; color: #9692a0; letter-spacing: 0.08em; white-space: nowrap">03</span>
+<span class="vlabel" style="position: relative; font-family: var(--display); font-weight: 600; font-size: 28px; letter-spacing: -0.01em">experience <span style="margin-inline-start: 10px; font-family: 'DotGothic16', sans-serif; font-size: 14px; color: #9692a0; letter-spacing: 0">経歴</span></span>
+</a>
+<a class="cel" href="#links" onClick="{{goLinks}}">
+<span class="hov" aria-hidden="true"></span>
+<span style="position: relative; font-size: 11px; color: #9692a0; letter-spacing: 0.08em; white-space: nowrap">04</span>
+<span class="vlabel" style="position: relative; font-family: var(--display); font-weight: 600; font-size: 28px; letter-spacing: -0.01em">links <span style="margin-inline-start: 10px; font-family: 'DotGothic16', sans-serif; font-size: 14px; color: #9692a0; letter-spacing: 0">リンク</span></span>
+</a>
+</div>
+</div>
+
+<sc-if value="{{marqueeOn}}" hint-placeholder-val="{{ true }}">
+<div class="mq" style="margin-top: 72px">
+<div class="mq-t">
+<div class="mq-g">
+<span style="font-family: var(--display); font-weight: 600; font-size: 30px; letter-spacing: -0.01em; white-space: nowrap">zero known bugs since 2021</span>
+<span style="color: {{accent}}">✳</span>
+<span style="font-family: 'DotGothic16', sans-serif; font-size: 22px; color: #9692a0; white-space: nowrap">ソフトウェア開発者</span>
+<span style="color: {{accent}}">✳</span>
+<span role="img" aria-label="three dancing kaomoji" style="display: inline-flex; gap: 14px; font-size: 15px; color: var(--second); white-space: pre"><span class="k">&lt;('.'&lt;)</span><span class="k k2">&lt;( '.' )&gt;</span><span class="k k3">(&gt;'.')&gt;</span></span>
+<span style="color: {{accent}}">✳</span>
+</div>
+<div class="mq-g" aria-hidden="true">
+<span style="font-family: var(--display); font-weight: 600; font-size: 30px; letter-spacing: -0.01em; white-space: nowrap">zero known bugs since 2021</span>
+<span style="color: {{accent}}">✳</span>
+<span style="font-family: 'DotGothic16', sans-serif; font-size: 22px; color: #9692a0; white-space: nowrap">ソフトウェア開発者</span>
+<span style="color: {{accent}}">✳</span>
+<span role="img" aria-label="three dancing kaomoji" style="display: inline-flex; gap: 14px; font-size: 15px; color: var(--second); white-space: pre"><span class="k">&lt;('.'&lt;)</span><span class="k k2">&lt;( '.' )&gt;</span><span class="k k3">(&gt;'.')&gt;</span></span>
+<span style="color: {{accent}}">✳</span>
+</div>
+</div>
+</div>
+</sc-if>
+
+<div style="max-width: 1360px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 40px); box-sizing: border-box">
+
+<section id="about" class="rv {{inAbout}}" style="display: flex; flex-direction: column; gap: 64px; padding: 200px 0 0">
+<div class="{{shClass}}">
+<span class="sh-n"><span style="color: {{accent}}">02</span><span>/ 04</span></span>
+<span class="sh-r" aria-hidden="true"></span>
+<span style="position: relative; display: inline-flex; align-items: center; gap: 12px">
+<sc-if value="{{lockAbout}}" hint-placeholder-val="{{ false }}">
+<span class="lock" aria-hidden="true"></span>
+<span class="locktag" aria-hidden="true">found ~/about</span>
+</sc-if>
+<span>about</span>
+<span style="font-family: 'DotGothic16', sans-serif; font-size: 16px; letter-spacing: 0; color: {{accent}}">自己紹介</span>
+</span>
+</div>
+<div class="hang" style="width: 100%; min-width: 0; display: flex; flex-direction: column; gap: 56px">
+<h2 class="ab" style="margin: 0; font-family: var(--head); font-weight: 600; font-size: clamp(26px, 3.4vw, 48px); line-height: 1.08; letter-spacing: -0.025em; text-wrap: balance"><span class="hw" style="--i: 0">hey,</span> <span class="hw" style="--i: 1">i'm</span> <span class="hw" style="--i: 2">matthew,</span> <span class="hw" style="--i: 3">a</span> <span class="hw" style="--i: 4">human</span> <span class="hw" style="--i: 5">software</span> <span class="hw" style="--i: 6">developer,</span> <span class="acc" style="color: {{accent}}"><span class="hw" style="--i: 8">one</span> <span class="hw" style="--i: 9">of</span> <span class="hw" style="--i: 10">the</span> <span class="hw" style="--i: 11">last</span> <span class="hw" style="--i: 12">of</span> <span class="hw" style="--i: 13">my</span> <span class="hw" style="--i: 14">kind.</span></span></h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 24px 48px; padding-top: 32px; border-top: 1px solid #2e2f38">
+<p class="ab-p" style="margin: 0; color: #a6a2ae; text-wrap: pretty">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+<p class="ab-p" style="margin: 0; color: #a6a2ae; text-wrap: pretty">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</div>
+</div>
+</section>
+
+<section id="experience" class="rv {{inExp}}" style="display: flex; flex-direction: column; padding: 200px 0 0">
+<div class="{{shClass}}" style="margin-bottom: 56px">
+<span class="sh-n"><span style="color: {{accent}}">03</span><span>/ 04</span></span>
+<span class="sh-r" aria-hidden="true"></span>
+<span style="position: relative; display: inline-flex; align-items: center; gap: 12px">
+<sc-if value="{{lockExp}}" hint-placeholder-val="{{ false }}">
+<span class="lock" aria-hidden="true"></span>
+<span class="locktag" aria-hidden="true">found ~/experience</span>
+</sc-if>
+<span>experience<span class="sh-x"> · episode guide</span></span>
+<span style="font-family: 'DotGothic16', sans-serif; font-size: 16px; letter-spacing: 0; color: {{accent}}">経歴</span>
+</span>
+</div>
+<div style="display: flex; flex-direction: column">
+<article class="ep">
+<span class="ep-n" style="font-family: 'DotGothic16', sans-serif; font-size: 20px; color: {{accent}}">ep.03</span>
+<span style="font-size: 12px; color: #9692a0; letter-spacing: 0.04em; font-variant-numeric: tabular-nums">2024 — present</span>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h3 class="ep-t" style="margin: 0; font-family: var(--head); font-weight: 600; font-size: clamp(20px, 2vw, 27px); line-height: 1.1; letter-spacing: -0.02em">web developer</h3>
+<p style="margin: 0; font-size: 13px; color: var(--second)">cyncly</p>
+</div>
+<p style="margin: 0; color: #bdb8ad; text-wrap: pretty">Worked on the frontend team for Insight, a full scale ERP solution for manufacturers, migrating a monolithic legacy application to a modern React web app as well as developing new cutting-edge features.</p>
+</article>
+<article class="ep">
+<span class="ep-n" style="font-family: 'DotGothic16', sans-serif; font-size: 20px; color: {{accent}}">ep.02</span>
+<span style="font-size: 12px; color: #9692a0; letter-spacing: 0.04em; font-variant-numeric: tabular-nums">2023 — 2024</span>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h3 class="ep-t" style="margin: 0; font-family: var(--head); font-weight: 600; font-size: clamp(20px, 2vw, 27px); line-height: 1.1; letter-spacing: -0.02em">full stack developer</h3>
+<p style="margin: 0; font-size: 13px; color: var(--second)">game builds</p>
+</div>
+<p style="margin: 0; color: #bdb8ad; text-wrap: pretty">Helped build, launch, and maintain diablobuilds.com, an online resource and community for Diablo IV, featuring an advanced character builder with in-depth analytics and customization.</p>
+</article>
+<article class="ep">
+<span class="ep-n" style="font-family: 'DotGothic16', sans-serif; font-size: 20px; color: {{accent}}">ep.01</span>
+<span style="font-size: 12px; color: #9692a0; letter-spacing: 0.04em; font-variant-numeric: tabular-nums">2021 — 2023</span>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h3 class="ep-t" style="margin: 0; font-family: var(--head); font-weight: 600; font-size: clamp(20px, 2vw, 27px); line-height: 1.1; letter-spacing: -0.02em">software engineer</h3>
+<p style="margin: 0; font-size: 13px; color: var(--second)">applied visions</p>
+</div>
+<p style="margin: 0; color: #bdb8ad; text-wrap: pretty">Developed two key enterprise applications: a professional networking platform for the insurance industry and an AI-powered project management tool for government clients, while mentoring junior developers for the client.</p>
+</article>
+</div>
+</section>
+
+<section id="links" class="rv {{inLinks}}" style="display: flex; flex-direction: column; gap: 56px; padding: 200px 0 0">
+<div class="{{shClass}}">
+<span class="sh-n"><span style="color: {{accent}}">04</span><span>/ 04</span></span>
+<span class="sh-r" aria-hidden="true"></span>
+<span style="position: relative; display: inline-flex; align-items: center; gap: 12px">
+<sc-if value="{{lockLinks}}" hint-placeholder-val="{{ false }}">
+<span class="lock" aria-hidden="true"></span>
+<span class="locktag" aria-hidden="true">found ~/links</span>
+</sc-if>
+<span>links</span>
+<span style="font-family: 'DotGothic16', sans-serif; font-size: 16px; letter-spacing: 0; color: {{accent}}">リンク</span>
+</span>
+</div>
+<div class="hang" style="width: 100%; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 28px">
+<a class="big" href="#" aria-label="github" onMouseEnter="{{ghGo}}" onFocus="{{ghGo}}"><span class="dw" aria-hidden="true"><span class="dw-ghost">github</span><span class="dw-live">{{ghDone}}<span class="nz">{{ghNoise}}</span></span></span><span aria-hidden="true" style="font-family: 'Martian Mono', monospace; font-size: 0.32em; color: {{accent}}">↗</span></a>
+<a class="big" href="#" aria-label="linkedin" onMouseEnter="{{liGo}}" onFocus="{{liGo}}"><span class="dw" aria-hidden="true"><span class="dw-ghost">linkedin</span><span class="dw-live">{{liDone}}<span class="nz">{{liNoise}}</span></span></span><span aria-hidden="true" style="font-family: 'Martian Mono', monospace; font-size: 0.32em; color: {{accent}}">↗</span></a>
+</div>
+</section>
+
+<footer id="foot" style="display: flex; flex-direction: column; gap: 40px; margin-top: 180px">
+<div class="{{footClass}}" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 24px; padding: 18px 0 32px; border-top: 1px solid #2e2f38; font-size: 12px; color: #9692a0">
+<span>© 2026 matthew van doff</span>
+<span>(&gt;'.')&gt; thanks for stopping by</span>
+<a class="navlink" href="#top" onClick="{{goHome}}">[ back to top ↑ ]</a>
+</div>
+</footer>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#8fb3ad&quot;,&quot;options&quot;:[&quot;#8fb3ad&quot;,&quot;#e3a98b&quot;,&quot;#c9a8d8&quot;,&quot;#d8c48f&quot;],&quot;section&quot;:&quot;look&quot;},&quot;palette&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;two-tone&quot;,&quot;mono&quot;],&quot;default&quot;:&quot;mono&quot;,&quot;section&quot;:&quot;look&quot;},&quot;displayFont&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;gridular&quot;,&quot;martian mono&quot;,&quot;geist&quot;,&quot;tektur&quot;,&quot;doto&quot;,&quot;major mono&quot;],&quot;default&quot;:&quot;gridular&quot;,&quot;section&quot;:&quot;type&quot;},&quot;headings&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;body font&quot;,&quot;display font&quot;],&quot;default&quot;:&quot;display font&quot;,&quot;section&quot;:&quot;type&quot;},&quot;marquee&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;section&quot;:&quot;layout&quot;},&quot;centerFooter&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;section&quot;:&quot;layout&quot;},&quot;grain&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0,&quot;min&quot;:0,&quot;max&quot;:0.9,&quot;step&quot;:0.05,&quot;section&quot;:&quot;look&quot;},&quot;field&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.7,&quot;min&quot;:0,&quot;max&quot;:1,&quot;step&quot;:0.05,&quot;section&quot;:&quot;look&quot;},&quot;heroSat&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.65,&quot;min&quot;:0,&quot;max&quot;:3,&quot;step&quot;:0.05,&quot;section&quot;:&quot;01 box&quot;},&quot;heroOpacity&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.2,&quot;min&quot;:0,&quot;max&quot;:1,&quot;step&quot;:0.05,&quot;section&quot;:&quot;01 box&quot;},&quot;corners&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;section&quot;:&quot;01 box&quot;},&quot;fill&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;scope&quot;,&quot;now&quot;,&quot;photo&quot;,&quot;seigaiha&quot;,&quot;asanoha&quot;,&quot;shippo&quot;],&quot;default&quot;:&quot;now&quot;,&quot;section&quot;:&quot;01 box&quot;},&quot;listening&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;playing&quot;,&quot;last played&quot;],&quot;default&quot;:&quot;last played&quot;,&quot;section&quot;:&quot;01 box&quot;},&quot;katakana&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;section&quot;:&quot;name&quot;},&quot;ghost&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0,&quot;max&quot;:1,&quot;step&quot;:0.05,&quot;section&quot;:&quot;name&quot;},&quot;nameIntro&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;glitch&quot;,&quot;rise&quot;],&quot;default&quot;:&quot;glitch&quot;,&quot;section&quot;:&quot;name&quot;},&quot;nameHover&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;split&quot;,&quot;slice&quot;,&quot;color&quot;,&quot;none&quot;],&quot;default&quot;:&quot;split&quot;,&quot;section&quot;:&quot;name&quot;},&quot;headerOrder&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;title first&quot;,&quot;number first&quot;],&quot;default&quot;:&quot;number first&quot;,&quot;section&quot;:&quot;layout&quot;},&quot;feel&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;smooth&quot;,&quot;off&quot;],&quot;default&quot;:&quot;smooth&quot;,&quot;section&quot;:&quot;motion&quot;},&quot;intro&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;section&quot;:&quot;motion&quot;},&quot;crosshair&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;section&quot;:&quot;motion&quot;},&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:3300}}">
+class Component extends DCLogic {
+  reduced() {
+    try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (err) { return false; }
+  }
+  componentDidMount() {
+    this.setState({ ascii: Math.floor(Math.random() * 2) });
+    const feel0 = this.props.feel ?? 'smooth';
+    if (!this.reduced() && feel0 !== 'off') {
+      const withIntro = (this.props.intro ?? true);
+      this.setState({ boot: withIntro, rise: true });
+      this._b1 = setTimeout(() => this.setState({ boot: false }), 1450);
+      this._b2 = setTimeout(() => this.setState({ rise: false }), withIntro ? 3600 : 2500);
+    }
+    this._t0 = Date.now();
+    this._tick = setInterval(() => {
+      this.setState({ now: Date.now() });
+    }, 1000);
+    this._onScroll = () => {
+      if (this._raf) return;
+      this._raf = requestAnimationFrame(() => { this._raf = 0; this.track(); });
+    };
+    this._onMove = (e) => {
+      const d = document.documentElement;
+      if (!d || !e) return;
+      d.style.setProperty('--mx', String(Math.round(e.clientX)));
+      d.style.setProperty('--my', String(Math.round(e.clientY)));
+      d.style.setProperty('--cv', '1');
+      const vw = window.innerWidth || 1;
+      const vhh = window.innerHeight || 1;
+      d.style.setProperty('--mfx', Math.min(1, Math.max(0, e.clientX / vw)).toFixed(4));
+      d.style.setProperty('--mfy', Math.min(1, Math.max(0, e.clientY / vhh)).toFixed(4));
+      const t = e.target;
+      const hit = t && t.closest ? t.closest('a, button, label, input, select, textarea, [role="button"], .tgt') : null;
+      d.style.setProperty('--xh', hit ? '1' : '0');
+    };
+    this._onOut = (e) => {
+      if (e && !e.relatedTarget && document.documentElement) {
+        document.documentElement.style.setProperty('--cv', '0');
+        document.documentElement.style.setProperty('--xh', '0');
+      }
+    };
+    this._onDocClick = (e) => {
+      if (!this.state || !this.state.links) return;
+      const wrap = document.getElementById('links-menu');
+      if (wrap && e.target && wrap.contains(e.target)) return;
+      this.setState({ links: false });
+    };
+    try {
+      document.addEventListener('scroll', this._onScroll, { capture: true, passive: true });
+      window.addEventListener('resize', this._onScroll, { passive: true });
+      document.addEventListener('mousemove', this._onMove, { passive: true });
+      document.addEventListener('mouseout', this._onOut);
+      document.addEventListener('click', this._onDocClick, true);
+    } catch (err) {}
+    this.track();
+  }
+  track() {
+    const root = document.getElementById('top');
+    if (!root) return;
+    const rr = root.getBoundingClientRect();
+    const vh = window.innerHeight || 0;
+    let here = 'home';
+    ['about', 'experience', 'links'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= 200) here = id;
+    });
+    if (rr.top < -8 && vh && rr.bottom <= vh + 4) here = 'links';
+    const scrolled = rr.top < -8;
+    const span = rr.height - vh;
+    const p = span > 0 ? Math.min(1, Math.max(0, -rr.top / span)) : 0;
+    try {
+      document.documentElement.style.setProperty('--sp', p.toFixed(4));
+      document.documentElement.style.setProperty('--spi', String(Math.round(p * 100)));
+      const foot = document.getElementById('foot');
+      const lift = foot && vh ? Math.max(0, Math.round(vh - foot.getBoundingClientRect().top)) : 0;
+      document.documentElement.style.setProperty('--hlift', String(lift));
+    } catch (err) {}
+    const s = this.state || {};
+    const seen = Object.assign({}, s.seen || {});
+    let changed = false;
+    ['about', 'experience', 'links'].forEach((id) => {
+      if (seen[id] === true) return;
+      const el = document.getElementById(id);
+      if (!el) return;
+      const v = el.getBoundingClientRect().top < vh * 0.88;
+      if (seen[id] !== v) { seen[id] = v; changed = true; }
+    });
+    if (s.here !== here || s.scrolled !== scrolled || changed) this.setState({ here: here, scrolled: scrolled, seen: seen });
+  }
+  run(e, id, label) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (this.state && this.state.tx) return;
+    const el = e && e.currentTarget;
+    const r = el && el.getBoundingClientRect ? el.getBoundingClientRect() : { left: 0, top: 0, width: 0, height: 0 };
+    const jump = () => {
+      const t = id ? document.getElementById(id) : null;
+      if (t && t.scrollIntoView) t.scrollIntoView({ block: 'start' });
+    };
+    if (this.reduced() || (this.props.feel ?? 'smooth') === 'off') { jump(); return; }
+    this.setState({ tx: { x: r.left, y: r.top, w: r.width, h: r.height, label: label } });
+    this._t1 = setTimeout(jump, 800);
+    this._t2 = setTimeout(() => this.setState({ tx: null }), 1800);
+  }
+  local(e, id) {
+    if (e && e.preventDefault) e.preventDefault();
+    const reduce = this.reduced();
+    const t = document.getElementById(id);
+    if (t && t.scrollIntoView) t.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' });
+    if (reduce || (this.props.feel ?? 'smooth') === 'off') return;
+    clearTimeout(this._l1);
+    clearTimeout(this._l2);
+    this.setState({ lock: null });
+    this._l1 = setTimeout(() => this.setState({ lock: id }), 650);
+    this._l2 = setTimeout(() => this.setState({ lock: null }), 2250);
+  }
+  ln() {
+    const parts = [];
+    for (let i = 0; i < arguments.length; i++) {
+      const a = arguments[i];
+      parts.push({ t: a[0], c: a[1] || '' });
+    }
+    return { parts: parts };
+  }
+  pad(s, n) {
+    s = String(s);
+    return s.length >= n ? s : s + ' '.repeat(n - s.length);
+  }
+  termCmds() {
+    return ['help', 'top', 'np', 'recent', 'ls', 'cd', 'accent', 'whoami', 'date', 'clear'];
+  }
+  termExec(cmd) {
+    const parts = cmd.split(/\s+/).filter(Boolean);
+    const c = (parts[0] || '').toLowerCase();
+    const rest = parts.slice(1).map((x) => x.toLowerCase());
+    const L = this.ln.bind(this);
+    const pad = this.pad;
+    const playing = (this.props.listening ?? 'playing') === 'playing';
+    const out = (lines, meta, rows, xp) => ({ tOut: { lines: lines || [], rows: rows || [] }, tMeta: meta || '', tCmd: cmd, tXp: xp !== false });
+    const small = (lines) => out(lines, '', [], false);
+    const none = { tOut: null, tMeta: '', tCmd: '', tXp: false };
+    if (!c) return none;
+    if (c === 'help' || c === '?') {
+      return out([
+        L([pad('top · np · recent', 34), 't-acc'], ['music, via last.fm', 't-dim']),
+        L([pad('ls · cd <section>', 34), 't-acc'], ['move around the page', 't-dim']),
+        L([pad('accent <color|hue|random>', 34), 't-acc'], ['recolor the site', 't-dim']),
+        L([pad('whoami · date · clear', 34), 't-acc'], ['tab completes · ↑ recalls', 't-dim'])
+      ]);
+    }
+    if (c === 'top') {
+      const kind = rest.indexOf('tracks') >= 0 ? 'tracks' : (rest.indexOf('albums') >= 0 ? 'albums' : 'artists');
+      const per = rest.indexOf('--week') >= 0 ? ['7 days', 0.04] : (rest.indexOf('--month') >= 0 ? ['30 days', 0.14] : (rest.indexOf('--all') >= 0 ? ['all time', 3.6] : ['12 months', 1]));
+      const data = {
+        artists: [['artist.01', 412], ['artist.02', 356], ['artist.03', 298], ['artist.04', 241], ['artist.05', 187], ['artist.06', 164], ['artist.07', 139], ['artist.08', 118], ['artist.09', 96], ['artist.10', 81]],
+        tracks: [['track.07 — artist.02', 64], ['track.12 — artist.01', 58], ['track.03 — artist.05', 51], ['track.21 — artist.02', 44], ['track.09 — artist.04', 39], ['track.15 — artist.06', 35], ['track.02 — artist.01', 31], ['track.18 — artist.08', 28], ['track.11 — artist.03', 24], ['track.05 — artist.09', 21]],
+        albums: [['album.02 — artist.01', 188], ['album.05 — artist.02', 171], ['album.01 — artist.03', 140], ['album.04 — artist.02', 122], ['album.03 — artist.05', 97], ['album.06 — artist.07', 84], ['album.09 — artist.04', 72], ['album.07 — artist.01', 61], ['album.08 — artist.10', 50], ['album.10 — artist.06', 43]]
+      }[kind];
+      const max = data[0][1];
+      const rows = data.map((d, i) => ({ rank: (i < 9 ? '0' : '') + (i + 1), name: d[0], pct: Math.max(4, Math.round(d[1] / max * 100)), count: String(Math.max(1, Math.round(d[1] * per[1]))) }));
+      return out([], 'top ' + kind + ' · ' + per[0] + ' · mock data', rows);
+    }
+    if (c === 'np') {
+      return out(playing
+        ? [L(['▶ ', 't-acc'], ['[track title] — [artist]']), L(['  on [album] · started 2m ago', 't-dim'])]
+        : [L(['■ ', 't-dim'], ['[track title] — [artist]']), L(['  last played 2h ago · nothing on right now', 't-dim'])],
+        'last.fm · mock data');
+    }
+    if (c === 'recent') {
+      const times = playing ? ['now', '4m', '9m', '15m', '1h', '1h', '2h', '2h', '3h', '5h'] : ['2h', '2h', '2h', '3h', '3h', '4h', '4h', '5h', '6h', '6h'];
+      const tr = [['track.07', 'artist.02'], ['track.12', 'artist.01'], ['track.03', 'artist.05'], ['track.21', 'artist.02'], ['track.09', 'artist.04'], ['track.15', 'artist.06'], ['track.02', 'artist.01'], ['track.18', 'artist.08'], ['track.11', 'artist.03'], ['track.05', 'artist.09']];
+      return out(tr.map((x, i) => L([pad(times[i], 5), times[i] === 'now' ? 't-acc' : 't-dim'], [x[0] + ' — '], [x[1], 't-tl'])), 'last.fm · mock data');
+    }
+    if (c === 'ls') {
+      return small([L(['about/   experience/   links/', 't-acc']), L(['cd <name> to jump there', 't-dim'])]);
+    }
+    if (c === 'cd') {
+      const t = (rest[0] || '').replace(/\/$/, '').replace(/^~\/?/, '');
+      const map = { about: 'about', experience: 'experience', links: 'links', home: 'top', '': 'top', '..': 'top' };
+      if (!Object.prototype.hasOwnProperty.call(map, t)) return small([L(['cd: no such section: ' + t, 't-dim'])]);
+      this.local(null, map[t]);
+      return small([L(['→ ~/' + (map[t] === 'top' ? 'home' : t), 't-acc'])]);
+    }
+    if (c === 'accent') {
+      const pal = { peach: '#e3a98b', teal: '#8fb3ad', lilac: '#c9a8d8', gold: '#d8c48f' };
+      const raw = parts.slice(1).join(' ');
+      const n = raw.toLowerCase();
+      const st = this.state || {};
+      if (!n) return small([L(['accent: any css color, a hue 0–360, random or reset', 't-dim']), L(['now ' + (st.accentOv || (this.props.accent ?? '#8fb3ad')), 't-acc'])]);
+      if (n === 'reset') return Object.assign(small([L(['accent → default', 't-acc'])]), { accentOv: null });
+      if (pal[n]) return Object.assign(small([L(['accent → ' + n, 't-acc'])]), { accentOv: pal[n] });
+      const t = this.tune(n);
+      if (!t) return small([L(['accent: not a color: ' + raw, 't-dim'], ['  · try red, #3af, 210 or random', 't-dim'])]);
+      return Object.assign(small([L(['accent → ' + t.label, 't-acc'], ['  tuned ' + t.hex, 't-dim'])]), { accentOv: t.hex });
+    }
+    if (c === 'whoami') {
+      return small([L(['matthew van doff', 't-acc']), L(['software developer · for the information superhighway', 't-dim'])]);
+    }
+    if (c === 'date') {
+      return small([L([new Date().toString().toLowerCase().slice(0, 24)])]);
+    }
+    if (c === 'clear' || c === 'cls' || c === 'exit' || c === 'status' || c === 'cat') return none;
+    if (c === 'sudo') return small([L(['nice try. this incident will be reported.', 't-dim'])]);
+    return small([L(['command not found: ' + c], ['  · try help', 't-dim'])]);
+  }
+  tune(n) {
+    const TL = 0.78;
+    const TC = 0.08;
+    const toHex = (L, C, H) => {
+      const unlin = (v) => (v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055);
+      let rgb = [0, 0, 0];
+      for (let cc = C; cc >= 0; cc -= 0.004) {
+        const a = cc * Math.cos(H * Math.PI / 180);
+        const b = cc * Math.sin(H * Math.PI / 180);
+        const l = Math.pow(L + 0.3963377774 * a + 0.2158037573 * b, 3);
+        const m = Math.pow(L - 0.1055613458 * a - 0.0638541728 * b, 3);
+        const s = Math.pow(L - 0.0894841775 * a - 1.2914855480 * b, 3);
+        rgb = [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s];
+        if (rgb.every((v) => v >= -0.0001 && v <= 1.0001)) break;
+      }
+      return '#' + rgb.map((v) => {
+        const x = Math.round(Math.min(1, Math.max(0, unlin(Math.min(1, Math.max(0, v))))) * 255).toString(16);
+        return x.length < 2 ? '0' + x : x;
+      }).join('');
+    };
+    if (n === 'random') {
+      const h = Math.floor(Math.random() * 360);
+      return { hex: toHex(TL, TC, h), label: 'hue ' + h };
+    }
+    if (/^\d{1,3}(\.\d+)?(deg)?$/.test(n) && parseFloat(n) <= 360) {
+      const h = parseFloat(n);
+      return { hex: toHex(TL, TC, h), label: 'hue ' + Math.round(h) };
+    }
+    let str = n;
+    if (/^[0-9a-f]{3}$|^[0-9a-f]{6}$/.test(str)) str = '#' + str;
+    let ok = false;
+    try { ok = !!(window.CSS && CSS.supports && CSS.supports('color', str)); } catch (err) { ok = false; }
+    if (!ok) return null;
+    let v = '';
+    try {
+      const ctx = document.createElement('canvas').getContext('2d');
+      ctx.fillStyle = '#010203';
+      ctx.fillStyle = str;
+      v = String(ctx.fillStyle);
+    } catch (err) { return null; }
+    let r, g, b;
+    if (v.charAt(0) === '#') {
+      r = parseInt(v.slice(1, 3), 16); g = parseInt(v.slice(3, 5), 16); b = parseInt(v.slice(5, 7), 16);
+    } else {
+      const m = v.match(/[\d.]+/g);
+      if (!m || m.length < 3) return null;
+      r = +m[0]; g = +m[1]; b = +m[2];
+    }
+    const lin = (c) => { c = c / 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+    const R = lin(r), G = lin(g), B = lin(b);
+    const l = Math.cbrt(0.4122214708 * R + 0.5363325363 * G + 0.0514459929 * B);
+    const m2 = Math.cbrt(0.2119034982 * R + 0.6806995451 * G + 0.1073969566 * B);
+    const s2 = Math.cbrt(0.0883024619 * R + 0.2817188376 * G + 0.6299787005 * B);
+    const A = 1.9779984951 * l - 2.4285922050 * m2 + 0.4505937099 * s2;
+    const Bb = 0.0259040371 * l + 0.7827717662 * m2 - 0.8086757660 * s2;
+    const C = Math.sqrt(A * A + Bb * Bb);
+    const H = ((Math.atan2(Bb, A) * 180 / Math.PI) + 360) % 360;
+    if (C < 0.02) return { hex: toHex(0.8, 0.012, 80), label: n + ' (gray → warm neutral)' };
+    return { hex: toHex(TL, TC, H), label: n };
+  }
+  termRun(raw) {
+    const s = this.state || {};
+    const cmd = (raw || '').trim();
+    const hist = (s.tHist || []).slice();
+    if (cmd && hist[hist.length - 1] !== cmd) hist.push(cmd);
+    const kept = hist.slice(-30);
+    this.setState(Object.assign({ tVal: '', tHist: kept, tIdx: kept.length }, this.termExec(cmd)));
+    setTimeout(() => {
+      const b = document.getElementById('term-body');
+      if (b) b.scrollTop = 0;
+    }, 0);
+  }
+  termTab(val) {
+    const parts = (val || '').split(/\s+/);
+    const args = {
+      top: ['artists', 'tracks', 'albums', '--week', '--month', '--year', '--all'],
+      cd: ['about', 'experience', 'links', 'home'],
+      accent: ['peach', 'teal', 'lilac', 'gold', 'random', 'reset']
+    };
+    const pool = parts.length <= 1 ? this.termCmds() : (args[parts[0].toLowerCase()] || []);
+    const last = parts[parts.length - 1] || '';
+    const m = pool.filter((c) => c.indexOf(last.toLowerCase()) === 0);
+    if (!m.length) return;
+    if (m.length === 1) {
+      parts[parts.length - 1] = m[0];
+      this.setState({ tVal: parts.join(' ') + ' ' });
+      return;
+    }
+    let pre = m[0];
+    m.forEach((c) => { while (c.indexOf(pre) !== 0) pre = pre.slice(0, -1); });
+    if (pre.length > last.length) {
+      parts[parts.length - 1] = pre;
+      this.setState({ tVal: parts.join(' ') });
+      return;
+    }
+    this.setState({ tOut: { lines: [this.ln([m.join('   '), 't-dim'])], rows: [] }, tMeta: '' });
+  }
+  termKey(e) {
+    if (!e) return;
+    const k = e.key;
+    const el = e.currentTarget || e.target;
+    const v = el ? el.value : '';
+    const s = this.state || {};
+    const hist = s.tHist || [];
+    const idx = typeof s.tIdx === 'number' ? s.tIdx : hist.length;
+    if (k === 'Enter') {
+      e.preventDefault();
+      this.termRun(v);
+    } else if (k === 'Tab' && v) {
+      e.preventDefault();
+      this.termTab(v);
+    } else if (k === 'ArrowUp' && hist.length) {
+      e.preventDefault();
+      const i = Math.max(0, idx - 1);
+      this.setState({ tIdx: i, tVal: hist[i] });
+    } else if (k === 'ArrowDown' && hist.length) {
+      e.preventDefault();
+      const i = Math.min(hist.length, idx + 1);
+      this.setState({ tIdx: i, tVal: i >= hist.length ? '' : hist[i] });
+    } else if (k === 'Escape') {
+      this.setState({ tOut: null, tMeta: '', tCmd: '', tVal: '', tXp: false });
+      if (el && el.blur) el.blur();
+    }
+  }
+  scramble(key, word) {
+    if (this.reduced() || (this.props.feel ?? 'smooth') === 'off') return;
+    this._sc = this._sc || {};
+    clearInterval(this._sc[key]);
+    const glyphs = '!<>-_\\/[]{}=+*^?#01';
+    const noise = (n) => {
+      let out = '';
+      for (let i = 0; i < n; i++) out += glyphs[Math.floor(Math.random() * glyphs.length)];
+      return out;
+    };
+    let frame = 0;
+    const lead = 6;
+    const per = 1;
+    this.setState({ [key]: { done: '', noise: noise(word.length) } });
+    this._sc[key] = setInterval(() => {
+      frame++;
+      const shown = Math.max(0, Math.floor((frame - lead) / per));
+      if (shown >= word.length) {
+        clearInterval(this._sc[key]);
+        this.setState({ [key]: null });
+        return;
+      }
+      this.setState({ [key]: { done: word.slice(0, shown), noise: noise(word.length - shown) } });
+    }, 34);
+  }
+  replayIntro() {
+    clearTimeout(this._r1);
+    clearTimeout(this._b1);
+    clearTimeout(this._b2);
+    const withIntro = (this.props.intro ?? true);
+    this.setState({ boot: false, rise: false });
+    this._r1 = setTimeout(() => {
+      this.setState({ boot: withIntro, rise: true });
+      this._b1 = setTimeout(() => this.setState({ boot: false }), 1450);
+      this._b2 = setTimeout(() => this.setState({ rise: false }), withIntro ? 3600 : 2500);
+    }, 40);
+  }
+  componentWillUnmount() {
+    clearTimeout(this._r1);
+    clearTimeout(this._r2);
+    if (this._sc) Object.keys(this._sc).forEach((k) => clearInterval(this._sc[k]));
+    clearInterval(this._tick);
+    clearTimeout(this._b1);
+    clearTimeout(this._b2);
+    clearTimeout(this._t1);
+    clearTimeout(this._t2);
+    clearTimeout(this._l1);
+    clearTimeout(this._l2);
+    if (this._raf) cancelAnimationFrame(this._raf);
+    try {
+      document.removeEventListener('scroll', this._onScroll, { capture: true });
+      window.removeEventListener('resize', this._onScroll);
+      document.removeEventListener('mousemove', this._onMove);
+      document.removeEventListener('mouseout', this._onOut);
+      document.removeEventListener('click', this._onDocClick, true);
+    } catch (err) {}
+  }
+  renderVals() {
+    const s = this.state || {};
+    const tx = s.tx || null;
+    const seen = s.seen || {};
+    const stacks = {
+      'gridular': "'Gridular', 'Geist', ui-sans-serif, sans-serif",
+      'martian mono': "'Martian Mono', ui-monospace, monospace",
+      'geist': "'Geist', ui-sans-serif, sans-serif",
+      'tektur': "'Tektur', sans-serif",
+      'doto': "'Doto', monospace",
+      'major mono': "'Major Mono Display', monospace"
+    };
+    const feel = this.props.feel ?? 'smooth';
+    const reduce = this.reduced();
+    const intro = (this.props.intro ?? true) && !reduce && feel !== 'off';
+    const pad = (n) => (n < 10 ? '0' : '') + n;
+    const d = new Date(s.now || Date.now());
+    const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    const mons = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    const stamp = days[d.getDay()] + ' ' + pad(d.getDate()) + ' ' + mons[d.getMonth()] + ' ' + d.getFullYear() + ' · ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+    return {
+      accent: s.accentOv || (this.props.accent ?? '#8fb3ad'),
+      secondColor: (this.props.palette ?? 'two-tone') === 'mono' ? (s.accentOv || (this.props.accent ?? '#8fb3ad')) : '#e3a98b',
+      thirdColor: (this.props.palette ?? 'two-tone') === 'mono' ? (s.accentOv || (this.props.accent ?? '#8fb3ad')) : '#c9a8d8',
+      grain: this.props.grain ?? 0.4,
+      field: this.props.field ?? 0.7,
+      displayStack: stacks[this.props.displayFont ?? 'gridular'] || stacks.gridular,
+      headStack: (this.props.headings ?? 'body font') === 'display font' ? (stacks[this.props.displayFont ?? 'gridular'] || stacks.gridular) : stacks['martian mono'],
+      marqueeOn: this.props.marquee ?? true,
+      rootClass: 'smooth' + (intro ? ' intro' : '') + (s.rise ? ' go' : '') + ((this.props.nameIntro ?? 'glitch') === 'glitch' ? ' gl' : ''),
+      nameHClass: 'nmh hv-' + (this.props.nameHover ?? 'split'),
+      bootOn: intro && !!s.boot,
+      xhOn: (this.props.crosshair ?? true) && !reduce,
+      stamp: stamp,
+      stampShort: pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()),
+      asciiFish: s.ascii === 0,
+      asciiShades: s.ascii === 1,
+      ghDone: s.scGh ? s.scGh.done : 'github',
+      ghNoise: s.scGh ? s.scGh.noise : '',
+      liDone: s.scLi ? s.scLi.done : 'linkedin',
+      liNoise: s.scLi ? s.scLi.noise : '',
+      ghGo: () => this.scramble('scGh', 'github'),
+      liGo: () => this.scramble('scLi', 'linkedin'),
+      heroSat: this.props.heroSat ?? 0.65,
+      heroOpacity: this.props.heroOpacity ?? 0.3,
+      corners: this.props.corners ?? false,
+      fillScope: (this.props.fill ?? 'scope') === 'scope',
+      fillNow: (this.props.fill ?? 'scope') === 'now',
+      leadColClass: 'lead-col' + (s.tXp && (this.props.fill ?? 'scope') === 'now' ? ' xp' : ''),
+      termShowStatus: !s.tOut,
+      termHasOut: !!s.tOut,
+      termLines: s.tOut ? s.tOut.lines : [],
+      termRows: s.tOut ? s.tOut.rows : [],
+      termCmd: s.tCmd || 'cat status.txt',
+      termHasMeta: !!s.tMeta,
+      termNoMeta: !s.tMeta,
+      termMeta: s.tMeta || '',
+      termVal: s.tVal || '',
+      termCurOn: !s.tFocus && !s.tVal,
+      termHint: s.tOut ? 'esc · close' : (s.tVal ? '' : 'try help'),
+      termChange: (e) => this.setState({ tVal: e && e.target ? e.target.value : '' }),
+      termKey: (e) => this.termKey(e),
+      termFocus: () => this.setState({ tFocus: true }),
+      termBlur: () => this.setState({ tFocus: false }),
+      sigClass: 'cel sig' + ((this.props.fill ?? 'scope') === 'now' ? ' tgt' : ''),
+      sigClick: () => {
+        if ((this.props.fill ?? 'scope') !== 'now') return;
+        const sel = window.getSelection ? window.getSelection() : null;
+        if (sel && String(sel).length) return;
+        const el = document.getElementById('term-in');
+        if (el && el.focus && document.activeElement !== el) el.focus();
+      },
+      eqClass: (this.props.listening ?? 'playing') === 'playing' ? 'eq' : 'eq off',
+      listenAgo: (this.props.listening ?? 'playing') === 'playing' ? '' : ' · 2h ago',
+      fillPhoto: (this.props.fill ?? 'scope') === 'photo',
+      fillSeigaiha: (this.props.fill ?? 'scope') === 'seigaiha',
+      fillAsanoha: (this.props.fill ?? 'scope') === 'asanoha',
+      fillShippo: (this.props.fill ?? 'scope') === 'shippo',
+      katakana: this.props.katakana ?? true,
+      ghostOp: (this.props.ghost ?? 0.5) * 0.55,
+      shClass: (this.props.headerOrder ?? 'title first') === 'title first' ? 'sh flip' : 'sh',
+      inAbout: seen.about === false ? '' : 'in',
+      inExp: seen.experience === false ? '' : 'in',
+      inLinks: seen.links === false ? '' : 'in',
+      barClass: s.scrolled ? 'bar down' : 'bar',
+      footClass: (this.props.centerFooter ?? false) ? 'foot ctr' : 'foot',
+      here: s.here || 'home',
+      linksOpen: !!s.links,
+      linksClass: s.links ? 'navlink on' : 'navlink',
+      toggleLinks: () => this.setState({ links: !(this.state && this.state.links) }),
+      closeLinks: () => this.setState({ links: false }),
+      menuKey: (e) => {
+        if (e && e.key === 'Escape' && this.state && this.state.links) {
+          this.setState({ links: false });
+          const b = document.querySelector('#links-menu button');
+          if (b && b.focus) b.focus();
+        }
+      },
+      tx: !!tx,
+      txX: tx ? tx.x : 0,
+      txY: tx ? tx.y : 0,
+      txW: tx ? tx.w : 0,
+      txH: tx ? tx.h : 0,
+      txLabel: tx ? tx.label : '',
+      lockHome: s.lock === 'top',
+      lockAbout: s.lock === 'about',
+      lockExp: s.lock === 'experience',
+      lockLinks: s.lock === 'links',
+      goLinks: (e) => this.local(e, 'links'),
+      goHome: (e) => this.local(e, 'top'),
+      goAbout: (e) => this.local(e, 'about'),
+      goExp: (e) => this.local(e, 'experience')
+    };
+  }
+}
+</script>
+</body>
+</html>
