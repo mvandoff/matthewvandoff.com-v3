@@ -1,0 +1,47 @@
+---
+import Header from '../components/Header.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../lib/content.ts';
+---
+
+<BaseLayout title={site.notFound.title}>
+  <Header homeHref="/" here="404" />
+  <main class="wrap nf">
+    <p class="nf-ln">
+      {site.notFound.line}<span id="nf-path"></span>
+    </p>
+    <a class="navlink nf-back" href="/">{site.notFound.back}</a>
+  </main>
+</BaseLayout>
+
+<script>
+  // The path comes from the URL, so it is only ever written as text.
+  const slot = document.getElementById('nf-path');
+  if (slot) {
+    let path = location.pathname;
+    try {
+      path = decodeURIComponent(path);
+    } catch {
+      /* keep the raw path */
+    }
+    slot.textContent = `: ${path}`;
+  }
+</script>
+
+<style>
+  @layer components {
+    .nf {
+      padding-block: 56px;
+    }
+    .nf-ln {
+      margin: 0 0 16px;
+      font-size: 13px;
+      color: var(--ink-2);
+      overflow-wrap: anywhere;
+    }
+    .nf-back {
+      padding: 0;
+      color: var(--accent);
+    }
+  }
+</style>

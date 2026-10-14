@@ -5,13 +5,22 @@
  * progress line (--sp) and the scrolled border (.down).
  */
 import { site } from '../lib/content.ts';
+
+interface Props {
+  /** Where the [ mvd ] link goes: the page top on the main page, `/` elsewhere. */
+  homeHref?: string;
+  /** The word after `~/` in the prompt. */
+  here?: string;
+}
+
+const { homeHref = '#top', here = 'home' } = Astro.props;
 ---
 
 <header class="bar">
   <div class="wrap bar-in">
     <div class="bar-l">
-      <a class="navlink home" href="#top">{site.header.home}</a>
-      <span class="prompt" aria-live="polite">~/<span class="here acc">home</span> $</span>
+      <a class="navlink home" href={homeHref}>{site.header.home}</a>
+      <span class="prompt" aria-live="polite">~/<span class="here acc">{here}</span> $</span>
     </div>
   </div>
   <span class="prog" aria-hidden="true"></span>

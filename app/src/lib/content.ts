@@ -44,6 +44,13 @@ export const site = {
     home: '[ mvd ]',
   },
 
+  notFound: {
+    title: 'not found · matthew van doff',
+    /** Shown as-is without JavaScript; the script appends `: /<path>`. */
+    line: 'cd: no such page',
+    back: '[ back home ]',
+  },
+
   /** The caption under the Boot line. */
   boot: '~/home $ boot',
 
