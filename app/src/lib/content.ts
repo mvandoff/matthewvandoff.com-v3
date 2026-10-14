@@ -69,6 +69,8 @@ export const site = {
     inputPrompt: '~/now $',
     inputLabel: 'terminal command, type help',
     hint: 'try help',
+    /** Hint while command output is showing. */
+    closeHint: 'esc · close',
     status: {
       building: { key: 'building', value: 'Insight @ Cyncly' },
       listeningKey: 'listening',

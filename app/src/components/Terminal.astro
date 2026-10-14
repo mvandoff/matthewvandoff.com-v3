@@ -2,8 +2,9 @@
 /**
  * Terminal: the command-line box beneath the Name card, rendered in its idle
  * status (`cat status.txt`). Without JavaScript it stays like this. The Terminal
- * controller (src/scripts/terminal/controller.ts, mvd-034.3) makes it typeable and
- * renders command output into #term-body.
+ * controller (src/scripts/terminal/controller.ts) makes it typeable and renders
+ * command output into #term-body; the data-* attributes hand it the copy it
+ * swaps in.
  */
 import { site } from '../lib/content.ts';
 import { mockMusic } from '../lib/music/mock.ts';
@@ -12,10 +13,18 @@ const { terminal } = site;
 const listening = await mockMusic.nowPlaying();
 ---
 
-<div class="cel sig tgt">
+<div
+  class="cel sig tgt"
+  data-terminal
+  data-prompt={terminal.prompt}
+  data-idle-command={terminal.idleCommand}
+  data-hint={terminal.hint}
+  data-close-hint={terminal.closeHint}
+>
   <div class="sig-in">
     <div class="sig-row">
       <span class="sig-cmd">{terminal.prompt} {terminal.idleCommand}</span>
+      <span class="sig-meta" hidden></span>
       <span class="sig-kana" lang="ja" aria-hidden="true">{terminal.jp}</span>
     </div>
     <div class="term-body" id="term-body" aria-live="polite">
@@ -51,6 +60,12 @@ const listening = await mockMusic.nowPlaying();
   </div>
 </div>
 
+<script>
+  import { startTerminal } from '../scripts/terminal/controller.ts';
+
+  startTerminal();
+</script>
+
 <style>
   @layer components {
     .sig {
@@ -69,6 +84,21 @@ const listening = await mockMusic.nowPlaying();
     }
     .sig.tgt {
       cursor: text;
+    }
+    /* Large output: the controller adds .xp to the lead column and the Terminal
+       grows upward over the Name card (desktop only). */
+    @media (min-width: 761px) {
+      :global(.lead-col.xp) .sig {
+        top: 0;
+        background: var(--panel-xp);
+      }
+      :global(.lead-col.xp .cel.lead) {
+        opacity: 0;
+      }
+      :global(.lead-col.xp) .term-body {
+        font-size: 13px;
+        line-height: 1.8;
+      }
     }
     .sig.tgt:hover,
     .sig.tgt:focus-within {
@@ -147,6 +177,51 @@ const listening = await mockMusic.nowPlaying();
       color: var(--dim);
     }
 
+    /* Command output, rendered by the controller (hence :global). */
+    .term-body :global(.t-ln) {
+      white-space: pre;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--ink-2);
+    }
+    .term-body :global(.t-dim) {
+      color: var(--dim);
+    }
+    .term-body :global(.t-acc) {
+      color: var(--accent);
+    }
+    .term-body :global(.t-tl) {
+      color: var(--second);
+    }
+
+    /* Ranked bar rows (the music `top` command, mvd-034.4). */
+    .term-body :global(.t-row) {
+      display: grid;
+      grid-template-columns: 3ch minmax(0, 24ch) minmax(40px, 1fr) 5ch;
+      gap: 14px;
+      align-items: center;
+      color: var(--ink-2);
+    }
+    .term-body :global(.t-n) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .term-body :global(.t-b) {
+      height: 7px;
+      background: repeating-linear-gradient(to right, var(--rule) 0 3px, transparent 3px 4px);
+    }
+    .term-body :global(.t-b i) {
+      display: block;
+      height: 100%;
+      background: repeating-linear-gradient(to right, var(--accent) 0 3px, transparent 3px 4px);
+    }
+    .term-body :global(.t-c) {
+      text-align: right;
+      color: var(--dim);
+      font-variant-numeric: tabular-nums;
+    }
+
     /* Input row */
     .term-in {
       display: flex;
@@ -182,6 +257,11 @@ const listening = await mockMusic.nowPlaying();
     }
     .t-hint {
       color: var(--dim);
+    }
+    .cur[hidden],
+    .sig-kana[hidden],
+    .sig-meta[hidden] {
+      display: none;
     }
     .cur {
       display: inline-block;
