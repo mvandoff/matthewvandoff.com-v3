@@ -159,15 +159,16 @@ test.describe('header', () => {
   test('the border shows once the page has scrolled', async ({ page }) => {
     await page.goto('/');
     const bar = page.getByRole('banner');
-    await expect(bar).not.toHaveClass(/\bdown\b/);
+    const rule = 'rgb(46, 47, 56)';
+    const hidden = 'rgba(0, 0, 0, 0)';
+    await expect(bar).toHaveCSS('border-bottom-color', hidden);
     await scrollTo(page, 8);
-    await page.waitForTimeout(100);
-    await expect(bar).not.toHaveClass(/\bdown\b/);
+    await page.waitForTimeout(400); // longer than the 0.2s fade
+    await expect(bar).toHaveCSS('border-bottom-color', hidden);
     await scrollTo(page, 9);
-    await expect(bar).toHaveClass(/\bdown\b/);
-    await expect(bar).toHaveCSS('border-bottom-color', 'rgb(46, 47, 56)');
+    await expect(bar).toHaveCSS('border-bottom-color', rule);
     await scrollTo(page, 0);
-    await expect(bar).not.toHaveClass(/\bdown\b/);
+    await expect(bar).toHaveCSS('border-bottom-color', hidden);
   });
 });
 
