@@ -6,15 +6,14 @@
  * Music (`top`, `np`, `recent` and the idle `listening` line) reads only the
  * `MusicSource` in the context, so another source needs no changes here.
  *
- * Extension point for later tickets:
- *   mvd-034.5  accent: add `accent` to `commands`, returning `set-accent` /
- *              `clear-accent` effects; add the current Accent and the injected
- *              CSS-colour parser to `TerminalContext`.
- * It is already in `help` and in completion (`completions`), as designed.
+ * `accent` reads the current Accent and the browser's CSS-colour parsing from the
+ * context and returns `set-accent` / `clear-accent` effects; the controller hands
+ * those to the Accent store. Tuning itself is in ../accent.ts.
  */
 
 import { site } from '../content.ts';
 import type { MusicSource, Period, TopKind } from '../music/source.ts';
+import { accentPresets, tune, type ColourParser } from '../accent.ts';
 
 /** Colour of a span: Accent, dim, or the second (artist) colour. Unset = ink-2. */
 export type Tone = 'acc' | 'dim' | 'tl';
@@ -66,6 +65,14 @@ export interface TerminalContext {
   now(): Date;
   /** Where `top`, `np` and `recent` read listening data. */
   music: MusicSource;
+  accent: {
+    /** The Accent in use: the visitor's override, else the default. */
+    current(): string;
+    /** The browser's CSS-colour parsing (see ColourParser). */
+    parseColour: ColourParser;
+    /** 0 ≤ x < 1, for `accent random`. */
+    random(): number;
+  };
 }
 
 /** A parsed input line, as handed to each command. */
@@ -207,7 +214,7 @@ export interface Listening {
   eq: boolean;
 }
 
-export async function listening(ctx: TerminalContext): Promise<Listening> {
+export async function listening(ctx: Pick<TerminalContext, 'now' | 'music'>): Promise<Listening> {
   const np = await ctx.music.nowPlaying();
   return {
     track: `${np.track.title} — ${np.track.artist}`,
@@ -229,6 +236,33 @@ const recent: Command = async (call, ctx) => {
   return out(call, lines, { meta: `last.fm${mockLabel(recent.mock)}` });
 };
 
+/**
+ * `accent [value]`: no value prints usage and the current Accent; `reset` goes
+ * back to the default; presets are set as is; anything else is tuned.
+ */
+const accent: Command = (call, ctx) => {
+  const raw = call.rawArgs.join(' ');
+  const n = raw.toLowerCase();
+  if (!n) {
+    return small(call, [
+      line(['accent: any css color, a hue 0–360, random or reset', 'dim']),
+      line([`now ${ctx.accent.current()}`, 'acc']),
+    ]);
+  }
+  if (n === 'reset') return small(call, [line(['accent → default', 'acc'])], [{ type: 'clear-accent' }]);
+  const preset = Object.hasOwn(accentPresets, n) ? accentPresets[n] : undefined;
+  if (preset) return small(call, [line([`accent → ${n}`, 'acc'])], [{ type: 'set-accent', hex: preset }]);
+  const tuned = tune(n, ctx.accent);
+  if (!tuned) {
+    return small(call, [line([`accent: not a color: ${raw}`, 'dim'], ['  · try red, #3af, 210 or random', 'dim'])]);
+  }
+  return small(
+    call,
+    [line([`accent → ${tuned.label}`, 'acc'], [`  tuned ${tuned.hex}`, 'dim'])],
+    [{ type: 'set-accent', hex: tuned.hex }],
+  );
+};
+
 const sudo: Command = (call) => small(call, [line(['nice try. this incident will be reported.', 'dim'])]);
 
 /** Commands by lower-cased name, aliases included. */
@@ -240,6 +274,7 @@ export const commands: Record<string, Command> = {
   recent,
   ls,
   cd,
+  accent,
   whoami,
   date,
   sudo,

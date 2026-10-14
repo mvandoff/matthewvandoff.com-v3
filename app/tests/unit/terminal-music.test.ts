@@ -2,12 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { createMockMusic } from '../../src/lib/music/mock.ts';
 import type { MusicSource, Period, TopKind } from '../../src/lib/music/source.ts';
 import { execute, listening, type Line, type Row, type TerminalContext } from '../../src/lib/terminal/commands.ts';
+import { noAccent } from '../helpers/context.ts';
 
 const NOW = new Date(2026, 9, 14, 9, 30, 5);
 const now = () => NOW;
 
 /** The Terminal as the site ships it: the mock source, frozen at "last played". */
-const ctx: TerminalContext = { now, music: createMockMusic({ now }) };
+const ctx: TerminalContext = { now, music: createMockMusic({ now }), accent: noAccent };
 
 /** A line as `[text, tone]` pairs, tone '' when unstyled. */
 const pairs = (line: Line) => line.map((span) => [span.text, span.tone ?? '']);
@@ -111,7 +112,7 @@ describe('np', () => {
   });
 
   it('shows the playing track, its album and when it started while playing', async () => {
-    const playing = { now, music: createMockMusic({ now, playing: true }) };
+    const playing = { now, music: createMockMusic({ now, playing: true }), accent: noAccent };
     const result = await execute('NP', playing);
     expect(result.output?.lines.map(pairs)).toEqual([
       [['▶ ', 'acc'], ['[track title] — [artist]', '']],
@@ -149,7 +150,7 @@ describe('recent', () => {
   });
 
   it('marks the playing track "now" in the Accent', async () => {
-    const playing = { now, music: createMockMusic({ now, playing: true }) };
+    const playing = { now, music: createMockMusic({ now, playing: true }), accent: noAccent };
     const result = await execute('recent', playing);
     const times = ['now  ', '4m   ', '9m   ', '15m  ', '1h   ', '1h   ', '2h   ', '2h   ', '3h   ', '5h   '];
     expect(result.output?.lines.map(pairs)).toEqual(
@@ -164,7 +165,7 @@ describe('idle listening line', () => {
   });
 
   it('shows the EQ and no time while a track plays', async () => {
-    const playing = { now, music: createMockMusic({ now, playing: true }) };
+    const playing = { now, music: createMockMusic({ now, playing: true }), accent: noAccent };
     expect(await listening(playing)).toEqual({ track: '[track title] — [artist]', ago: '', eq: true });
   });
 });
@@ -198,7 +199,7 @@ describe('another music source (e.g. real last.fm)', () => {
       };
     },
   };
-  const real: TerminalContext = { now, music: lastfm };
+  const real: TerminalContext = { now, music: lastfm, accent: noAccent };
 
   it('asks it for the kind and period typed, and draws bars from its counts without the mock label', async () => {
     const result = await execute('top tracks --week', real);

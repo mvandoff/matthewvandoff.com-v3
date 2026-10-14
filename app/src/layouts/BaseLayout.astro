@@ -7,6 +7,7 @@
 import '../styles/global.css';
 import { site } from '../lib/content.ts';
 import { fontFiles } from '../lib/fonts.ts';
+import { accentStorageKey } from '../lib/accent.ts';
 
 interface Props {
   title?: string;
@@ -32,7 +33,19 @@ const preloads = [fontFiles.gridular, fontFiles.martianMono];
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {preloads.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
-    {/* mvd-034.5: the Accent store's inline script goes here, before first paint. */}
+    {
+      /*
+       * Applies the visitor's stored Accent before first paint (no flash of teal).
+       * Same key and validity check as the Accent store (scripts/accent-store.ts);
+       * any storage failure leaves the default.
+       */
+    }
+    <script is:inline define:vars={{ key: accentStorageKey }}>
+      try {
+        var accent = localStorage.getItem(key);
+        if (/^#[0-9a-f]{6}$/.test(accent)) document.documentElement.style.setProperty('--accent', accent);
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="top" class="root">

@@ -21,8 +21,13 @@ import {
 } from '../../lib/terminal/commands.ts';
 import { music } from '../../lib/music/index.ts';
 import { goTo } from '../motion/scroll.ts';
+import { clearAccent, currentAccent, parseColour, setAccent } from '../accent-store.ts';
 
-const context: TerminalContext = { now: () => new Date(), music };
+const context: TerminalContext = {
+  now: () => new Date(),
+  music,
+  accent: { current: currentAccent, parseColour, random: () => Math.random() },
+};
 
 /** Fills the idle status's "listening" line (same markup as Terminal.astro renders). */
 function renderListening(dd: HTMLElement, status: Listening): void {
@@ -82,6 +87,14 @@ function applyEffect(effect: Effect): void {
     case 'scroll':
       goTo(effect.target);
       break;
+    case 'set-accent':
+      setAccent(effect.hex);
+      break;
+    case 'clear-accent':
+      clearAccent();
+      break;
+    default:
+      effect satisfies never;
   }
 }
 
