@@ -101,14 +101,17 @@ async function scrollTo(page: Page, y: number) {
 /** Waits (in real time, the fake clock untouched) for a smooth scroll away from `from` to come to rest. */
 async function scrollSettles(page: Page, from: number) {
   await expect.poll(() => page.evaluate(() => scrollY)).not.toBe(from);
+  // Still for three reads in a row (~450ms): under a loaded full-suite run a smooth
+  // scroll can stall for a frame or two mid-way, which one equal pair mistook for the end.
   let last = -1;
+  let stillFor = 0;
   await expect
     .poll(
       async () => {
         const y = await page.evaluate(() => scrollY);
-        const still = y === last;
+        stillFor = y === last ? stillFor + 1 : 0;
         last = y;
-        return still;
+        return stillFor >= 2;
       },
       { intervals: [150] },
     )
