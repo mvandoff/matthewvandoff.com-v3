@@ -7,6 +7,8 @@
  * run `pnpm fonts` to regenerate the subset, or the font test fails.
  */
 
+import { zeroPad } from './format.ts';
+
 export type SectionId = 'about' | 'experience' | 'links';
 
 export interface SectionCopy {
@@ -159,5 +161,5 @@ export const site = {
 
 /** "ep.03" for Episode 3. */
 export function episodeLabel(episode: Pick<Episode, 'number'>): string {
-  return `ep.${String(episode.number).padStart(2, '0')}`;
+  return `ep.${zeroPad(episode.number)}`;
 }

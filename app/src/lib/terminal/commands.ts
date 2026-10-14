@@ -11,7 +11,8 @@
  * those to the Accent store. Tuning itself is in ../accent.ts.
  */
 
-import { site } from '../content.ts';
+import { site, type SectionId } from '../content.ts';
+import { zeroPad } from '../format.ts';
 import type { MusicSource, Period, TopKind } from '../music/source.ts';
 import { accentPresets, tune, type ColourParser } from '../accent.ts';
 
@@ -40,7 +41,10 @@ export interface Output {
 }
 
 /** Where `cd` (and later the Motion controller) can send the page. `top` = home. */
-export type ScrollTarget = 'top' | 'about' | 'experience' | 'links';
+export type ScrollTarget = 'top' | SectionId;
+
+/** Every ScrollTarget, `top` first then the Sections in page order. */
+export const scrollTargets: readonly ScrollTarget[] = ['top', ...site.sections.map((section) => section.id)];
 
 export type Effect =
   | { type: 'scroll'; target: ScrollTarget }
@@ -91,8 +95,6 @@ export type Command = (call: Invocation, ctx: TerminalContext) => Result | Promi
 export const line = (...parts: Array<[string, Tone?]>): Line =>
   parts.map(([text, tone]) => (tone ? { text, tone } : { text }));
 
-const pad = (s: string, n: number) => (s.length >= n ? s : s + ' '.repeat(n - s.length));
-
 /** Output result. Large unless `large: false`. */
 export const out = (
   call: Invocation,
@@ -109,20 +111,21 @@ export const idle = (): Result => ({ output: null, echo: '', meta: '', large: fa
 
 const help: Command = (call) =>
   out(call, [
-    line([pad('top · np · recent', 34), 'acc'], ['music, via last.fm', 'dim']),
-    line([pad('ls · cd <section>', 34), 'acc'], ['move around the page', 'dim']),
-    line([pad('accent <color|hue|random>', 34), 'acc'], ['recolor the site', 'dim']),
-    line([pad('whoami · date · clear', 34), 'acc'], ['tab completes · ↑ recalls', 'dim']),
+    line(['top · np · recent'.padEnd(34), 'acc'], ['music, via last.fm', 'dim']),
+    line(['ls · cd <section>'.padEnd(34), 'acc'], ['move around the page', 'dim']),
+    line(['accent <color|hue|random>'.padEnd(34), 'acc'], ['recolor the site', 'dim']),
+    line(['whoami · date · clear'.padEnd(34), 'acc'], ['tab completes · ↑ recalls', 'dim']),
   ]);
 
 const ls: Command = (call) =>
-  small(call, [line(['about/   experience/   links/', 'acc']), line(['cd <name> to jump there', 'dim'])]);
+  small(call, [
+    line([site.sections.map((section) => `${section.label}/`).join('   '), 'acc']),
+    line(['cd <name> to jump there', 'dim']),
+  ]);
 
 /** `cd` names (after dropping a trailing / and a leading ~/) and where they go. */
 const cdTargets: Record<string, ScrollTarget> = {
-  about: 'about',
-  experience: 'experience',
-  links: 'links',
+  ...Object.fromEntries(site.sections.map((section) => [section.id, section.id])),
   home: 'top',
   '': 'top',
   '..': 'top',
@@ -169,7 +172,7 @@ const top: Command = async (call, ctx) => {
   const max = items[0]?.plays || 1;
   const rows = items.map(
     (item, i): Row => ({
-      rank: String(i + 1).padStart(2, '0'),
+      rank: zeroPad(i + 1),
       name: item.artist ? `${item.name} — ${item.artist}` : item.name,
       pct: Math.max(4, Math.round((item.plays / max) * 100)),
       count: String(Math.max(1, Math.round(item.plays))),
@@ -228,7 +231,7 @@ const recent: Command = async (call, ctx) => {
   const now = ctx.now();
   const lines = recent.tracks.slice(0, 10).map(({ track, playing, at }) =>
     line(
-      playing ? [pad('now', 5), 'acc'] : [pad(ago(at, now), 5), 'dim'],
+      playing ? ['now'.padEnd(5), 'acc'] : [ago(at, now).padEnd(5), 'dim'],
       [`${track.title} — `],
       [track.artist, 'tl'],
     ),
@@ -306,7 +309,7 @@ export const completions = {
   commands: ['help', 'top', 'np', 'recent', 'ls', 'cd', 'accent', 'whoami', 'date', 'clear'],
   args: {
     top: ['artists', 'tracks', 'albums', '--week', '--month', '--year', '--all'],
-    cd: ['about', 'experience', 'links', 'home'],
+    cd: [...site.sections.map((section) => section.id), 'home'],
     accent: ['peach', 'teal', 'lilac', 'gold', 'random', 'reset'],
   } as Record<string, string[]>,
 };

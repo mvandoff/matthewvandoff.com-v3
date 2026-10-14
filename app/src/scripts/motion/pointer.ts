@@ -14,10 +14,12 @@
  * The board sets these even under reduced motion and on touch; CSS then hides the
  * Crosshair and drops the transitions. We do the same.
  */
+import { zeroPad } from '../../lib/format.ts';
+
 const CLICKABLE = 'a, button, label, input, select, textarea, [role="button"], .tgt';
 
 /** A HUD coordinate: zero-padded to four digits, like the board's z4 counter style. */
-export const hudValue = (n: number): string => (n < 0 ? '-' + String(-n).padStart(3, '0') : String(n).padStart(4, '0'));
+export const hudValue = (n: number): string => (n < 0 ? '-' + zeroPad(-n, 3) : zeroPad(n, 4));
 
 export function startPointer(): void {
   const root = document.documentElement;

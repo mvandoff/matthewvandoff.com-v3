@@ -1,15 +1,16 @@
 /** The Name card's live clock: "wed 14 oct 2026 · 09:30:05", or "09:30:05" short. */
 
+import { zeroPad } from '../../lib/format.ts';
+
 const DAYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-const pad = (n: number) => String(n).padStart(2, '0');
 
 export function formatTime(d: Date): string {
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  return `${zeroPad(d.getHours())}:${zeroPad(d.getMinutes())}:${zeroPad(d.getSeconds())}`;
 }
 
 export function formatStamp(d: Date): string {
-  return `${DAYS[d.getDay()]} ${pad(d.getDate())} ${MONTHS[d.getMonth()]} ${d.getFullYear()} · ${formatTime(d)}`;
+  return `${DAYS[d.getDay()]} ${zeroPad(d.getDate())} ${MONTHS[d.getMonth()]} ${d.getFullYear()} · ${formatTime(d)}`;
 }
 
 /** Fills every [data-clock] element now, then on each second boundary. */

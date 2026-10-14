@@ -9,11 +9,9 @@
  *
  * Reduced motion: an instant jump and no Lock-on (CSS hides `.lock` too).
  */
-import type { ScrollTarget } from '../../lib/terminal/commands.ts';
+import { scrollTargets, type ScrollTarget } from '../../lib/terminal/commands.ts';
 
 export const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-const TARGETS: readonly ScrollTarget[] = ['top', 'about', 'experience', 'links'];
 
 /** Board timings: the bracket mounts 650ms after the click and unmounts at 2250ms. */
 export const LOCK_SHOW_MS = 650;
@@ -52,7 +50,7 @@ export function goTo(target: ScrollTarget): void {
   hideTimer = window.setTimeout(() => setLock(null), LOCK_HIDE_MS);
 }
 
-const isTarget = (id: string): id is ScrollTarget => (TARGETS as readonly string[]).includes(id);
+const isTarget = (id: string): id is ScrollTarget => (scrollTargets as readonly string[]).includes(id);
 
 /**
  * Routes clicks on in-page links to `#top`/`#about`/`#experience`/`#links`

@@ -12,7 +12,7 @@
  * Runs under reduced motion too, as on the board; CSS keeps the field still and
  * shows every Section outright.
  */
-const SECTIONS = ['about', 'experience', 'links'] as const;
+import { site } from '../../lib/content.ts';
 
 export function startTracking(): void {
   const root = document.getElementById('top');
@@ -21,7 +21,7 @@ export function startTracking(): void {
   const foot = document.getElementById('foot');
   const bar = document.querySelector<HTMLElement>('.bar');
   const here = document.querySelector<HTMLElement>('.bar .here');
-  const sections = SECTIONS.map((id) => document.getElementById(id)).filter((el) => el !== null);
+  const sections = site.sections.map(({ id }) => document.getElementById(id)).filter((el) => el !== null);
 
   const update = () => {
     const rect = root.getBoundingClientRect();
