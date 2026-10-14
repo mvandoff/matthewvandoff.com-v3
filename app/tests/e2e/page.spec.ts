@@ -65,3 +65,9 @@ test('the footer shows the current year', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('footer')).toContainText(`© ${new Date().getFullYear()} matthew van doff`);
 });
+
+test('the footer year follows the visitor\'s clock, not the build date', async ({ page }) => {
+  await page.clock.install({ time: new Date(2041, 5, 1, 12, 0, 0) });
+  await page.goto('/');
+  await expect(page.locator('footer')).toContainText('© 2041 matthew van doff');
+});

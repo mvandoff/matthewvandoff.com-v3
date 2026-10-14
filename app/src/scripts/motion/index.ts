@@ -5,7 +5,7 @@
  *   entrance  Boot, name glitch and ASCII coin flip. Starts BEFORE this module,
  *             from the inline script in components/Boot.astro (it must run before
  *             first paint); timings live in entrance.ts.
- *   clock     the Name card's live clock
+ *   clock     the Name card's live clock, and the footer year's refresh
  *   pointer   --mx/--my/--cv/--mfx/--mfy/--xh on <html> and the HUD values (name
  *             ghosts, background field, Crosshair)
  *   track     scroll progress --sp/--spi and --hlift on <html> (background field,
@@ -18,13 +18,14 @@
  * Reduced motion: each piece is skipped or short-circuited as on the board; the
  * CSS side is the reduced-motion block at the bottom of styles/global.css.
  */
-import { startClock } from './clock.ts';
+import { startClock, startYear } from './clock.ts';
 import { startPointer } from './pointer.ts';
 import { startScramble } from './scramble.ts';
 import { startNavigation } from './scroll.ts';
 import { startTracking } from './track.ts';
 
 startClock();
+startYear();
 startPointer();
 startTracking();
 startScramble();

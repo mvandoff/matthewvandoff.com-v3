@@ -13,6 +13,11 @@ export function formatStamp(d: Date): string {
   return `${DAYS[d.getDay()]} ${zeroPad(d.getDate())} ${MONTHS[d.getMonth()]} ${d.getFullYear()} · ${formatTime(d)}`;
 }
 
+/** The footer's year: built in for no-JS, then set to the visitor's current year. */
+export function startYear(root: ParentNode = document): void {
+  for (const el of root.querySelectorAll<HTMLElement>('[data-year]')) el.textContent = String(new Date().getFullYear());
+}
+
 /** Fills every [data-clock] element now, then on each second boundary. */
 export function startClock(root: ParentNode = document): void {
   const long = [...root.querySelectorAll<HTMLElement>('[data-clock="long"]')];

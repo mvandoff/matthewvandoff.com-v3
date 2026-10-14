@@ -1,5 +1,5 @@
 ---
-/** Centred footer: copyright with the current year, thanks line, back to top. */
+/** Centred footer: copyright with the current year (the build's, refreshed to the visitor's on load), thanks line, back to top. */
 import { site } from '../lib/content.ts';
 
 const year = new Date().getFullYear();
@@ -7,7 +7,7 @@ const year = new Date().getFullYear();
 
 <footer id="foot" class="wrap">
   <div class="foot ctr">
-    <span>© {year} {site.footer.owner}</span>
+    <span>© <span data-year>{year}</span> {site.footer.owner}</span>
     <span>{site.footer.thanks}</span>
     <a class="navlink" href="#top">{site.footer.backToTop}</a>
   </div>
