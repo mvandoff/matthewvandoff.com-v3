@@ -1,0 +1,33 @@
+{
+  "name": "matthewvandoff-com",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "pnpm@11.6.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run && playwright test",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "fonts": "node scripts/build-fonts.ts"
+  },
+  "dependencies": {
+    "astro": "7.3.8"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@playwright/test": "1.64.0",
+    "@types/fontkit": "^2.0.9",
+    "@types/node": "^24.19.2",
+    "fontkit": "^2.0.4",
+    "subset-font": "^2.9.0",
+    "typescript": "6.0.3",
+    "vitest": "5.0.4"
+  }
+}
