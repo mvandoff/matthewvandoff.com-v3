@@ -4,7 +4,7 @@
  * Every storage access is guarded: when storage is unavailable or full, the
  * override still applies for the visit and the page falls back to teal on reload.
  *
- * BaseLayout's head script (AccentHead.astro) applies a stored override before
+ * BaseLayout's inline head script applies a stored override before
  * first paint, with the same key and the same validity check.
  */
 import { accentStorageKey, defaultAccent, isAccentHex } from '../lib/accent.ts';
