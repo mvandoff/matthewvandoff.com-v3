@@ -136,3 +136,78 @@ test.describe('Episode', () => {
     await expect(ep.locator('.ep-t')).toHaveCSS('color', ACCENT);
   });
 });
+
+test.describe('github/linkedin scramble', () => {
+  /** A paused fake clock: the scramble's 34ms ticks only run when the test calls runFor. */
+  async function pauseClock(page: Page) {
+    const start = new Date(2026, 9, 14, 9, 30, 0);
+    await page.clock.install({ time: start });
+    await page.clock.pauseAt(start.getTime() + 10_000);
+  }
+
+  const link = (page: Page, name: string) => page.getByRole('link', { name, exact: true });
+  const live = (page: Page, name: string) => link(page, name).locator('.dw-live');
+  const noise = (page: Page, name: string) => link(page, name).locator('.nz');
+
+  /** Every box in the links Section, to prove the scramble never moves anything. */
+  const layout = (page: Page) =>
+    page
+      .locator('#links, #links .big, #links .dw, #links .dw-ghost, #links .big > [aria-hidden]:last-child, #foot')
+      .evaluateAll((els) => els.map((el) => JSON.stringify(el.getBoundingClientRect())));
+
+  for (const [name, trigger] of [
+    ['github', 'hover'],
+    ['linkedin', 'focus'],
+  ] as const) {
+    test(`${trigger} scrambles ${name} through glyphs, then resolves to the exact word without moving anything`, async ({
+      page,
+    }) => {
+      await pauseClock(page);
+      await page.goto('/');
+      await page.clock.runFor(4000); // past the entrance
+      await link(page, name).scrollIntoViewIfNeeded();
+      const before = await layout(page);
+      await expect(live(page, name)).toHaveText(name);
+
+      await (trigger === 'hover' ? link(page, name).hover() : link(page, name).focus());
+      const frames: string[] = [];
+      for (let i = 0; i < name.length + 8; i++) {
+        frames.push((await noise(page, name).textContent()) ?? '');
+        expect(await layout(page)).toEqual(before);
+        expect(await live(page, name).textContent()).toHaveLength(name.length);
+        await page.clock.runFor(34);
+      }
+      // All noise at first, then one more real letter per tick.
+      expect(frames[0]).toHaveLength(name.length);
+      expect(frames[0]).toMatch(/^[!<>\-_\\/[\]{}=+*^?#01]+$/);
+      expect(frames.slice(6, 6 + name.length).map((f) => f.length)).toEqual(
+        [...name].map((_, i) => name.length - i),
+      );
+      await expect(live(page, name)).toHaveText(name);
+      await expect(noise(page, name)).toBeEmpty();
+      expect(await layout(page)).toEqual(before);
+    });
+  }
+
+  test.describe('with reduced motion', () => {
+    test.use({ reducedMotion: 'reduce' });
+    test('the words never scramble', async ({ page }) => {
+      await pauseClock(page);
+      await page.goto('/');
+      await link(page, 'github').hover();
+      await page.clock.runFor(100);
+      await expect(live(page, 'github')).toHaveText('github');
+      await expect(noise(page, 'github')).toBeEmpty();
+    });
+  });
+});
+
+test.describe('without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+  test('the Crosshair never shows and the link words are plain', async ({ page }) => {
+    await page.goto('/');
+    await page.mouse.move(400, 300);
+    await expect(crosshair(page)).toHaveCSS('opacity', '0');
+    await expect(page.locator('#links .dw-live')).toHaveText(['github', 'linkedin']);
+  });
+});

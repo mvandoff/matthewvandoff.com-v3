@@ -6,8 +6,11 @@
  *             from the inline script in components/Boot.astro (it must run before
  *             first paint); timings live in entrance.ts.
  *   clock     the Name card's live clock
- *   pointer   --mx/--my on <html> (name ghosts, background field)
- *   track     scroll progress --sp/--spi on <html> (background field, progress line)
+ *   pointer   --mx/--my/--cv/--mfx/--mfy/--xh on <html> and the HUD values (name
+ *             ghosts, background field, Crosshair)
+ *   track     scroll progress --sp/--spi and --hlift on <html> (background field,
+ *             progress line, HUD)
+ *   scramble  the github/linkedin glyph scramble on hover and focus
  * Looping ambience (blob drift, fish, kaomoji, cursor blink) is pure CSS.
  *
  * Reduced motion: each piece is skipped or short-circuited as on the board; the
@@ -15,12 +18,13 @@
  *
  * Still to come:
  *   mvd-034.6  track: header prompt, header border, reveal; scroll.ts: Lock-on
- *   mvd-034.8  pointer: Crosshair/HUD vars; github/linkedin scramble
  */
 import { startClock } from './clock.ts';
 import { startPointer } from './pointer.ts';
+import { startScramble } from './scramble.ts';
 import { startTracking } from './track.ts';
 
 startClock();
 startPointer();
 startTracking();
+startScramble();

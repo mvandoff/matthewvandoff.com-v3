@@ -1,8 +1,9 @@
 ---
 /**
  * The links Section: big github ↗ and linkedin ↗ links. Each word sits in a
- * width-reserving ghost so the glyph scramble (mvd-034.8) never shifts layout:
- * .dw-live holds the resolved prefix plus a .nz noise tail while scrambling.
+ * width-reserving ghost so the glyph scramble (scripts/motion/scramble.ts) never
+ * shifts layout: .dw-live holds the resolved prefix plus a .nz noise tail while
+ * scrambling (the empty .nz is there at rest too, as on the board).
  */
 import { site } from '../lib/content.ts';
 import SectionHeading from './SectionHeading.astro';
@@ -15,10 +16,13 @@ const section = site.sections[2];
   <div class="big-list">
     {
       site.links.map((link) => (
-        <a class="big" href={link.href} aria-label={link.label}>
+        <a class="big" href={link.href} aria-label={link.label} data-scramble={link.label}>
           <span class="dw" aria-hidden="true">
             <span class="dw-ghost">{link.label}</span>
-            <span class="dw-live">{link.label}</span>
+            <span class="dw-live">
+              {link.label}
+              <span class="nz" />
+            </span>
           </span>
           <span class="arrow" aria-hidden="true">↗</span>
         </a>
@@ -70,6 +74,13 @@ const section = site.sections[2];
       left: 0;
       bottom: 0;
       white-space: pre;
+    }
+    .nz {
+      font-family: var(--font-body);
+      font-size: 0.62em;
+      font-weight: 400;
+      letter-spacing: 0;
+      color: var(--accent);
     }
     .arrow {
       font-family: 'Martian Mono', monospace;
