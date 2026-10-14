@@ -17,6 +17,8 @@ const { section } = Astro.props;
   <span class="sh-n"><span class="acc">{section.number}</span><span>/ {site.sectionTotal}</span></span>
   <span class="sh-r" aria-hidden="true"></span>
   <span class="sh-t">
+    <span class="lock" data-lock={section.id} aria-hidden="true" hidden></span>
+    <span class="locktag" data-lock={section.id} aria-hidden="true" hidden>{site.lockOn}{section.id}</span>
     <span>{section.label}{section.headingSuffix && <span class="sh-x">{section.headingSuffix}</span>}</span>
     <span class="sh-jp" lang="ja">{section.jp}</span>
   </span>

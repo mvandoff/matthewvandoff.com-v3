@@ -22,9 +22,11 @@
 import { startClock } from './clock.ts';
 import { startPointer } from './pointer.ts';
 import { startScramble } from './scramble.ts';
+import { startNavigation } from './scroll.ts';
 import { startTracking } from './track.ts';
 
 startClock();
 startPointer();
 startTracking();
 startScramble();
+startNavigation();

@@ -99,6 +99,9 @@ export const site = {
     { id: 'links', number: '04', label: 'links', jp: 'リンク' },
   ] satisfies readonly SectionCopy[],
 
+  /** Lock-on tag on a Section heading after navigating to it, followed by the Section id. */
+  lockOn: 'found ~/',
+
   /** Denominator in Section headings ("02 / 04"): the Name card is 01. */
   sectionTotal: '04',
 

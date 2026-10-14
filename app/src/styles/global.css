@@ -100,6 +100,29 @@
   .acc {
     color: var(--accent);
   }
+
+  /* Lock-on (board 238-241): a brief Accent bracket, with a "found ~/<id>" tag on
+     Section headings, shown after a smooth scroll lands. Rendered `hidden`; the
+     scroll helper (scripts/motion/scroll.ts) unhides it, which restarts the run. */
+  .lock {
+    position: absolute;
+    inset: -14px -20px;
+    border: 1px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    pointer-events: none;
+    animation: lockbox 1.5s var(--ease-snap) both;
+  }
+  .locktag {
+    position: absolute;
+    left: -20px;
+    bottom: calc(100% + 20px);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    white-space: nowrap;
+    pointer-events: none;
+    animation: locktag 1.5s linear both;
+  }
 }
 
 @keyframes blink {
@@ -387,6 +410,40 @@
   }
 }
 
+/* Lock-on: the bracket opens as a line, grows to a box, holds, closes again. */
+@keyframes lockbox {
+  0% {
+    transform: scale(0, 0.03);
+  }
+  18% {
+    transform: scale(1, 0.03);
+  }
+  36%,
+  70% {
+    transform: scale(1, 1);
+  }
+  86% {
+    transform: scale(1, 0.03);
+  }
+  100% {
+    transform: scale(0, 0.03);
+  }
+}
+@keyframes locktag {
+  0%,
+  34% {
+    opacity: 0;
+  }
+  38%,
+  68% {
+    opacity: 1;
+  }
+  72%,
+  100% {
+    opacity: 0;
+  }
+}
+
 /* ---- Responsive (unlayered: overrides components) ----------------------------
    Breakpoints are the design's: 760px phone, 900px Episode reflow,
    (hover: hover) and (pointer: fine) for the Crosshair.
@@ -407,7 +464,9 @@
     transition: none;
   }
   .boot,
-  .xh {
+  .xh,
+  .lock,
+  .locktag {
     display: none;
   }
   .ln-i,

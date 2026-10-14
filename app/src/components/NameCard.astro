@@ -32,7 +32,9 @@ const ghostOpacity = 0.55; // ghost strength 1 × 0.55, frozen from the board
   <span class="kana" lang="ja" aria-hidden="true">{nameCard.katakana}</span>
 
   <div class="nc-top">
-    <span class="nc-prompt">{nameCard.prompt}</span>
+    <span class="nc-prompt"
+      ><span class="lock" data-lock="top" aria-hidden="true" hidden></span>{nameCard.prompt}</span
+    >
     <span class="stamp">
       <span class="st-l" data-clock="long"></span><span class="st-s" data-clock="short"></span>
     </span>
@@ -151,7 +153,10 @@ const ghostOpacity = 0.55; // ghost strength 1 × 0.55, frozen from the board
       color: var(--dim);
     }
     .nc-prompt {
-      position: relative; /* hosts the home Lock-on (mvd-034.6) */
+      position: relative; /* hosts the home Lock-on */
+    }
+    .nc-prompt .lock {
+      inset: -8px -12px;
     }
     .stamp {
       font-variant-numeric: tabular-nums;
