@@ -82,7 +82,7 @@ const status = await listening({ now: () => new Date(), music });
       top: calc(var(--lead-h) + 8px);
       z-index: 2;
       padding: 0;
-      background: color-mix(in srgb, var(--panel) 50%, transparent);
+      background: color-mix(in srgb, var(--ground-2) 50%, transparent);
       transition:
         top 0.5s var(--ease-snap),
         background-color 0.3s,
@@ -96,7 +96,7 @@ const status = await listening({ now: () => new Date(), music });
     @media (min-width: 761px) {
       :global(.lead-col.xp) .sig {
         top: 0;
-        background: var(--panel-xp);
+        background: var(--ground-xp);
       }
       :global(.lead-col.xp .cel.lead) {
         opacity: 0;

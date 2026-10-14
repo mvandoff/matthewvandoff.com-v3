@@ -3,11 +3,11 @@
  * Values are frozen from the Warm Terminal board (design/reference/warm-terminal.html).
  */
 :root {
-  /* Ground: page and panel fills. */
+  /* Ground: page, Strip item and Boot fills (--ground-2 sits one step above the page). */
   --ground: #1b1c21;
-  --panel: #202128;
-  --panel-xp: #1d1e24; /* the expanded Terminal */
-  --boot-panel: #111216;
+  --ground-2: #202128;
+  --ground-xp: #1d1e24; /* the expanded Terminal */
+  --ground-boot: #111216;
 
   /* Ink: text, brightest first. */
   --ink: #e4ddcf;

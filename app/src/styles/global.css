@@ -71,7 +71,7 @@
     box-sizing: border-box;
   }
 
-  /* One bordered panel in the Strip: the Name card, the Terminal and the nav Cels. */
+  /* One bordered item in the Strip: the Name card, the Terminal and the nav Cels. */
   .cel {
     flex: 1 1 0;
     min-width: 0;
@@ -162,7 +162,7 @@
 
 /* ---- Entrance and ambient keyframes (board lines 135-137, 167-169, 184-191, 244-253) */
 
-/* Boot: the overlay hides itself at 1.35s; the panels split open from the line. */
+/* Boot: the overlay hides itself at 1.35s; the two halves split open from the line. */
 @keyframes bootgone {
   to {
     visibility: hidden;
