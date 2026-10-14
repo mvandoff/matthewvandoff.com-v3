@@ -139,15 +139,15 @@ export function startTerminal(box = document.querySelector<HTMLElement>('[data-t
     body.scrollTop = 0;
   };
 
-  const showMeta = (text: string) => {
-    meta.textContent = text;
+  const showMeta = (text?: string) => {
+    meta.textContent = text ?? '';
     meta.hidden = !text;
     kana.hidden = !!text;
   };
 
   const render = (result: Result) => {
     showBody(result.output?.lines ?? null, result.output?.rows);
-    cmd.textContent = `${prompt} ${result.echo || idleCommand}`;
+    cmd.textContent = `${prompt} ${result.echo ?? idleCommand}`;
     showMeta(result.meta);
     leadCol?.classList.toggle('xp', result.large);
     syncChrome();
@@ -174,7 +174,7 @@ export function startTerminal(box = document.querySelector<HTMLElement>('[data-t
       // Listing options keeps the header echo and the expansion as they were.
       generation++;
       showBody(completion.lines);
-      showMeta('');
+      showMeta();
     }
     syncChrome();
   };
@@ -206,7 +206,7 @@ export function startTerminal(box = document.querySelector<HTMLElement>('[data-t
       case 'Escape':
         generation++;
         input.value = '';
-        render({ output: null, echo: '', meta: '', large: false, effects: [] });
+        render({ output: null, large: false, effects: [] });
         input.blur();
         break;
     }

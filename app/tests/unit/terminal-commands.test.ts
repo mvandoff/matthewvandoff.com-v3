@@ -21,7 +21,7 @@ describe('help', () => {
     expect(result.output?.rows).toEqual([]);
     expect(result.large).toBe(true);
     expect(result.echo).toBe('help');
-    expect(result.meta).toBe('');
+    expect(result.meta).toBeUndefined();
     expect(result.effects).toEqual([]);
   });
 });
@@ -45,7 +45,7 @@ describe('matching', () => {
 
   it('treats an empty line as going back to the idle status', async () => {
     for (const input of ['', '   ']) {
-      expect(await execute(input, ctx)).toEqual({ output: null, echo: '', meta: '', large: false, effects: [] });
+      expect(await execute(input, ctx)).toEqual({ output: null, large: false, effects: [] });
     }
   });
 });
@@ -58,7 +58,7 @@ describe('ls', () => {
       [['cd <name> to jump there', 'dim']],
     ]);
     expect(result.large).toBe(false);
-    expect(result.meta).toBe('');
+    expect(result.meta).toBeUndefined();
   });
 });
 
@@ -88,7 +88,7 @@ describe('whoami, date, sudo', () => {
 
 describe('clear and its aliases', () => {
   it.each(['clear', 'cls', 'exit', 'status', 'cat', 'CAT status.txt'])('%s goes back to the idle status', async (input) => {
-    expect(await execute(input, ctx)).toEqual({ output: null, echo: '', meta: '', large: false, effects: [] });
+    expect(await execute(input, ctx)).toEqual({ output: null, large: false, effects: [] });
   });
 });
 

@@ -54,10 +54,10 @@ export type Effect =
 export interface Result {
   /** What the Terminal body shows; null = back to the idle status. */
   output: Output | null;
-  /** Header command echo (raw trimmed input, case kept); '' = the idle command. */
-  echo: string;
-  /** Header meta label on the right; '' = show the kana instead. */
-  meta: string;
+  /** Header command echo (raw trimmed input, case kept); absent = the idle command. */
+  echo?: string;
+  /** Header meta label on the right; absent = show the kana instead. */
+  meta?: string;
   /** Large output expands the Terminal over the Name card on desktop. */
   large: boolean;
   effects: Effect[];
@@ -99,7 +99,7 @@ export const line = (...parts: Array<[string, Tone?]>): Line =>
 export const out = (
   call: Invocation,
   lines: Line[],
-  { meta = '', rows = [] as Row[], large = true, effects = [] as Effect[] } = {},
+  { meta, rows = [] as Row[], large = true, effects = [] as Effect[] }: { meta?: string; rows?: Row[]; large?: boolean; effects?: Effect[] } = {},
 ): Result => ({ output: { lines, rows }, echo: call.input, meta, large, effects });
 
 /** Small output: stays inside the Terminal. */
@@ -107,7 +107,7 @@ export const small = (call: Invocation, lines: Line[], effects: Effect[] = []): 
   out(call, lines, { large: false, effects });
 
 /** Back to the idle status. */
-export const idle = (): Result => ({ output: null, echo: '', meta: '', large: false, effects: [] });
+export const idle = (): Result => ({ output: null, large: false, effects: [] });
 
 const help: Command = (call) =>
   out(call, [
