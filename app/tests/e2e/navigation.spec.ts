@@ -32,8 +32,8 @@ test.describe('Cels', () => {
       await cel(page, id).click();
       await expect.poll(() => scrollTop(page)).toBe(await landingFor(page, id));
       await expect(lockTag(page, id)).toHaveText(`found ~/${id}`);
-      await expect(lockTag(page, id)).toBeVisible();
-      await expect(page.locator(`#${id} .lock`)).toBeVisible();
+      // Bracket and tag show together (checked in one go: the window is only 1.6s).
+      await expect(page.locator(`#${id}`).locator('.lock:visible, .locktag:visible')).toHaveCount(2);
       // The bracket is brief: gone again after its 1.5s run.
       await expect(lockTag(page, id)).toBeHidden({ timeout: 4000 });
       await expect(page).toHaveURL(/\/$/);
@@ -187,6 +187,16 @@ test.describe('hash URLs', () => {
     });
   }
 
+  test('/#links still lands once late fonts have changed the page height', async ({ page }) => {
+    await page.route('**/fonts/**', async (route) => {
+      await new Promise((r) => setTimeout(r, 1000));
+      await route.continue();
+    });
+    await page.goto('/#links');
+    await page.evaluate(() => document.fonts.ready);
+    await expect.poll(() => scrollTop(page)).toBe(await landingFor(page, 'links'));
+  });
+
   test('changing the hash on the page lands on the Section too', async ({ page }) => {
     await page.goto('/');
     await page.evaluate(() => (location.hash = '#experience'));
@@ -199,7 +209,9 @@ test.describe('hash URLs', () => {
     test.use({ javaScriptEnabled: false });
     test('/#links lands on the Section', async ({ page }) => {
       await page.goto('/#links');
-      await expect.poll(() => scrollTop(page)).toBe(await landingFor(page, 'links'));
+      // The browser's own jump can come before the fonts settle the page height, so
+      // without JS it may end a few px short of the very bottom.
+      await expect.poll(async () => Math.abs((await scrollTop(page)) - (await landingFor(page, 'links')))).toBeLessThan(8);
     });
   });
 });

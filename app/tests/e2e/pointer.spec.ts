@@ -169,6 +169,15 @@ test.describe('github/linkedin scramble', () => {
       await page.goto('/');
       await page.clock.runFor(4000); // past the entrance
       await link(page, name).scrollIntoViewIfNeeded();
+      // Let the Section's reveal-on-scroll run to its end first. The scroll event fires
+      // a real frame later and tracking then runs on a (fake-clock) rAF.
+      await expect
+        .poll(async () => {
+          await page.clock.runFor(20);
+          return page.locator('#links').evaluate((el) => el.classList.contains('in'));
+        })
+        .toBe(true);
+      await page.locator('#links').evaluate((el) => el.getAnimations({ subtree: true }).forEach((a) => a.finish()));
       const before = await layout(page);
       await expect(live(page, name)).toHaveText(name);
 

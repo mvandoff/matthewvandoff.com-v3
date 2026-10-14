@@ -144,8 +144,20 @@ async function drive(page: Page) {
   for (const y of [8, 9, 700, 1350, 1700, 99_999]) {
     await scrollTo(page, y);
     if (y === 700) {
-      // Experience is revealed here: compare its transitions as they start.
-      states['revealing experience'] = (await snapshot(page))['experience'] as Snapshot;
+      // Experience is revealed here: compare the transitions that start (their progress
+      // depends on real time, so only what runs and how).
+      states['revealing experience'] = {
+        transitions: await page.locator('#experience').evaluate((el) =>
+          el
+            .getAnimations({ subtree: true })
+            .map((a) => {
+              const t = (a.effect as KeyframeEffect).getTiming();
+              const pseudo = (a.effect as KeyframeEffect).pseudoElement ?? '';
+              return `${(a as CSSTransition).transitionProperty}${pseudo} ${t.duration}ms ${t.delay}ms ${t.easing}`;
+            })
+            .sort(),
+        ),
+      };
     }
     await finishTransitions(page);
     states[`scrolled to ${y}`] = await snapshot(page);
