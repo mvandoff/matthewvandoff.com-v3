@@ -1,0 +1,3 @@
+# Terraform for infrastructure
+
+v3's AWS infrastructure (S3 bucket, CloudFront distribution, GitHub OIDC deploy role, Route 53 records, and later the last.fm proxy) is defined in Terraform in `infra/`, with state in an S3 backend. AWS CDK was the natural fit, since it's in the same TypeScript as the site. Terraform was chosen partly for its résumé value: it appears in far more job postings and works across clouds. It also adopts the existing hosted zone and wildcard certificate cleanly with `import` blocks. The v2 site, kept at `v2.matthewvandoff.com`, stays outside Terraform: it was set up by hand and won't change again.
