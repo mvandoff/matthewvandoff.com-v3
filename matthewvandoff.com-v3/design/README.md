@@ -1,6 +1,6 @@
 # Design reference
 
-This is a frozen copy of the **Warm Terminal** board from the claude.ai Design canvas *matthew van doff — portfolio* (https://claude.ai/artifact/X5Jwhwuai4DM4m3sXHk9V7), taken on 2026-10-14. It is the source of truth for [docs/specs/warm-terminal.md](../docs/specs/warm-terminal.md), and agents use it because they can't open the canvas.
+This is a frozen copy of the **Warm Terminal** board from the claude.ai Design canvas *matthew van doff — portfolio* (https://claude.ai/artifact/X5Jwhwuai4DM4m3sXHk9V7), taken on 2026-10-14. It is the source of truth for [docs/specs/warm-terminal.md](../../docs/specs/warm-terminal.md), and agents use it because they can't open the canvas.
 
 - `reference/warm-terminal.html` is the board's source, unchanged except that the Gridular font URL points at the local copy.
 - `reference/support.js` is the canvas's Design Component runtime (it bundles React). The board loads it by that name.

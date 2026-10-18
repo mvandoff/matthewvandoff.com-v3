@@ -9,6 +9,10 @@
 # macOS
 .DS_Store
 
-# Throwaway last.fm probe (mvd-u5q.1)
-lastfm-probe.mjs
-lastfm-probe-output/
+# Old versions: reference only, each is its own repo
+/matthewvandoff.com-v1/
+/matthewvandoff.com-v2/
+
+# Agent scratch space
+/agents/*
+!/agents/README.md

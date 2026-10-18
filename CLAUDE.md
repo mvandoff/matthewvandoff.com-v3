@@ -1,6 +1,11 @@
 # matthewvandoff.com
 
-Astro site lives in `app/`. Docs, issues and agent config live at the repo root.
+Three versions of https://matthewvandoff.com. We are working on v3.
+
+- `matthewvandoff.com-v3/`: the active site. The Astro app is in `app/` (run `pnpm` commands there); `design/` holds the frozen Warm Terminal board and handoff note.
+- `matthewvandoff.com-v1/`, `matthewvandoff.com-v2/`: old versions, reference only. Each is its own git repo, ignored by this one. Don't edit them.
+- Docs, issues and agent config live at the repo root: `docs/`, `GLOSSARY.md`, `.beads/`, `.claude/`.
+- `agents/`: scratch space for agents, git-ignored. One folder per bead (`agents/mvd-<id>/`) or `agents/adhoc/YYYY-MM-DD-<slug>/`. See `agents/README.md`.
 
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:1105d646 -->
 ## Beads Issue Tracker
