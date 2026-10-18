@@ -10,8 +10,7 @@
 .DS_Store
 
 # Old versions: reference only, each is its own repo
-/matthewvandoff.com-v1/
-/matthewvandoff.com-v2/
+/archive/
 
 # Agent scratch space
 /agents/*

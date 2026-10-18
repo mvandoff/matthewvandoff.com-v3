@@ -1,9 +1,10 @@
 # matthewvandoff.com
 
-Three versions of https://matthewvandoff.com. We are working on v3.
+Personal site, https://matthewvandoff.com. This repo is v3.
 
-- `matthewvandoff.com-v3/`: the active site. The Astro app is in `app/` (run `pnpm` commands there); `design/` holds the frozen Warm Terminal board and handoff note.
-- `matthewvandoff.com-v1/`, `matthewvandoff.com-v2/`: old versions, reference only. Each is its own git repo, ignored by this one. Don't edit them.
+- `app/`: the Astro site. Run `pnpm` commands there.
+- `design/`: the frozen Warm Terminal board and handoff note. Reference only, never shipped.
+- `archive/v1/`, `archive/v2/`: old versions, reference only. Each is its own git repo, ignored by this one. Don't edit them.
 - Docs, issues and agent config live at the repo root: `docs/`, `GLOSSARY.md`, `.beads/`, `.claude/`.
 - `agents/`: scratch space for agents, git-ignored. One folder per bead (`agents/mvd-<id>/`) or `agents/adhoc/YYYY-MM-DD-<slug>/`. See `agents/README.md`.
 
