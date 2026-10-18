@@ -5,6 +5,7 @@
 .beads-credential-key
 .beads/proxieddb/
 *.gate.lock*
+.beads/issues.jsonl
 
 # macOS
 .DS_Store
