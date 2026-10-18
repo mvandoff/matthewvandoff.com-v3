@@ -8,3 +8,7 @@
 
 # macOS
 .DS_Store
+
+# Throwaway last.fm probe (mvd-u5q.1)
+lastfm-probe.mjs
+lastfm-probe-output/

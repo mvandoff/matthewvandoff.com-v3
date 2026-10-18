@@ -5,3 +5,6 @@ test-results/
 playwright-report/
 blob-report/
 .font-cache/
+
+# Local secrets (last.fm API key)
+.env
