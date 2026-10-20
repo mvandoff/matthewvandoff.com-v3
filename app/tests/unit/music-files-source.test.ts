@@ -92,12 +92,12 @@ describe('the files music source', () => {
     }
   });
 
-  it('shows the playing track as started 0m ago when fetched just now (until mvd-tt6 words it)', async () => {
+  it('shows the playing track as now playing', async () => {
     const now = () => FETCHED_AT;
     const result = await execute('np', { now, music: createFilesMusic({ fetch: serve().fetch }), accent: noAccent });
     expect(result.output?.lines.map((l) => l.map((s) => s.text).join(''))).toEqual([
       '▶ Spoonman — Soundgarden',
-      '  on Superunknown (20th Anniversary) · started 0m ago',
+      '  now playing',
     ]);
   });
 

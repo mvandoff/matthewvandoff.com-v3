@@ -54,7 +54,7 @@ test('np shows the last played track, expanded', async ({ page }) => {
   await t.run('np');
   await expect.poll(() => t.lines()).toEqual([
     '■ [track title] — [artist]',
-    '  last played 2h ago · nothing on right now',
+    '  2h ago',
   ]);
   await expect(t.header).toContainText('last.fm · mock data');
   await expectExpanded(page);

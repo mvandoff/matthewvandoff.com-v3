@@ -194,17 +194,11 @@ export function ago(at: Date, now: Date): string {
 
 const np: Command = async (call, ctx) => {
   const np = await ctx.music.nowPlaying();
-  const { title, artist, album } = np.track;
-  const when = ago(np.at, ctx.now());
+  const { title, artist } = np.track;
+  // last.fm gives no start time for the playing track, so it shows no time.
   const lines = np.playing
-    ? [
-        line(['▶ ', 'acc'], [`${title} — ${artist}`]),
-        line([`  ${album ? `on ${album} · ` : ''}started ${when} ago`, 'dim']),
-      ]
-    : [
-        line(['■ ', 'dim'], [`${title} — ${artist}`]),
-        line([`  last played ${when} ago · nothing on right now`, 'dim']),
-      ];
+    ? [line(['▶ ', 'acc'], [`${title} — ${artist}`]), line(['  now playing', 'dim'])]
+    : [line(['■ ', 'dim'], [`${title} — ${artist}`]), line([`  ${ago(np.at, ctx.now())} ago`, 'dim'])];
   return out(call, lines, { meta: `last.fm${mockLabel(np.mock)}` });
 };
 

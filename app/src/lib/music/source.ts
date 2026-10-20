@@ -44,7 +44,7 @@ export interface NowPlaying {
   track: Track;
   /** True while a track is playing; false means `track` was the last one played. */
   playing: boolean;
-  /** When it started (playing) or was last played. */
+  /** When it was last played. For a playing track last.fm gives no start time, so the Terminal shows none. */
   at: Date;
   mock: boolean;
   /** When the data was read from last.fm, for how old it is (a mock reports its own time). */

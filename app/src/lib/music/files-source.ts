@@ -23,8 +23,7 @@ export function createFilesMusic({ baseUrl = '/', fetch = globalThis.fetch.bind(
     return (await res.json()) as T;
   }
 
-  /** The playing track has no start time in the file; its `at` is the file's `fetchedAt`. */
-  // TODO(mvd-tt6): decide what to show for a playing track's time; until then np reads "started 0m ago".
+  /** The playing track has no start time in the file; its `at` is the file's `fetchedAt`. The Terminal shows no time for it. */
   const played = ({ track, playing, at }: PlayedTrackJson, file: RecentFile): PlayedTrack => ({
     track,
     playing,

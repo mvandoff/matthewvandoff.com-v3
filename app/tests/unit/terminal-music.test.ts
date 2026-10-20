@@ -103,7 +103,7 @@ describe('np', () => {
     const result = await execute('np', ctx);
     expect(result.output?.lines.map(pairs)).toEqual([
       [['■ ', 'dim'], ['[track title] — [artist]', '']],
-      [['  last played 2h ago · nothing on right now', 'dim']],
+      [['  2h ago', 'dim']],
     ]);
     expect(result.output?.rows).toEqual([]);
     expect(result.meta).toBe('last.fm · mock data');
@@ -111,12 +111,12 @@ describe('np', () => {
     expect(result.echo).toBe('np');
   });
 
-  it('shows the playing track, its album and when it started while playing', async () => {
+  it('shows the playing track as now playing, with no album or time', async () => {
     const playing = { now, music: createMockMusic({ now, playing: true }), accent: noAccent };
     const result = await execute('NP', playing);
     expect(result.output?.lines.map(pairs)).toEqual([
       [['▶ ', 'acc'], ['[track title] — [artist]', '']],
-      [['  on [album] · started 2m ago', 'dim']],
+      [['  now playing', 'dim']],
     ]);
     expect(result.meta).toBe('last.fm · mock data');
     expect(result.large).toBe(true);
@@ -214,11 +214,11 @@ describe('another music source (e.g. real last.fm)', () => {
     expect(result.meta).toBe('top tracks · 7 days');
   });
 
-  it('shows its now playing track, leaving out the album it does not have', async () => {
+  it('shows its now playing track', async () => {
     const result = await execute('np', real);
     expect(result.output?.lines.map(pairs)).toEqual([
       [['▶ ', 'acc'], ['Teardrop — Massive Attack', '']],
-      [['  started 1m ago', 'dim']],
+      [['  now playing', 'dim']],
     ]);
     expect(result.meta).toBe('last.fm');
   });

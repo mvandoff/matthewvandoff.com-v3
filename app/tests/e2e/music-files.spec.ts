@@ -30,7 +30,7 @@ test('np shows the sample files\' playing track, with no mock data label', async
   await t.run('np');
   await expect.poll(() => t.lines()).toEqual([
     '▶ Spoonman — Soundgarden',
-    '  on Superunknown (20th Anniversary) · started 5m ago',
+    '  now playing',
   ]);
   await expect(t.header).toContainText('last.fm');
   await expect(t.header).not.toContainText('mock data');
@@ -67,8 +67,7 @@ test('with a file missing, np shows no mock data (what it shows instead is mvd-t
   const t = terminal(page);
   await t.run('np');
   await expect(page.getByText('· mock data')).toHaveCount(0);
-  await expect(t.body).not.toContainText('last played');
-  await expect(t.body).not.toContainText('started');
+  await expect(t.body).not.toContainText('now playing');
   // Still the build's idle status, whose placeholder track the files refresh could not replace.
   await expect(t.body.locator('dd').nth(1)).toContainText('[track title]');
 });
