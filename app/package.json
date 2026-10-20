@@ -18,16 +18,20 @@
     "test:design": "playwright test --project=design",
     "design:baselines": "node scripts/design-baselines.ts",
     "fonts": "node scripts/build-fonts.ts",
-    "music:samples": "node scripts/music-samples.ts"
+    "music:samples": "node scripts/music-samples.ts",
+    "fetcher:build": "esbuild fetcher/index.ts --bundle --platform=node --target=node24 --format=esm --outfile=dist-fetcher/index.mjs"
   },
   "dependencies": {
     "astro": "7.3.8"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@aws-sdk/client-s3": "^3.1152.0",
+    "@aws-sdk/client-ssm": "^3.1152.0",
     "@playwright/test": "1.64.0",
     "@types/fontkit": "^2.0.9",
     "@types/node": "^24.19.2",
+    "esbuild": "^0.28.2",
     "fontkit": "^2.0.4",
     "subset-font": "^2.9.0",
     "typescript": "6.0.3",

@@ -1,7 +1,7 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "dist-files", ".font-cache", "playwright-report", "test-results", "blob-report"],
+  "exclude": ["dist", "dist-files", "dist-fetcher", ".font-cache", "playwright-report", "test-results", "blob-report"],
   "compilerOptions": {
     "erasableSyntaxOnly": true,
     "types": ["node"]

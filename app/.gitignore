@@ -1,6 +1,7 @@
 node_modules/
 dist/
 dist-files/
+dist-fetcher/
 .astro/
 test-results/
 playwright-report/
