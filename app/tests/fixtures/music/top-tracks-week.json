@@ -1,0 +1,22 @@
+{
+  "fetchedAt": "2026-10-19T12:00:00.000Z",
+  "kind": "tracks",
+  "period": "week",
+  "items": [
+    {
+      "name": "What You Are",
+      "artist": "Audioslave",
+      "plays": 3
+    },
+    {
+      "name": "Car Alarm",
+      "artist": "Andris Mattson",
+      "plays": 2
+    },
+    {
+      "name": "the understory",
+      "artist": "Andris Mattson",
+      "plays": 2
+    }
+  ]
+}

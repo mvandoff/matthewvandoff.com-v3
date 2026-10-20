@@ -91,7 +91,7 @@ export function createMockMusic({ now = () => new Date(), playing = false }: Moc
         if (artist) item.artist = artist;
         return item;
       });
-      return { items, mock: true };
+      return { items, mock: true, fetchedAt: now() };
     },
     async nowPlaying() {
       return {
@@ -99,6 +99,7 @@ export function createMockMusic({ now = () => new Date(), playing = false }: Moc
         playing,
         at: minutesAgo(now(), playing ? 2.5 : 130),
         mock: true,
+        fetchedAt: now(),
       };
     },
     async recent() {
@@ -110,7 +111,7 @@ export function createMockMusic({ now = () => new Date(), playing = false }: Moc
           at: minutesAgo(now(), offsets[i]!),
         }),
       );
-      return { tracks, mock: true };
+      return { tracks, mock: true, fetchedAt: now() };
     },
   };
 }

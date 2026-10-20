@@ -17,7 +17,8 @@
     "test:e2e": "playwright test",
     "test:design": "playwright test --project=design",
     "design:baselines": "node scripts/design-baselines.ts",
-    "fonts": "node scripts/build-fonts.ts"
+    "fonts": "node scripts/build-fonts.ts",
+    "music:samples": "node scripts/music-samples.ts"
   },
   "dependencies": {
     "astro": "7.3.8"

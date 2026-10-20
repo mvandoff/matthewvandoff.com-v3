@@ -1,0 +1,22 @@
+{
+  "fetchedAt": "2026-10-19T12:00:00.000Z",
+  "kind": "albums",
+  "period": "month",
+  "items": [
+    {
+      "name": "Audioslave",
+      "artist": "Audioslave",
+      "plays": 18
+    },
+    {
+      "name": "the understory",
+      "artist": "Andris Mattson",
+      "plays": 13
+    },
+    {
+      "name": "Hærværk/Mesterværk",
+      "artist": "SOLEIMA",
+      "plays": 2
+    }
+  ]
+}

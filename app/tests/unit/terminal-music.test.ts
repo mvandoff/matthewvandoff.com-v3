@@ -183,10 +183,11 @@ describe('another music source (e.g. real last.fm)', () => {
           { name: 'Avril 14th', artist: 'Aphex Twin', plays: 3 },
         ],
         mock: false,
+        fetchedAt: NOW,
       };
     },
     async nowPlaying() {
-      return { track: { title: 'Teardrop', artist: 'Massive Attack' }, playing: true, at: minutesAgo(1), mock: false };
+      return { track: { title: 'Teardrop', artist: 'Massive Attack' }, playing: true, at: minutesAgo(1), mock: false, fetchedAt: NOW };
     },
     async recent() {
       return {
@@ -196,6 +197,7 @@ describe('another music source (e.g. real last.fm)', () => {
           at: minutesAgo([0, 59, 60, 1439, 1440, 4400][i] ?? 9000),
         })),
         mock: false,
+        fetchedAt: NOW,
       };
     },
   };

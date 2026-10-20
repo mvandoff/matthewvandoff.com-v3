@@ -1,10 +1,14 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const port = 4329;
+/** A second build and preview, with the files music source (see src/lib/music/index.ts). */
+const filesPort = 4330;
 
 /**
  * Behaviour tests run against `astro preview` of a fresh production build.
- * Desktop is the default project; phone-width specs set their own viewport.
+ * Desktop is the default project; phone-width specs set their own viewport. Its build
+ * uses the mock music source; the `music-files` project runs against a build that reads
+ * music files, which its spec serves from the sample files.
  */
 export default defineConfig({
   testDir: 'tests/e2e',
@@ -24,7 +28,13 @@ export default defineConfig({
   projects: [
     {
       name: 'desktop',
+      testIgnore: 'music-files.spec.ts',
       use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
+    },
+    {
+      name: 'music-files',
+      testMatch: 'music-files.spec.ts',
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, baseURL: `http://127.0.0.1:${filesPort}` },
     },
     {
       // Site vs the Warm Terminal board in a frozen state; see tests/design/freeze.ts.
@@ -33,13 +43,21 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
     },
   ],
-  webServer: {
-    // astro is invoked directly (not via pnpm) so stopping the server stops astro
-    // too. --ignore-lock keeps preview in the foreground: Astro otherwise
-    // backgrounds it when it detects an AI agent, and Playwright loses track of it.
-    command: `astro build && astro preview --ignore-lock --host 127.0.0.1 --port ${port}`,
-    url: `http://127.0.0.1:${port}`,
-    reuseExistingServer: false,
-    timeout: 120_000,
-  },
+  webServer: [
+    {
+      // astro is invoked directly (not via pnpm) so stopping the server stops astro
+      // too. --ignore-lock keeps preview in the foreground: Astro otherwise
+      // backgrounds it when it detects an AI agent, and Playwright loses track of it.
+      command: `PUBLIC_MUSIC_SOURCE=mock astro build && astro preview --ignore-lock --host 127.0.0.1 --port ${port}`,
+      url: `http://127.0.0.1:${port}`,
+      reuseExistingServer: false,
+      timeout: 120_000,
+    },
+    {
+      command: `ASTRO_OUT_DIR=dist-files PUBLIC_MUSIC_SOURCE=files astro build && ASTRO_OUT_DIR=dist-files astro preview --ignore-lock --host 127.0.0.1 --port ${filesPort}`,
+      url: `http://127.0.0.1:${filesPort}`,
+      reuseExistingServer: false,
+      timeout: 120_000,
+    },
+  ],
 });

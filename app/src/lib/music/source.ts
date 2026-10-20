@@ -30,6 +30,8 @@ export interface TopList {
   items: TopItem[];
   /** True for placeholder data; drives the "· mock data" meta labels. */
   mock: boolean;
+  /** When the data was read from last.fm, for how old it is (a mock reports its own time). */
+  fetchedAt: Date;
 }
 
 export interface Track {
@@ -45,6 +47,8 @@ export interface NowPlaying {
   /** When it started (playing) or was last played. */
   at: Date;
   mock: boolean;
+  /** When the data was read from last.fm, for how old it is (a mock reports its own time). */
+  fetchedAt: Date;
 }
 
 export interface PlayedTrack {
@@ -58,6 +62,8 @@ export interface RecentTracks {
   /** Newest first. */
   tracks: PlayedTrack[];
   mock: boolean;
+  /** When the data was read from last.fm, for how old it is (a mock reports its own time). */
+  fetchedAt: Date;
 }
 
 export interface MusicSource {
