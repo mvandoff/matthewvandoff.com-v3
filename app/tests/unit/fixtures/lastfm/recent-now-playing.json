@@ -1,0 +1,177 @@
+{
+  "recenttracks": {
+    "track": [
+      {
+        "artist": {
+          "#text": "Soundgarden"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "Superunknown (20th Anniversary)"
+        },
+        "name": "Spoonman",
+        "@attr": {
+          "nowplaying": "true"
+        },
+        "url": "https://www.last.fm/music/Soundgarden/_/Spoonman"
+      },
+      {
+        "artist": {
+          "#text": "Soundgarden"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "Superunknown (20th Anniversary)"
+        },
+        "name": "Spoonman",
+        "url": "https://www.last.fm/music/Soundgarden/_/Spoonman",
+        "date": {
+          "uts": "1791926473",
+          "#text": "13 Oct 2026, 21:21"
+        }
+      },
+      {
+        "artist": {
+          "#text": "Audioslave"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "Audioslave"
+        },
+        "name": "Set It Off",
+        "url": "https://www.last.fm/music/Audioslave/_/Set+It+Off",
+        "date": {
+          "uts": "1791893123",
+          "#text": "13 Oct 2026, 12:05"
+        }
+      },
+      {
+        "artist": {
+          "#text": "Audioslave"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "Audioslave"
+        },
+        "name": "What You Are",
+        "url": "https://www.last.fm/music/Audioslave/_/What+You+Are",
+        "date": {
+          "uts": "1791843501",
+          "#text": "12 Oct 2026, 22:18"
+        }
+      },
+      {
+        "artist": {
+          "#text": "Audioslave"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "Audioslave"
+        },
+        "name": "What You Are",
+        "url": "https://www.last.fm/music/Audioslave/_/What+You+Are",
+        "date": {
+          "uts": "1791843492",
+          "#text": "12 Oct 2026, 22:18"
+        }
+      },
+      {
+        "artist": {
+          "#text": "Audioslave"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "Audioslave"
+        },
+        "name": "Gasoline",
+        "url": "https://www.last.fm/music/Audioslave/_/Gasoline",
+        "date": {
+          "uts": "1791822976",
+          "#text": "12 Oct 2026, 16:36"
+        }
+      },
+      {
+        "artist": {
+          "#text": "Audioslave"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "Audioslave"
+        },
+        "name": "Show Me How To Live",
+        "url": "https://www.last.fm/music/Audioslave/_/Show+Me+How+To+Live",
+        "date": {
+          "uts": "1791809070",
+          "#text": "12 Oct 2026, 12:44"
+        }
+      },
+      {
+        "artist": {
+          "#text": "Héctor Lavoe"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "Comedia"
+        },
+        "name": "El Cantante",
+        "url": "https://www.last.fm/music/H%C3%A9ctor+Lavoe/_/El+Cantante",
+        "date": {
+          "uts": "1791808765",
+          "#text": "12 Oct 2026, 12:39"
+        }
+      },
+      {
+        "artist": {
+          "#text": "Sara Gazarek"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "Yours"
+        },
+        "name": "My Shining Hour",
+        "url": "https://www.last.fm/music/Sara+Gazarek/_/My+Shining+Hour",
+        "date": {
+          "uts": "1791774428",
+          "#text": "12 Oct 2026, 03:07"
+        }
+      },
+      {
+        "artist": {
+          "#text": "SOLEIMA"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "Hærværk/Mesterværk"
+        },
+        "name": "Vilde Øjne",
+        "url": "https://www.last.fm/music/SOLEIMA/_/Vilde+%C3%98jne",
+        "date": {
+          "uts": "1791737914",
+          "#text": "11 Oct 2026, 16:58"
+        }
+      },
+      {
+        "artist": {
+          "#text": "SOLEIMA"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "Hærværk/Mesterværk"
+        },
+        "name": "Dårlige Idéer, Smukke Som Sne",
+        "url": "https://www.last.fm/music/SOLEIMA/_/D%C3%A5rlige+Id%C3%A9er,+Smukke+Som+Sne",
+        "date": {
+          "uts": "1791737724",
+          "#text": "11 Oct 2026, 16:55"
+        }
+      }
+    ],
+    "@attr": {
+      "perPage": "10",
+      "totalPages": "5",
+      "page": "1",
+      "total": "50",
+      "user": "mvandoff"
+    }
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "recenttracks": {
+    "track": [
+      {
+        "artist": {
+          "#text": "Waxahatchee"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "Tigers Blood"
+        },
+        "name": "Right Back To It",
+        "url": "https://www.last.fm/music/Waxahatchee/_/Right+Back+To+It",
+        "date": {
+          "uts": "1792354005",
+          "#text": "18 Oct 2026, 20:06"
+        }
+      },
+      {
+        "artist": {
+          "#text": "Wednesday"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "Bleeds"
+        },
+        "name": "Elderberry Wine",
+        "url": "https://www.last.fm/music/Wednesday/_/Elderberry+Wine",
+        "date": {
+          "uts": "1792353441",
+          "#text": "18 Oct 2026, 19:57"
+        }
+      },
+      {
+        "artist": {
+          "#text": "Amerie"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "All I Have"
+        },
+        "name": "Need You Tonight",
+        "url": "https://www.last.fm/music/Amerie/_/Need+You+Tonight",
+        "date": {
+          "uts": "1792353211",
+          "#text": "18 Oct 2026, 19:53"
+        }
+      },
+      {
+        "artist": {
+          "#text": "Shaggy"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "Hot Shot"
+        },
+        "name": "Angel",
+        "url": "https://www.last.fm/music/Shaggy/_/Angel",
+        "date": {
+          "uts": "1792352967",
+          "#text": "18 Oct 2026, 19:49"
+        }
+      },
+      {
+        "artist": {
+          "#text": "Johnny Hates Jazz"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "Turn Back the Clock"
+        },
+        "name": "Shattered Dreams - Remastered 2008",
+        "url": "https://www.last.fm/music/Johnny+Hates+Jazz/_/Shattered+Dreams+-+Remastered+2008",
+        "date": {
+          "uts": "1792352760",
+          "#text": "18 Oct 2026, 19:46"
+        }
+      },
+      {
+        "artist": {
+          "#text": "J Boog"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "J Boog"
+        },
+        "name": "Let's Do It Again",
+        "url": "https://www.last.fm/music/J+Boog/_/Let%27s+Do+It+Again",
+        "date": {
+          "uts": "1792352546",
+          "#text": "18 Oct 2026, 19:42"
+        }
+      },
+      {
+        "artist": {
+          "#text": "Andris Mattson"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "the understory"
+        },
+        "name": "Lower the Sky",
+        "url": "https://www.last.fm/music/Andris+Mattson/_/Lower+the+Sky",
+        "date": {
+          "uts": "1792352364",
+          "#text": "18 Oct 2026, 19:39"
+        }
+      },
+      {
+        "artist": {
+          "#text": "Andris Mattson"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "the understory"
+        },
+        "name": "the understory",
+        "url": "https://www.last.fm/music/Andris+Mattson/_/the+understory",
+        "date": {
+          "uts": "1792352192",
+          "#text": "18 Oct 2026, 19:36"
+        }
+      },
+      {
+        "artist": {
+          "#text": "Andris Mattson"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "the understory"
+        },
+        "name": "Car Alarm",
+        "url": "https://www.last.fm/music/Andris+Mattson/_/Car+Alarm",
+        "date": {
+          "uts": "1792351992",
+          "#text": "18 Oct 2026, 19:33"
+        }
+      },
+      {
+        "artist": {
+          "#text": "Andris Mattson"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": "the understory"
+        },
+        "name": "the understory",
+        "url": "https://www.last.fm/music/Andris+Mattson/_/the+understory",
+        "date": {
+          "uts": "1792351790",
+          "#text": "18 Oct 2026, 19:29"
+        }
+      }
+    ],
+    "@attr": {
+      "perPage": "10",
+      "totalPages": "8",
+      "page": "1",
+      "total": "73",
+      "user": "mvandoff"
+    }
+  }
+}

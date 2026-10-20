@@ -1,0 +1,64 @@
+{
+  "toptracks": {
+    "track": [
+      {
+        "streamable": {
+          "fulltrack": "0",
+          "#text": "0"
+        },
+        "name": "What You Are",
+        "artist": {
+          "url": "https://www.last.fm/music/Audioslave",
+          "name": "Audioslave"
+        },
+        "url": "https://www.last.fm/music/Audioslave/_/What+You+Are",
+        "duration": "249",
+        "@attr": {
+          "rank": "1"
+        },
+        "playcount": "3"
+      },
+      {
+        "streamable": {
+          "fulltrack": "0",
+          "#text": "0"
+        },
+        "name": "Car Alarm",
+        "artist": {
+          "url": "https://www.last.fm/music/Andris+Mattson",
+          "name": "Andris Mattson"
+        },
+        "url": "https://www.last.fm/music/Andris+Mattson/_/Car+Alarm",
+        "duration": "199",
+        "@attr": {
+          "rank": "2"
+        },
+        "playcount": "2"
+      },
+      {
+        "streamable": {
+          "fulltrack": "0",
+          "#text": "0"
+        },
+        "name": "the understory",
+        "artist": {
+          "url": "https://www.last.fm/music/Andris+Mattson",
+          "name": "Andris Mattson"
+        },
+        "url": "https://www.last.fm/music/Andris+Mattson/_/the+understory",
+        "duration": "171",
+        "@attr": {
+          "rank": "3"
+        },
+        "playcount": "2"
+      }
+    ],
+    "@attr": {
+      "perPage": "10",
+      "totalPages": "3",
+      "page": "1",
+      "total": "3",
+      "user": "mvandoff"
+    }
+  }
+}

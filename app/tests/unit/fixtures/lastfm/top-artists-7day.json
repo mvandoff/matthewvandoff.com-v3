@@ -1,0 +1,40 @@
+{
+  "topartists": {
+    "artist": [
+      {
+        "streamable": "0",
+        "url": "https://www.last.fm/music/Audioslave",
+        "playcount": "10",
+        "@attr": {
+          "rank": "1"
+        },
+        "name": "Audioslave"
+      },
+      {
+        "streamable": "0",
+        "url": "https://www.last.fm/music/Andris+Mattson",
+        "playcount": "6",
+        "@attr": {
+          "rank": "2"
+        },
+        "name": "Andris Mattson"
+      },
+      {
+        "streamable": "0",
+        "url": "https://www.last.fm/music/Gregory+Porter",
+        "playcount": "4",
+        "@attr": {
+          "rank": "3"
+        },
+        "name": "Gregory Porter"
+      }
+    ],
+    "@attr": {
+      "perPage": "10",
+      "totalPages": "2",
+      "page": "1",
+      "total": "3",
+      "user": "mvandoff"
+    }
+  }
+}

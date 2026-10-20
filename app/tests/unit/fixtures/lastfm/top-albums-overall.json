@@ -1,0 +1,49 @@
+{
+  "topalbums": {
+    "album": [
+      {
+        "artist": {
+          "url": "https://www.last.fm/music/Audioslave",
+          "name": "Audioslave"
+        },
+        "url": "https://www.last.fm/music/Audioslave/Audioslave",
+        "playcount": "18",
+        "@attr": {
+          "rank": "1"
+        },
+        "name": "Audioslave"
+      },
+      {
+        "artist": {
+          "url": "https://www.last.fm/music/Andris+Mattson",
+          "name": "Andris Mattson"
+        },
+        "url": "https://www.last.fm/music/Andris+Mattson/the+understory",
+        "playcount": "13",
+        "@attr": {
+          "rank": "2"
+        },
+        "name": "the understory"
+      },
+      {
+        "artist": {
+          "url": "https://www.last.fm/music/SOLEIMA",
+          "name": "SOLEIMA"
+        },
+        "url": "https://www.last.fm/music/SOLEIMA/H%C3%A6rv%C3%A6rk%2FMesterv%C3%A6rk",
+        "playcount": "2",
+        "@attr": {
+          "rank": "4"
+        },
+        "name": "Hærværk/Mesterværk"
+      }
+    ],
+    "@attr": {
+      "perPage": "10",
+      "totalPages": "5",
+      "page": "1",
+      "total": "3",
+      "user": "mvandoff"
+    }
+  }
+}

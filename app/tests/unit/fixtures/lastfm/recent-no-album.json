@@ -1,0 +1,28 @@
+{
+  "recenttracks": {
+    "track": [
+      {
+        "artist": {
+          "#text": "Soundgarden"
+        },
+        "streamable": "0",
+        "album": {
+          "#text": ""
+        },
+        "name": "Spoonman",
+        "url": "https://www.last.fm/music/Soundgarden/_/Spoonman",
+        "date": {
+          "uts": "1792354005",
+          "#text": "18 Oct 2026, 20:06"
+        }
+      }
+    ],
+    "@attr": {
+      "user": "mvandoff",
+      "totalPages": "1",
+      "page": "1",
+      "perPage": "10",
+      "total": "1"
+    }
+  }
+}
