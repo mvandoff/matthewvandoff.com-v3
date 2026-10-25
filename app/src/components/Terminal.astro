@@ -7,12 +7,9 @@
  * swaps in.
  */
 import { site } from '../lib/content.ts';
-import { music } from '../lib/music/index.ts';
-import { listening } from '../lib/terminal/commands.ts';
+import { listeningPlaceholder } from '../lib/terminal/commands.ts';
 
 const { terminal } = site;
-// Rendered at build time for no-JS visitors; the controller refreshes it on load.
-const status = await listening({ now: () => new Date(), music });
 ---
 
 <div
@@ -37,15 +34,7 @@ const status = await listening({ now: () => new Date(), music });
         </div>
         <div>
           <dt>{terminal.status.listeningKey}</dt>
-          <dd data-listening>
-            {
-              status.eq && (
-                <span class="eq" aria-hidden="true">
-                  <i></i><i></i><i></i><i></i>
-                </span>
-              )
-            }{status.track}{status.ago && <span class="ago">{status.ago}</span>}
-          </dd>
+          <dd data-listening><span class="ago">{listeningPlaceholder}</span></dd>
         </div>
       </dl>
     </div>

@@ -158,6 +158,24 @@ const periodLabels: Record<Period, string> = {
 /** Meta suffix for placeholder data. */
 const mockLabel = (mock: boolean) => (mock ? ' · mock data' : '');
 
+/** A music command's output when its data can't be loaded: a missing file, a failed fetch, or no tracks. */
+const unloaded = (call: Invocation, name: string): Result =>
+  small(call, [line([`${name}: couldn't load music data`, 'dim'], ['  · try again later', 'dim'])]);
+
+/** Runs a music command, answering with `unloaded` when its source rejects. */
+const music =
+  (name: string, command: Command): Command =>
+  async (call, ctx) => {
+    try {
+      return await command(call, ctx);
+    } catch {
+      return unloaded(call, name);
+    }
+  };
+
+/** The next longer `top` period, suggested when a period has nothing played. */
+const longer: Record<Period, Period | undefined> = { week: 'month', month: 'year', year: 'all', all: undefined };
+
 /**
  * `top [artists|tracks|albums] [--week|--month|--year|--all]`, as on the board:
  * the words may come in any order and anything else is ignored; tracks beat
@@ -168,6 +186,14 @@ const top: Command = async (call, ctx) => {
   const kind: TopKind = has('tracks') ? 'tracks' : has('albums') ? 'albums' : 'artists';
   const period: Period = has('--week') ? 'week' : has('--month') ? 'month' : has('--all') ? 'all' : 'year';
   const list = await ctx.music.top(kind, period);
+  const meta = `top ${kind} · ${periodLabels[period]}${mockLabel(list.mock)}`;
+  if (!list.items.length) {
+    const next = longer[period];
+    const lines = next
+      ? [line([`nothing played in the last ${periodLabels[period]}`, 'dim'], [`  · try --${next}`, 'dim'])]
+      : [line(['nothing played yet', 'dim'])];
+    return out(call, lines, { meta, large: false });
+  }
   const items = list.items.slice(0, 10);
   const max = items[0]?.plays || 1;
   const rows = items.map(
@@ -178,7 +204,7 @@ const top: Command = async (call, ctx) => {
       count: String(Math.max(1, Math.round(item.plays))),
     }),
   );
-  return out(call, [], { meta: `top ${kind} · ${periodLabels[period]}${mockLabel(list.mock)}`, rows });
+  return out(call, [], { meta, rows });
 };
 
 /**
@@ -202,6 +228,9 @@ const np: Command = async (call, ctx) => {
   return out(call, lines, { meta: `last.fm${mockLabel(np.mock)}` });
 };
 
+/** What the idle status's "listening" line shows until the browser has loaded the music data, and if it can't. */
+export const listeningPlaceholder = '—';
+
 /** The idle status's "listening" line: the track, the trailing time, and whether the EQ shows. */
 export interface Listening {
   track: string;
@@ -222,6 +251,7 @@ export async function listening(ctx: Pick<TerminalContext, 'now' | 'music'>): Pr
 
 const recent: Command = async (call, ctx) => {
   const recent = await ctx.music.recent();
+  if (!recent.tracks.length) return unloaded(call, 'recent');
   const now = ctx.now();
   const lines = recent.tracks.slice(0, 10).map(({ track, playing, at }) =>
     line(
@@ -266,9 +296,9 @@ const sudo: Command = (call) => small(call, [line(['nice try. this incident will
 export const commands: Record<string, Command> = {
   help,
   '?': help,
-  top,
-  np,
-  recent,
+  top: music('top', top),
+  np: music('np', np),
+  recent: music('recent', recent),
   ls,
   cd,
   accent,

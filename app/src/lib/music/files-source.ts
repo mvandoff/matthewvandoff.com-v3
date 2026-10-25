@@ -4,7 +4,7 @@
  * with `mock: false`. JSON has no Date, so the ISO strings are parsed here.
  *
  * A file that cannot be read rejects. This source has no fallback and no wording:
- * what the Terminal shows for that (and for old data, by `fetchedAt`) is mvd-tt6.
+ * what the Terminal shows for that is mvd-u5q.7.
  */
 import { RECENT_KEY, topKey, type PlayedTrackJson, type RecentFile, type TopFile } from './files.ts';
 import type { MusicSource, PlayedTrack } from './source.ts';

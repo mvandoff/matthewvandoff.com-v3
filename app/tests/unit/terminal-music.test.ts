@@ -231,3 +231,64 @@ describe('another music source (e.g. real last.fm)', () => {
     expect(result.meta).toBe('last.fm');
   });
 });
+
+describe('music data that cannot be loaded (a missing file, a failed fetch, no tracks)', () => {
+  const failed = new Error('music/recent.json: 404');
+  const broken: TerminalContext = {
+    now,
+    music: {
+      top: () => Promise.reject(failed),
+      nowPlaying: () => Promise.reject(failed),
+      recent: () => Promise.reject(failed),
+    },
+    accent: noAccent,
+  };
+
+  it.each(['top', 'top tracks --week', 'np', 'recent'])('%s says so, inside the Terminal', async (input) => {
+    const name = input.split(' ')[0];
+    const result = await execute(input, broken);
+    expect(result.output?.lines.map(pairs)).toEqual([
+      [[`${name}: couldn't load music data`, 'dim'], ['  · try again later', 'dim']],
+    ]);
+    expect(result.output?.rows).toEqual([]);
+    expect(result.meta).toBeUndefined();
+    expect(result.large).toBe(false);
+    expect(result.echo).toBe(input);
+  });
+
+  it('recent with no tracks says the same', async () => {
+    const empty: TerminalContext = {
+      ...broken,
+      music: { ...broken.music, recent: async () => ({ tracks: [], mock: false, fetchedAt: NOW }) },
+    };
+    expect((await execute('recent', empty)).output?.lines.map(pairs)).toEqual([
+      [["recent: couldn't load music data", 'dim'], ['  · try again later', 'dim']],
+    ]);
+  });
+});
+
+describe('top with nothing played in the period', () => {
+  const quiet: TerminalContext = {
+    now,
+    music: { ...createMockMusic({ now }), top: async () => ({ items: [], mock: false, fetchedAt: NOW }) },
+    accent: noAccent,
+  };
+
+  it.each([
+    ['top --week', 'nothing played in the last 7 days', '  · try --month', 'top artists · 7 days'],
+    ['top tracks --month', 'nothing played in the last 30 days', '  · try --year', 'top tracks · 30 days'],
+    ['top albums', 'nothing played in the last 12 months', '  · try --all', 'top albums · 12 months'],
+  ])('%s says so and suggests a longer period', async (input, text, hint, meta) => {
+    const result = await execute(input, quiet);
+    expect(result.output?.lines.map(pairs)).toEqual([[[text, 'dim'], [hint, 'dim']]]);
+    expect(result.output?.rows).toEqual([]);
+    expect(result.meta).toBe(meta);
+    expect(result.large).toBe(false);
+  });
+
+  it('top --all says nothing has been played yet', async () => {
+    const result = await execute('top --all', quiet);
+    expect(result.output?.lines.map(pairs)).toEqual([[['nothing played yet', 'dim']]]);
+    expect(result.meta).toBe('top artists · all time');
+  });
+});

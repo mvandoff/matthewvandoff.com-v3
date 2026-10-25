@@ -112,8 +112,8 @@ export function startTerminal(box = document.querySelector<HTMLElement>('[data-t
 
   const { prompt = '', idleCommand = '', hint: idleHint = '', closeHint = '' } = box.dataset;
   const idleStatus = [...body.childNodes];
-  // The build rendered the listening line; refresh it from the music source so
-  // it is current (a failing source keeps the built line).
+  // The build rendered the listening line as a placeholder; fill it from the
+  // music source (a failing source keeps the placeholder).
   const listeningLine = body.querySelector<HTMLElement>('[data-listening]');
   if (listeningLine) {
     listening(context).then(

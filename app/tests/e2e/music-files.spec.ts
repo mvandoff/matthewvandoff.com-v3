@@ -61,13 +61,25 @@ test('the idle status is refreshed from the files on load', async ({ page }) => 
   await expect(terminal(page).body.locator('dd').nth(1)).toContainText('Spoonman — Soundgarden');
 });
 
-test('with a file missing, np shows no mock data (what it shows instead is mvd-tt6)', async ({ page }) => {
+test('with a file missing, np says it couldn\'t load the data, and the idle status keeps its placeholder', async ({ page }) => {
   await serveSamples(page, ['recent.json']);
   await page.goto('/');
   const t = terminal(page);
+  const listening = t.body.locator('dd').nth(1);
+  await expect(listening).toHaveText('—');
   await t.run('np');
+  await expect.poll(() => t.lines()).toEqual(["np: couldn't load music data  · try again later"]);
   await expect(page.getByText('· mock data')).toHaveCount(0);
-  await expect(t.body).not.toContainText('now playing');
-  // Still the build's idle status, whose placeholder track the files refresh could not replace.
-  await expect(t.body.locator('dd').nth(1)).toContainText('[track title]');
+  await t.input.press('Escape');
+  await expect(listening).toHaveText('—');
+});
+
+test.describe('without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  test('the idle status shows a placeholder, not a made-up track', async ({ page }) => {
+    await serveSamples(page);
+    await page.goto('/');
+    await expect(terminal(page).body.locator('dd').nth(1)).toHaveText('—');
+  });
 });
