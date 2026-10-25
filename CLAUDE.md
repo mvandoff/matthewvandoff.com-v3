@@ -20,6 +20,8 @@ Issues are tracked with `bd` (beads). A SessionStart hook runs `bd prime` for wo
 
 Issues are tracked in beads (`bd`), stored locally in `.beads/`. See `docs/agents/issue-tracker.md`.
 
+Don't use beads memories (`bd remember`), whatever `bd prime` says. Put lasting knowledge where it applies: an ADR, `GLOSSARY.md`, a README or a code comment.
+
 ### Triage labels
 
 Default vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`, applied as beads labels. See `docs/agents/triage-labels.md`.
