@@ -123,10 +123,10 @@ export const site = {
     {
       number: 3,
       years: '2024 — present',
-      role: 'web developer',
+      role: 'full stack developer',
       company: 'cyncly',
       description:
-        'Worked on the frontend team for Insight, a full scale ERP solution for manufacturers, migrating a monolithic legacy application to a modern React web app as well as developing new cutting-edge features.',
+        'Moving Insight, an ERP system for manufacturers, off a monolithic legacy app and onto a modern React web app, while building new features along the way.',
     },
     {
       number: 2,
@@ -134,7 +134,7 @@ export const site = {
       role: 'full stack developer',
       company: 'game builds',
       description:
-        'Helped build, launch, and maintain diablobuilds.com, an online resource and community for Diablo IV, featuring an advanced character builder with in-depth analytics and customization.',
+        'Helped build, launch and maintain diablobuilds.com, a Diablo IV community site centred on a character builder with detailed stats and customisation.',
     },
     {
       number: 1,
@@ -142,7 +142,7 @@ export const site = {
       role: 'software engineer',
       company: 'applied visions',
       description:
-        'Developed two key enterprise applications: a professional networking platform for the insurance industry and an AI-powered project management tool for government clients, while mentoring junior developers for the client.',
+        "Developed two enterprise apps for clients: a professional network for the insurance industry and an AI-assisted project management tool for government agencies. Also mentored the client's junior developers.",
     },
   ] satisfies readonly Episode[],
 
