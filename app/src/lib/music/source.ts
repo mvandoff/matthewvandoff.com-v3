@@ -38,6 +38,8 @@ export interface Track {
   title: string;
   artist: string;
   album?: string;
+  /** Album art: a thumbnail and the full size. Absent when there is none; the Terminal then shows its kana. */
+  art?: { thumb: string; full: string };
 }
 
 export interface NowPlaying {

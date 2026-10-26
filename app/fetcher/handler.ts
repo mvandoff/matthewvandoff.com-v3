@@ -83,6 +83,7 @@ function validateRecent(body: unknown): void {
       isString(t.artist['#text']) &&
       isObj(album) &&
       isString(album['#text']) &&
+      (t.image === undefined || !!items(t.image)?.every((i) => isObj(i) && isString(i.size) && isString(i['#text']))) &&
       (date === undefined || (isObj(date) && isCount(date.uts)))
     );
   });

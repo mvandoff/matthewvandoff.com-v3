@@ -167,6 +167,19 @@ describe('idle listening line', () => {
     const playing = { now, music: createMockMusic({ now, playing: true }), accent: noAccent };
     expect(await listening(playing)).toEqual({ track: '[track title] — [artist]', ago: '', eq: true });
   });
+
+  it('passes the album art along when the source has it, captioned with the album and artist', async () => {
+    const base = createMockMusic({ now, playing: true });
+    const art = { thumb: 'https://example.test/300.jpg', full: 'https://example.test/full.jpg' };
+    const music: MusicSource = {
+      ...base,
+      async nowPlaying() {
+        const np = await base.nowPlaying();
+        return { ...np, track: { ...np.track, art } };
+      },
+    };
+    expect((await listening({ now, music })).art).toEqual({ ...art, caption: '[album] — [artist]' });
+  });
 });
 
 describe('another music source (e.g. real last.fm)', () => {

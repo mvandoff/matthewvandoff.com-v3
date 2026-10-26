@@ -238,6 +238,13 @@ export interface Listening {
   ago: string;
   /** The animated EQ bars, shown only while playing. */
   eq: boolean;
+  /** Album art for the Terminal header, in place of its kana, and its full-size dialog. Absent when there is none. */
+  art?: {
+    thumb: string;
+    full: string;
+    /** '[album] — [artist]', or the track title when there is no album; the dialog's caption and the art's alt text. */
+    caption: string;
+  };
 }
 
 export async function listening(ctx: Pick<TerminalContext, 'now' | 'music'>): Promise<Listening> {
@@ -246,6 +253,9 @@ export async function listening(ctx: Pick<TerminalContext, 'now' | 'music'>): Pr
     track: `${np.track.title} — ${np.track.artist}`,
     ago: np.playing ? '' : ` · ${ago(np.at, ctx.now())} ago`,
     eq: np.playing,
+    ...(np.track.art && {
+      art: { ...np.track.art, caption: `${np.track.album ?? np.track.title} — ${np.track.artist}` },
+    }),
   };
 }
 

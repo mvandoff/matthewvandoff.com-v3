@@ -4,7 +4,7 @@
  * Lambda can both bundle it by relative path.
  */
 
-import type { PlayedTrackJson, Period, RecentFile, TopFile, TopItemJson } from './files.ts';
+import type { ArtJson, PlayedTrackJson, Period, RecentFile, TopFile, TopItemJson } from './files.ts';
 
 /** The `period` parameter of user.gettop*. */
 export type LastfmPeriod = '7day' | '1month' | '12month' | 'overall';
@@ -39,6 +39,8 @@ export interface LastfmRecentTracks {
       name: string;
       artist: { '#text': string };
       album: { '#text': string };
+      /** Album art by size, smallest first. A track with no art has empty URLs or last.fm's star placeholder. */
+      image?: OneOrMany<{ size: string; '#text': string }>;
       date?: { uts: string };
       '@attr'?: { nowplaying: string };
     }>;
@@ -78,6 +80,21 @@ export function mapTopAlbums(res: LastfmTopAlbums, period: LastfmPeriod, fetched
   return { fetchedAt: fetchedAt.toISOString(), kind: 'albums', period: PERIODS[period], items };
 }
 
+/** The size of album art kept: 300px, enough for a sharp thumbnail at 2x. */
+const ART_SIZE = 'extralarge';
+
+/** last.fm's "no art" image, a grey star, which it sends in place of an empty URL for some tracks. */
+const PLACEHOLDER_ART = '2a96cbd8b46e442fc41c2b86b821562f';
+
+/** last.fm's CDN serves the original upload at `ar0` in place of the size, e.g. /i/u/300x300/x.jpg to /i/u/ar0/x.jpg. */
+const FULL_SIZE = (url: string) => url.replace('/i/u/300x300/', '/i/u/ar0/');
+
+/** The album art for a play, or undefined when last.fm has none. */
+function albumArt(images: OneOrMany<{ size: string; '#text': string }> | undefined): ArtJson | undefined {
+  const url = toArray(images).find((i) => i.size === ART_SIZE)?.['#text'];
+  return url && !url.includes(PLACEHOLDER_ART) ? { thumb: url, full: FULL_SIZE(url) } : undefined;
+}
+
 /** last.fm sometimes records one scrobble twice, a few seconds apart; a real replay is minutes apart. */
 const DUPLICATE_WINDOW_MS = 30_000;
 
@@ -99,6 +116,7 @@ export function mapRecentTracks(res: LastfmRecentTracks, fetchedAt: Date, option
       artist: t.artist['#text'],
       // last.fm sends an empty album as "#text": "".
       ...(t.album['#text'] && { album: t.album['#text'] }),
+      ...(albumArt(t.image) && { art: albumArt(t.image) }),
     },
     playing: t['@attr']?.nowplaying === 'true',
     // The playing track has no date, and a fetch time here would change the file on every fetch.

@@ -115,6 +115,9 @@ export const site = {
     hint: 'try help',
     /** Hint while command output is showing. */
     closeHint: 'esc · close',
+    /** The album art in the header opens it full size; followed by its caption, e.g. "full size: Adjust Brightness — Bilal". */
+    artOpen: 'full size:',
+    artClose: '[ close ]',
     status: {
       building: { key: 'building', value: 'Insight @ Cyncly' },
       listeningKey: 'listening',

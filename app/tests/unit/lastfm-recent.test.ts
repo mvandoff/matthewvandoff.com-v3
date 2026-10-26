@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { mapRecentTracks } from '../../src/lib/music/lastfm.ts';
+import art from './fixtures/lastfm/recent-art.json';
 import empty from './fixtures/lastfm/recent-empty.json';
 import noAlbum from './fixtures/lastfm/recent-no-album.json';
 import history from './fixtures/lastfm/recent-history.json';
@@ -25,6 +26,18 @@ describe('recent tracks', () => {
       fetchedAt: '2026-10-19T12:00:00.000Z',
       tracks: [],
     });
+  });
+});
+
+describe('album art', () => {
+  it('keeps the 300px image and the original upload, and leaves art out for an empty URL or last.fm\'s star placeholder', () => {
+    const [bilal, placeholder, none] = mapRecentTracks(art, fetchedAt, { limit: 10 }).tracks;
+    expect(bilal.track.art).toEqual({
+      thumb: 'https://lastfm.freetls.fastly.net/i/u/300x300/0f1e2d3c4b5a69788796a5b4c3d2e1f0.jpg',
+      full: 'https://lastfm.freetls.fastly.net/i/u/ar0/0f1e2d3c4b5a69788796a5b4c3d2e1f0.jpg',
+    });
+    expect(placeholder.track).not.toHaveProperty('art');
+    expect(none.track).not.toHaveProperty('art');
   });
 });
 

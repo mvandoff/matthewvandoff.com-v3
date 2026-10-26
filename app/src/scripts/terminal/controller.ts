@@ -130,22 +130,59 @@ export function startTerminal(box = document.querySelector<HTMLElement>('[data-t
   const cmd = box.querySelector<HTMLElement>('.sig-cmd');
   const meta = box.querySelector<HTMLElement>('.sig-meta');
   const kana = box.querySelector<HTMLElement>('.sig-kana');
+  const art = box.querySelector<HTMLButtonElement>('.sig-art');
+  const artImg = art?.querySelector('img');
+  const dialog = box.querySelector<HTMLDialogElement>('.art-dialog');
   const hint = box.querySelector<HTMLElement>('.t-hint');
   const cursor = box.querySelector<HTMLElement>('.cur');
   const leadCol = box.closest<HTMLElement>('.lead-col');
-  if (!input || !body || !cmd || !meta || !kana || !hint || !cursor) return;
+  if (!input || !body || !cmd || !meta || !kana || !art || !artImg || !dialog || !hint || !cursor) return;
 
   const { prompt = '', idleCommand = '', hint: idleHint = '', closeHint = '' } = box.dataset;
   const idleStatus = [...body.childNodes];
   // The build rendered the listening line as a placeholder; fill it from the
   // music source (a failing source keeps the placeholder).
   const listeningLine = body.querySelector<HTMLElement>('[data-listening]');
+  /** Whether the album art loaded; until then, and if it fails, the header shows its kana. */
+  let artLoaded = false;
+  artImg.addEventListener('load', () => {
+    artLoaded = true;
+    showMeta(meta.hidden ? undefined : meta.textContent ?? undefined);
+  });
   if (listeningLine) {
     listening(context).then(
-      (status) => renderListening(listeningLine, status),
+      (status) => {
+        renderListening(listeningLine, status);
+        if (status.art) showArt(status.art);
+      },
       () => {},
     );
   }
+
+  /** Loads the header thumbnail and readies the dialog; the full size loads only when it opens. */
+  const showArt = ({ thumb, full, caption }: NonNullable<Listening['art']>) => {
+    artImg.src = thumb;
+    art.setAttribute('aria-label', `${art.dataset.label ?? ''} ${caption}`);
+    const [fullImg, cap] = [dialog.querySelector('img'), dialog.querySelector('.art-cap')];
+    if (fullImg) fullImg.alt = caption;
+    if (cap) cap.textContent = caption;
+    art.addEventListener('click', (event) => {
+      event.stopPropagation();
+      // The thumbnail shows until the full size arrives.
+      if (fullImg && !fullImg.src) {
+        fullImg.src = thumb;
+        const loader = new Image();
+        loader.onload = () => (fullImg.src = full);
+        loader.src = full;
+      }
+      dialog.showModal();
+    });
+  };
+  // A click on the backdrop (the dialog itself, outside its content) closes it.
+  dialog.addEventListener('click', (event) => {
+    event.stopPropagation();
+    if (event.target === dialog) dialog.close();
+  });
   const history = new History();
   let showingOutput = false;
   /** Bumped on every run, Tab listing and Esc, so a stale async result is dropped. */
@@ -164,10 +201,12 @@ export function startTerminal(box = document.querySelector<HTMLElement>('[data-t
     body.scrollTop = 0;
   };
 
+  /** The header's right side: the meta label if any, else the album art once loaded, else the kana. */
   const showMeta = (text?: string) => {
     meta.textContent = text ?? '';
     meta.hidden = !text;
-    kana.hidden = !!text;
+    art.hidden = !!text || !artLoaded;
+    kana.hidden = !!text || artLoaded;
   };
 
   const render = (result: Result) => {

@@ -35,11 +35,21 @@ export interface TopFile {
   items: TopItemJson[];
 }
 
+/** Album art on last.fm's CDN. */
+export interface ArtJson {
+  /** 300px square. */
+  thumb: string;
+  /** The original upload, often 1000px or more. */
+  full: string;
+}
+
 export interface TrackJson {
   title: string;
   artist: string;
   /** Absent when last.fm has no album for the play. */
   album?: string;
+  /** Absent when last.fm has no art for the play. */
+  art?: ArtJson;
 }
 
 export interface PlayedTrackJson {
