@@ -40,6 +40,13 @@ export const site = {
   meta: {
     title: 'matthew van doff',
     description: 'matthew van doff, software developer for the information superhighway.',
+    /** The Open Graph / Twitter card image. `pnpm og` (scripts/og-image.ts) renders it from the Name card. */
+    shareImage: {
+      path: '/og-image.png',
+      width: 1200,
+      height: 630,
+      alt: 'The name matthew van doff in pixel type on a dark terminal card, with the line software developer for the information superhighway.',
+    },
   },
 
   header: {

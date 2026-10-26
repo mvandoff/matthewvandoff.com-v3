@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 const origin = 'https://www.matthewvandoff.com';
 
@@ -33,5 +33,41 @@ test.describe('crawling', () => {
     const xml = await response.text();
     expect(xml).toContain('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
     expect([...xml.matchAll(/<loc>([^<]*)<\/loc>/g)].map((match) => match[1])).toEqual([`${origin}/`]);
+  });
+});
+
+test.describe('share previews', () => {
+  /** The content of the head meta tag with this property or name. */
+  const meta = (page: Page, key: string) =>
+    page.locator(`meta[property="${key}"], meta[name="${key}"]`).getAttribute('content');
+
+  test('the home page has Open Graph and Twitter card tags from the site meta', async ({ page }) => {
+    await page.goto('/');
+    expect(await meta(page, 'og:type')).toBe('website');
+    expect(await meta(page, 'og:title')).toBe('matthew van doff');
+    expect(await meta(page, 'og:description')).toBe(await meta(page, 'description'));
+    expect(await meta(page, 'og:url')).toBe(`${origin}/`);
+    expect(await meta(page, 'og:image')).toBe(`${origin}/og-image.png`);
+    expect(await meta(page, 'og:image:width')).toBe('1200');
+    expect(await meta(page, 'og:image:height')).toBe('630');
+    expect(await meta(page, 'og:image:alt')).toMatch(/matthew van doff/);
+    expect(await meta(page, 'twitter:card')).toBe('summary_large_image');
+  });
+
+  test('the share image is a 1200×630 PNG served by the site', async ({ request }) => {
+    const response = await request.get('/og-image.png');
+    expect(response.ok()).toBe(true);
+    expect(response.headers()['content-type']).toBe('image/png');
+    const png = await response.body();
+    // The IHDR chunk: width and height are the big-endian words at bytes 16 and 20.
+    expect(png.subarray(1, 4).toString('latin1')).toBe('PNG');
+    expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1200, 630]);
+  });
+
+  test('the 404 page has share tags but no og:url', async ({ page }) => {
+    await page.goto('/no/such/page');
+    expect(await meta(page, 'og:title')).toBe('not found · matthew van doff');
+    expect(await meta(page, 'og:image')).toBe(`${origin}/og-image.png`);
+    await expect(page.locator('meta[property="og:url"]')).toHaveCount(0);
   });
 });
