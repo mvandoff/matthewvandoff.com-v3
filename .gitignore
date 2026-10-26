@@ -16,3 +16,6 @@
 # Agent scratch space
 /agents/*
 !/agents/README.md
+
+# Agent worktrees
+/.claude/worktrees/
