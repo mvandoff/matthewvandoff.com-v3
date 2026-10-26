@@ -1,7 +1,7 @@
 /**
  * Terminal controller: browser wiring between the Terminal markup
  * (src/components/Terminal.astro) and the pure command module
- * (src/lib/terminal/commands.ts). It focuses the input on click, handles the keys,
+ * (src/lib/terminal/commands.ts). It focuses the input on landing and on click, handles the keys,
  * renders results into #term-body, keeps the cursor and hint in step, toggles the
  * desktop expansion and applies effects.
  *
@@ -96,6 +96,31 @@ function applyEffect(effect: Effect): void {
     default:
       effect satisfies never;
   }
+}
+
+/**
+ * Focuses the input once the page has landed so a visitor can type straight away.
+ * Only where a keyboard is likely (a fine, hovering pointer: on touch it would raise
+ * the on-screen keyboard), never over a deep link (#hash) and never when the visitor
+ * has already focused something. Waits out the Boot, which covers the page.
+ */
+function focusOnLanding(input: HTMLInputElement): void {
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const root = document.documentElement;
+  const focus = () => {
+    if (location.hash || document.activeElement !== document.body) return;
+    input.focus({ preventScroll: true });
+  };
+  if (!root.classList.contains('booting')) {
+    focus();
+    return;
+  }
+  const watch = new MutationObserver(() => {
+    if (root.classList.contains('booting')) return;
+    watch.disconnect();
+    focus();
+  });
+  watch.observe(root, { attributes: true, attributeFilter: ['class'] });
 }
 
 export function startTerminal(box = document.querySelector<HTMLElement>('[data-terminal]')): void {
@@ -204,16 +229,23 @@ export function startTerminal(box = document.querySelector<HTMLElement>('[data-t
         if (recall(history.down())) event.preventDefault();
         break;
       case 'Escape':
-        generation++;
-        input.value = '';
-        render({ output: null, large: false, effects: [] });
-        input.blur();
+        // First Esc closes whatever is showing and keeps focus for the next command;
+        // Esc on an idle, empty Terminal lets go of focus.
+        if (showingOutput || input.value) {
+          generation++;
+          input.value = '';
+          render({ output: null, large: false, effects: [] });
+        } else {
+          input.blur();
+        }
         break;
     }
   });
   input.addEventListener('input', syncChrome);
   input.addEventListener('focus', syncChrome);
   input.addEventListener('blur', syncChrome);
+
+  focusOnLanding(input);
 
   box.addEventListener('click', () => {
     if (String(getSelection() ?? '').length || document.activeElement === input) return;
