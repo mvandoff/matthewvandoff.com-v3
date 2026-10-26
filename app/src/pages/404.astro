@@ -1,47 +1,329 @@
 ---
+/**
+ * 404 page. Since v3 has no redirects, old v2 links (/work/, /resume.pdf) land here.
+ * It is laid out like the home page's Strip: a card in the Name card's style with
+ * the big 404, a log box under it in the Terminal's style with the way home, and the
+ * three Cels, which link to the Sections on the home page.
+ *
+ * Without JavaScript it reads in full, with a generic error line. The script only
+ * adds the visitor's path, and a `try` line when the path is one that moved
+ * (site.notFound.moved).
+ */
+import BackgroundField from '../components/BackgroundField.astro';
+import Cel from '../components/Cel.astro';
 import Header from '../components/Header.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../lib/content.ts';
+
+const { notFound } = site;
+const ghostOpacity = 0.55;
 ---
 
-<BaseLayout title={site.notFound.title}>
+<BaseLayout title={notFound.title} noindex>
+  <BackgroundField />
   <Header homeHref="/" here="404" />
-  <main class="wrap nf">
-    <p class="nf-ln">
-      {site.notFound.line}<span id="nf-path"></span>
-    </p>
-    <a class="navlink nf-back" href="/">{site.notFound.back}</a>
-  </main>
-</BaseLayout>
+  <main class="wrap nf-wrap">
+    <div class="strip nf-strip">
+      <div class="lead-col nf-col">
+        <div class="cel nf-card">
+          <div class="nf-bg" aria-hidden="true">
+            <div class="lb a"></div>
+            <div class="lb b"></div>
+          </div>
+          <span class="nf-kana" lang="ja" aria-hidden="true">{notFound.jp}</span>
 
-<script>
-  // The path comes from the URL, so it is only ever written as text.
-  const slot = document.getElementById('nf-path');
-  if (slot) {
+          <p class="nf-prompt">{notFound.prompt}</p>
+
+          <h1 class="nf-code">
+            <span class="gh ga" aria-hidden="true" style={`opacity: ${ghostOpacity}`}
+              ><span class="ln-i">{notFound.code}</span></span
+            >
+            <span class="gh gb" aria-hidden="true" style={`opacity: ${ghostOpacity}`}
+              ><span class="ln-i">{notFound.code}</span></span
+            >
+            <span class="nm"><span class="ln-i">{notFound.code}</span></span>
+          </h1>
+
+          <div class="nf-bottom">
+            <div class="nf-tagline">
+              <p class="nf-heading">{notFound.heading}</p>
+              <p class="nf-line">{notFound.tagline}</p>
+            </div>
+            <div class="aq">
+              <span class="fish" role="img" aria-label={notFound.fish.label}>{notFound.fish.art}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="cel nf-log">
+          <p class="nf-row">{notFound.logPrompt}</p>
+          <div class="nf-body">
+            <p class="nf-err">{notFound.line}<span id="nf-path"></span></p>
+            <p id="nf-try" data-moved={JSON.stringify(notFound.moved)} hidden>
+              {notFound.tryPrefix} <a class="nf-try-link" href="/"></a>
+            </p>
+          </div>
+          <a class="navlink nf-back" href="/">{notFound.back}</a>
+        </div>
+      </div>
+      {site.sections.map((section) => <Cel section={section} href={`/#${section.id}`} />)}
+    </div>
+  </main>
+
+  {/* Inside the layout, so it runs before the analytics beacon (see AnalyticsBeacon.astro). */}
+  <script>
+    // The path comes from the URL, so it is only ever written as text.
     let path = location.pathname;
     try {
       path = decodeURIComponent(path);
     } catch {
       /* keep the raw path */
     }
-    slot.textContent = `: ${path}`;
-  }
-</script>
+
+    const slot = document.getElementById('nf-path');
+    if (slot) slot.textContent = `: ${path}`;
+
+    // An old path ("/work", "/work/…", "/resume.pdf") suggests the Section that replaced it.
+    const tryLine = document.getElementById('nf-try');
+    const tryLink = tryLine?.querySelector('a');
+    const lower = path.toLowerCase();
+    const moved = (JSON.parse(tryLine?.dataset['moved'] ?? '[]') as { from: string; to: string }[]).find(
+      ({ from }) => lower.startsWith(from) && /^([/.]|$)/.test(lower.slice(from.length)),
+    );
+    if (moved && tryLine && tryLink) {
+      tryLink.href = `/#${moved.to}`;
+      tryLink.textContent = `cd ~/${moved.to}`;
+      tryLine.hidden = false;
+    }
+  </script>
+</BaseLayout>
 
 <style>
   @layer components {
-    .nf {
-      padding-block: 56px;
+    .nf-wrap {
+      padding-block: 12px 40px;
     }
-    .nf-ln {
-      margin: 0 0 16px;
+    /* The Strip's shape (global .strip, .lead-col rules handle phones). */
+    .nf-strip {
+      --strip-h: clamp(560px, 82vh, 700px);
+      display: flex;
+      gap: 8px;
+      height: var(--strip-h);
+    }
+    .nf-col {
+      flex: 6 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* The card: the Name card's fill, blobs and type. */
+    .nf-card {
+      flex: 1 1 auto;
+      padding: 28px 34px;
+      background: color-mix(in srgb, var(--ground-2) 72%, transparent);
+      isolation: isolate;
+    }
+    .nf-bg {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+      filter: saturate(0.65);
+      opacity: 0.2;
+    }
+    .lb {
+      position: absolute;
+      border-radius: 50%;
+    }
+    .lb.a {
+      width: 70%;
+      height: 95%;
+      left: -14%;
+      top: -24%;
+      background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 25%, transparent), transparent);
+      animation: lbA 24s ease-in-out infinite alternate;
+    }
+    .lb.b {
+      width: 62%;
+      height: 85%;
+      right: -16%;
+      bottom: -28%;
+      background: radial-gradient(closest-side, color-mix(in srgb, var(--second) 21%, transparent), transparent);
+      animation: lbB 29s ease-in-out infinite alternate;
+    }
+    .nf-kana {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      writing-mode: vertical-rl;
+      font-family: var(--font-jp);
+      font-size: 12px;
+      letter-spacing: 0.35em;
+      color: var(--dim);
+      opacity: 0.55;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .nf-prompt {
+      margin: 0;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+    }
+
+    /* The big 404, with the name's Accent ghosts and glitch-in (no Boot here, so it starts at once). */
+    .nf-code {
+      position: relative;
+      margin: 0;
+      text-align: center;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(96px, 13vw, 200px);
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      isolation: isolate;
+    }
+    .nm,
+    .gh {
+      display: block;
+      white-space: nowrap;
+    }
+    .gh {
+      position: absolute;
+      inset: 0 0 auto;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .gh.ga {
+      color: var(--accent);
+      transform: translate(-3px, -1px);
+    }
+    .gh.gb {
+      color: var(--second);
+      transform: translate(3px, 1px);
+    }
+    .ln-i {
+      display: block;
+      animation: glin 0.95s steps(1, end) 0.25s both;
+    }
+    .ga .ln-i {
+      animation-name: glA;
+    }
+    .gb .ln-i {
+      animation-name: glB;
+    }
+
+    .nf-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+    }
+    .nf-tagline {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .nf-tagline p {
+      margin: 0;
+    }
+    .nf-heading {
+      font-size: 16px;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+    .nf-line {
       font-size: 13px;
+      color: var(--dim);
+    }
+    /* The Name card's swimming fish. */
+    .aq {
+      position: relative;
+      flex: 1 1 12ch;
+      max-width: 24ch;
+      height: 1.7em;
+      margin-right: 24px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--second);
+      white-space: pre;
+      container-type: inline-size;
+    }
+    .fish {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      animation: swim 11s steps(17, end) infinite;
+    }
+    .fish::after {
+      content: '?';
+      position: absolute;
+      right: -1ch;
+      top: -0.85em;
+      font-size: 0.85em;
+      opacity: 0;
+      animation: bub 1.8s steps(4, end) infinite;
+    }
+
+    /* The log box: the Terminal's frame and type. */
+    .nf-log {
+      flex: none;
+      gap: 12px;
+      justify-content: flex-start;
+      padding: 16px 20px 8px;
+      background: color-mix(in srgb, var(--ground-2) 50%, transparent);
+    }
+    .nf-row {
+      margin: 0;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+    }
+    .nf-body {
+      font-size: 12px;
+      line-height: 1.55;
       color: var(--ink-2);
       overflow-wrap: anywhere;
     }
-    .nf-back {
-      padding: 0;
+    .nf-body p {
+      margin: 0;
+    }
+    .nf-err {
+      color: var(--ink);
+    }
+    .nf-try-link {
       color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .nf-back {
+      align-self: flex-start;
+      margin-left: -4px;
+      color: var(--accent);
+    }
+    .nf-back:hover {
+      color: var(--ink);
+    }
+  }
+
+  /* Unlayered, like global.css's phone rules (which also stack this Strip). Its
+     reduced-motion block stills the blobs, the glitch and the fish here too. */
+  @media (max-width: 760px) {
+    .nf-card {
+      min-height: 360px;
+      padding: 24px 22px;
+    }
+    .nf-code {
+      font-size: clamp(96px, 34vw, 160px);
+    }
+    .nf-kana {
+      display: none;
     }
   }
 </style>

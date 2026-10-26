@@ -23,6 +23,12 @@ export default defineConfig({
   use: {
     baseURL: `http://127.0.0.1:${port}`,
     trace: 'retain-on-failure',
+    // Once the analytics token is set (src/lib/analytics.ts), pages carry the Cloudflare
+    // beacon. Its hosts don't resolve here, so tests never reach the network or report
+    // test visits; the beacon fails to load, as it does behind an ad blocker.
+    launchOptions: {
+      args: ['--host-resolver-rules=MAP static.cloudflareinsights.com ~NOTFOUND, MAP cloudflareinsights.com ~NOTFOUND'],
+    },
   },
   projects: [
     {

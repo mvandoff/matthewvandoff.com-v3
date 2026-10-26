@@ -1,0 +1,21 @@
+---
+/**
+ * The Cloudflare Web Analytics beacon (src/lib/analytics.ts), or nothing while the
+ * token is empty. It draws nothing, and the page reads the same without it.
+ *
+ * Deferred and module scripts run in document order, so the layout renders this
+ * last in <body>, and pages keep their own <script>s inside the layout: the Boot
+ * script is inline, and the Terminal and motion modules come first, so none of them
+ * waits for the beacon to download.
+ */
+import { cloudflareAnalyticsToken, cloudflareBeaconSrc } from '../lib/analytics.ts';
+
+interface Props {
+  /** For tests; pages use the site token. */
+  token?: string;
+}
+
+const { token = cloudflareAnalyticsToken } = Astro.props;
+---
+
+{token && <script is:inline defer src={cloudflareBeaconSrc} data-cf-beacon={JSON.stringify({ token })}></script>}

@@ -10,12 +10,14 @@ import type { SectionCopy } from '../lib/content.ts';
 
 interface Props {
   section: SectionCopy;
+  /** Where the link goes: the Section on this page by default; the 404 page links to `/#<id>`. */
+  href?: string;
 }
 
-const { section } = Astro.props;
+const { section, href = `#${section.id}` } = Astro.props;
 ---
 
-<a class="cel nav" href={`#${section.id}`}>
+<a class="cel nav" href={href}>
   <span class="hov" aria-hidden="true"></span>
   <span class="cel-n">{section.number}</span>
   <span class="vlabel">{section.label} <span class="vlabel-jp" lang="ja">{section.jp}</span></span>

@@ -24,8 +24,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <LinksSection />
   </main>
   <Footer />
+  {/*
+   * Inside the layout, so it comes before the analytics beacon: deferred and module
+   * scripts run in document order, and the motion controller mustn't wait on it.
+   */}
+  <script>
+    import '../scripts/motion/index.ts';
+  </script>
 </BaseLayout>
-
-<script>
-  import '../scripts/motion/index.ts';
-</script>

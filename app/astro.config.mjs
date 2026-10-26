@@ -31,6 +31,9 @@ const devMusicFiles = {
 };
 
 export default defineConfig({
+  // The site's origin: the one place it is written. Pages read it as Astro.site (canonical
+  // and Open Graph URLs); the robots.txt and sitemap.xml endpoints read it as `site`.
+  site: 'https://www.matthewvandoff.com',
   // Directory-style output (about/index.html). Astro's default, kept explicit.
   build: { format: 'directory' },
   // The e2e run builds twice (mock source, files source; playwright.config.ts), each to its own folder.

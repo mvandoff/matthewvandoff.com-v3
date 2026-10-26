@@ -1,10 +1,12 @@
 ---
 /**
- * Page shell: the document head (title, description, favicon, font preloads) and
- * the page root that every page renders inside. Pages put their content in the
- * default slot.
+ * Page shell: the document head (title, description, canonical URL or noindex,
+ * Open Graph and Twitter card tags, favicon, font preloads), the page root that
+ * every page renders inside, and the analytics beacon. Pages put their content in
+ * the default slot.
  */
 import '../styles/global.css';
+import AnalyticsBeacon from '../components/AnalyticsBeacon.astro';
 import { site } from '../lib/content.ts';
 import { fontFiles } from '../lib/fonts.ts';
 import { accentStorageKey } from '../lib/accent.ts';
@@ -12,9 +14,14 @@ import { accentStorageKey } from '../lib/accent.ts';
 interface Props {
   title?: string;
   description?: string;
+  /** Keeps the page out of search results (the 404 page). It then has no canonical URL. */
+  noindex?: boolean;
 }
 
-const { title = site.meta.title, description = site.meta.description } = Astro.props;
+const { title = site.meta.title, description = site.meta.description, noindex = false } = Astro.props;
+// Absolute, on the site origin (`site` in astro.config.mjs), whatever host served the page.
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const { shareImage } = site.meta;
 // Gridular and Martian Mono render above the fold on every page; DotGothic16 is
 // tiny and Geist is phone-only, so neither is preloaded.
 const preloads = [fontFiles.gridular, fontFiles.martianMono];
@@ -31,6 +38,17 @@ const preloads = [fontFiles.gridular, fontFiles.martianMono];
     </style>
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    {/* Share previews. og:url follows the canonical URL, so a noindex page has none. */}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {!noindex && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={new URL(shareImage.path, Astro.site).href} />
+    <meta property="og:image:width" content={String(shareImage.width)} />
+    <meta property="og:image:height" content={String(shareImage.height)} />
+    <meta property="og:image:alt" content={shareImage.alt} />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {preloads.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
     {
@@ -51,5 +69,6 @@ const preloads = [fontFiles.gridular, fontFiles.martianMono];
     <div id="top" class="root">
       <slot />
     </div>
+    <AnalyticsBeacon />
   </body>
 </html>
