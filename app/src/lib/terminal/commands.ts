@@ -1,6 +1,6 @@
 /**
- * Terminal command module (pure, no DOM): execute, complete and history, per the
- * spec's "Modules" section. All Terminal output wording lives here. Unit-tested
+ * Terminal command module (pure, no DOM): execute, complete and history. All
+ * Terminal output wording lives here. Unit-tested
  * with Vitest in tests/unit/terminal-commands.test.ts and terminal-music.test.ts.
  *
  * Music (`top`, `np`, `recent` and the idle `listening` line) reads only the

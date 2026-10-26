@@ -2,7 +2,7 @@
  * Mock music source reproducing the design's placeholder data exactly (the board
  * script in design/reference/warm-terminal.html, `termExec`): top lists with the
  * board's per-period scaling, the now/last-played track and the recent tracks.
- * The site ships it frozen at "last played", per the spec; `playing: true` gives
+ * It is frozen at "last played", the board's declared default; `playing: true` gives
  * the board's other listening state.
  */
 import type { MusicSource, Period, PlayedTrack, TopItem, TopKind } from './source.ts';

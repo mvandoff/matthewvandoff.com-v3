@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 /**
- * Navigation and scroll (spec stories 16-21, 33, 50): smooth scroll plus Lock-on
+ * Navigation and scroll: smooth scroll plus Lock-on
  * for the Cels, [ mvd ], back-to-top and `cd`; the header prompt, progress line
  * and border tracking the scroll; reveal-on-scroll; hash landing; reduced motion.
  */

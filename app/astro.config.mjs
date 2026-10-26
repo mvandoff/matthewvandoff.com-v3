@@ -31,7 +31,7 @@ const devMusicFiles = {
 };
 
 export default defineConfig({
-  // Directory-style output (about/index.html), per the spec. Astro's default, kept explicit.
+  // Directory-style output (about/index.html). Astro's default, kept explicit.
   build: { format: 'directory' },
   // The e2e run builds twice (mock source, files source; playwright.config.ts), each to its own folder.
   outDir: process.env['ASTRO_OUT_DIR'] ?? 'dist',
