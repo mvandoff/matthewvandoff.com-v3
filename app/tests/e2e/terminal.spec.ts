@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { devices, expect, test, type Page } from '@playwright/test';
 import { terminal } from '../helpers/terminal.ts';
 
 test.beforeEach(async ({ page }) => {
@@ -120,21 +120,85 @@ test('↑/↓ recall earlier commands, ending on an empty input', async ({ page 
   await expect(t.input).toHaveValue('');
 });
 
-test('Esc clears the output and input, collapses the Terminal and blurs it', async ({ page }) => {
+test('Esc with output or typed text clears and collapses the Terminal but keeps focus', async ({ page }) => {
   const t = terminal(page);
   await t.run('help');
   await t.input.fill('half typed');
   await t.input.press('Escape');
   await expect(t.input).toHaveValue('');
-  await expect(t.input).not.toBeFocused();
+  await expect(t.input).toBeFocused();
   await expect(t.body).toContainText(/building\s*Insight @ Cyncly/);
   await expect(t.header).toContainText('01b · ~/now $ cat status.txt');
   await expect(page.locator('.cel.lead')).toHaveCSS('opacity', '1');
   await expect(t.hint).toHaveText('try help');
 });
 
+test('Esc with only typed text (no output) clears it and keeps focus', async ({ page }) => {
+  const t = terminal(page);
+  await t.input.fill('half typed');
+  await t.input.press('Escape');
+  await expect(t.input).toHaveValue('');
+  await expect(t.input).toBeFocused();
+});
+
+test('Esc on an idle, empty Terminal blurs it', async ({ page }) => {
+  const t = terminal(page);
+  await t.run('help');
+  await expect(t.hint).toHaveText('esc · close'); // the output has rendered
+  await t.input.press('Escape');
+  await expect(t.hint).toHaveText('try help');
+  await expect(t.input).toBeFocused();
+  await t.input.press('Escape');
+  await expect(t.input).not.toBeFocused();
+  await expect(t.hint).toHaveText('try help');
+  await expect(t.box.locator('.cur')).toBeVisible();
+});
+
+test.describe('focus on landing', () => {
+  test('the input is focused once Boot is done, without scrolling the page', async ({ page }) => {
+    const t = terminal(page);
+    await expect(t.input).toBeFocused();
+    await expect(page.locator('html')).not.toHaveClass(/booting/);
+    expect(await page.evaluate(() => scrollY)).toBe(0);
+    await expect(t.box.locator('.cur')).toBeHidden();
+    await page.keyboard.type('whoami');
+    await expect(t.input).toHaveValue('whoami');
+  });
+
+  test('a URL with a hash keeps focus on the page', async ({ page }) => {
+    await page.goto('/#about');
+    await expect(page.locator('html')).not.toHaveClass(/booting/);
+    await expect(page.locator('body')).toBeFocused();
+    await expect(terminal(page).input).not.toBeFocused();
+  });
+
+  test('something already focused is not stolen', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => {
+      document.documentElement.classList.add('booting');
+      document.querySelector<HTMLElement>('a[href]')!.focus();
+      document.documentElement.classList.remove('booting');
+    });
+    await expect(page.locator('html')).not.toHaveClass(/booting/);
+    await expect(terminal(page).input).not.toBeFocused();
+  });
+
+  test.describe('on a touch device', () => {
+    const { defaultBrowserType: _, ...pixel } = devices['Pixel 7'];
+    test.use(pixel);
+    test('is not focused, so no on-screen keyboard', async ({ page }) => {
+      await page.goto('/');
+      await expect(page.locator('html')).not.toHaveClass(/booting/);
+      await expect(terminal(page).input).not.toBeFocused();
+    });
+  });
+});
+
 test('clicking anywhere in the Terminal focuses the input, unless text is selected', async ({ page }) => {
   const t = terminal(page);
+  // The input starts focused (focus on landing); let go of it so the click has work to do.
+  await expect(t.input).toBeFocused();
+  await t.input.blur();
   await t.body.click();
   await expect(t.input).toBeFocused();
 
@@ -149,6 +213,10 @@ test('clicking anywhere in the Terminal focuses the input, unless text is select
 test('the cursor blinks and the hint says "try help" until the visitor types', async ({ page }) => {
   const t = terminal(page);
   const cursor = t.box.locator('.cur');
+  // The input starts focused (focus on landing), which hides the cursor; blur to see the idle state.
+  await expect(t.input).toBeFocused();
+  await expect(cursor).toBeHidden();
+  await t.input.blur();
   await expect(cursor).toBeVisible();
   await expect(t.hint).toHaveText('try help');
   await t.input.focus();
