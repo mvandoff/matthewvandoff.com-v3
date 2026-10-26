@@ -6,7 +6,7 @@
  * page), so it lives here rather than in an environment variable. While it is empty the
  * page has no beacon script at all.
  */
-export const cloudflareAnalyticsToken: string = '';
+export const cloudflareAnalyticsToken: string = '4ae0e149b34b471b859842bbbf2764f2';
 
 /** The beacon script's URL. */
 export const cloudflareBeaconSrc = 'https://static.cloudflareinsights.com/beacon.min.js';
