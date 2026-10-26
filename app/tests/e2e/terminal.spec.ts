@@ -140,7 +140,9 @@ test('clicking anywhere in the Terminal focuses the input, unless text is select
 
   await t.input.blur();
   await t.body.locator('dd').first().selectText();
-  await t.body.locator('dd').first().click({ position: { x: 2, y: 2 }, modifiers: ['Shift'] });
+  // A real click would move the selection (on Linux a Shift-click here collapses it),
+  // so fire the click event alone, as the mouseup that ends a drag-select does.
+  await t.body.locator('dd').first().dispatchEvent('click');
   await expect(t.input).not.toBeFocused();
 });
 
