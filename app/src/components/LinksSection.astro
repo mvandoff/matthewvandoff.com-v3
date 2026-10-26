@@ -16,7 +16,7 @@ const section = site.sections[2];
   <div class="big-list">
     {
       site.links.map((link) => (
-        <a class="big" href={link.href} aria-label={link.label} data-scramble={link.label}>
+        <a class="big" href={link.href} target="_blank" rel="noopener" aria-describedby="new-tab" aria-label={link.label} data-scramble={link.label}>
           <span class="dw" aria-hidden="true">
             <span class="dw-ghost">{link.label}</span>
             <span class="dw-live">

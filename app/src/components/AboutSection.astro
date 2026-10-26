@@ -1,5 +1,5 @@
 ---
-/** The about Section: heading with its last clause in the Accent, then two paragraphs. */
+/** The about Section: heading with its last clause in the Accent, then its paragraphs, which may hold links. */
 import { site } from '../lib/content.ts';
 import SectionHeading from './SectionHeading.astro';
 
@@ -12,7 +12,21 @@ const { heading, paragraphs } = site.about;
   <div class="ab-body">
     <h2 class="ab">{heading.lead} <span class="acc">{heading.accent}</span></h2>
     <div class="ab-cols">
-      {paragraphs.map((paragraph) => <p class="ab-p">{paragraph}</p>)}
+      {
+        paragraphs.map((paragraph) => (
+          <p class="ab-p">
+            {paragraph.map((run) =>
+              typeof run === 'string' ? (
+                run
+              ) : (
+                <a class="ab-a" href={run.href} target="_blank" rel="noopener" aria-describedby="new-tab">
+                  {run.label}
+                </a>
+              ),
+            )}
+          </p>
+        ))
+      }
     </div>
   </div>
 </section>
@@ -49,9 +63,19 @@ const { heading, paragraphs } = site.about;
       border-top: 1px solid var(--rule);
     }
     .ab-p {
+      max-width: 72ch; /* a lone paragraph would otherwise run the full width */
       margin: 0;
       color: var(--ink-3);
       text-wrap: pretty;
+    }
+    .ab-a {
+      color: var(--ink);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .ab-a:hover,
+    .ab-a:focus-visible {
+      color: var(--accent);
     }
   }
 </style>

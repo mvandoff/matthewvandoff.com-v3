@@ -61,6 +61,23 @@ test('the links Section points at the real profiles', async ({ page }) => {
   );
 });
 
+test('external links open in a new tab and say so to screen readers', async ({ page }) => {
+  await page.goto('/');
+  const external = page.locator('a[href^="http"]');
+  await expect(external).toHaveCount(4); // Insight, Cyncly, github, linkedin
+  for (const link of await external.all()) {
+    await expect(link).toHaveAttribute('target', '_blank');
+    await expect(link).toHaveAttribute('rel', /\bnoopener\b/);
+    await expect(link).toHaveAccessibleDescription('opens in a new tab');
+  }
+  const about = page.locator('section#about');
+  await expect(about.getByRole('link', { name: 'Insight', exact: true })).toHaveAttribute(
+    'href',
+    'https://www.cyncly.com/products/insight',
+  );
+  await expect(about.getByRole('link', { name: 'Cyncly', exact: true })).toHaveAttribute('href', 'https://www.cyncly.com/');
+});
+
 test('the footer shows the current year', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('footer')).toContainText(`© ${new Date().getFullYear()} matthew van doff`);

@@ -69,6 +69,8 @@ const preloads = [fontFiles.gridular, fontFiles.martianMono];
     <div id="top" class="root">
       <slot />
     </div>
+    {/* The description for every external link (aria-describedby="new-tab"). */}
+    <span id="new-tab" hidden>{site.newTab}</span>
     <AnalyticsBeacon />
   </body>
 </html>

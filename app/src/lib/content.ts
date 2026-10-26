@@ -36,6 +36,9 @@ export interface ExternalLink {
   href: string;
 }
 
+/** A run of running copy: plain text, or a link around its label. */
+export type Inline = string | ExternalLink;
+
 export const site = {
   meta: {
     title: 'matthew van doff',
@@ -142,10 +145,16 @@ export const site = {
       /** Set in the Accent. */
       accent: 'one of the last of my kind.',
     },
+    /** Each paragraph is a list of runs, so a phrase can be a link. */
     paragraphs: [
-      "Thanks for visiting my home on the web. I'm a full stack developer based in the Raleigh-Durham area of North Carolina, and I've been writing software since a friend handed me my first programming book in 2015. These days I'm on the Insight team at Cyncly.",
-      "I've been a citizen of the internet since I was a kid, and old GeoCities-era sites and TechTV still give me a rush of nostalgia. Away from the keyboard I'm spending time with my family, making music, studying or building projects.",
-    ],
+      [
+        "Thanks for visiting my home on the web. I'm a full stack developer based in the Raleigh-Durham area of North Carolina, and I've been writing software since a friend handed me my first programming book in 2015. These days I'm on the ",
+        { label: 'Insight', href: 'https://www.cyncly.com/products/insight' },
+        ' team at ',
+        { label: 'Cyncly', href: 'https://www.cyncly.com/' },
+        '.',
+      ],
+    ] satisfies readonly (readonly Inline[])[],
   },
 
   episodes: [
@@ -174,6 +183,9 @@ export const site = {
         "Developed two enterprise apps for clients: a professional network for the insurance industry and an AI-assisted project management tool for government agencies. Also mentored the client's junior developers.",
     },
   ] satisfies readonly Episode[],
+
+  /** External links open in a new tab; screen readers hear this after the link's name. */
+  newTab: 'opens in a new tab',
 
   links: [
     { label: 'github', href: 'https://github.com/mvandoff' },
