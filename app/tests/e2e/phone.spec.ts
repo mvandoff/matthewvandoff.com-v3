@@ -84,6 +84,8 @@ test.describe('at 390px', () => {
       // The output scrolls inside the Terminal rather than widening the page.
       expect(await horizontalOverflow(page)).toBe(0);
       expect(await t.body.evaluate((el) => el.scrollWidth - el.clientWidth)).toBe(0);
+      // The header row gives way too (a long command and meta label), so the Terminal can't scroll sideways.
+      expect(await t.box.evaluate((el) => el.scrollWidth - el.clientWidth)).toBe(0);
     }
   });
 

@@ -231,6 +231,17 @@ const { terminal } = site;
       color: var(--accent);
       outline: 0;
     }
+    /* A long command and meta label don't fit a phone's header row: the echoed
+       command gives way, so the row never overflows the Terminal (which would
+       cut off the meta label and let the Terminal scroll sideways). */
+    .sig-cmd {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sig-meta {
+      flex: none;
+    }
     .sig-kana {
       font-family: var(--font-jp);
       font-size: 12px;
