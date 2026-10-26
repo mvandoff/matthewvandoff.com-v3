@@ -64,7 +64,7 @@ test('the links Section points at the real profiles', async ({ page }) => {
 test('external links open in a new tab and say so to screen readers', async ({ page }) => {
   await page.goto('/');
   const external = page.locator('a[href^="http"]');
-  await expect(external).toHaveCount(4); // Insight, Cyncly, github, linkedin
+  await expect(external).toHaveCount(6); // Insight, Cyncly, cyncly, applied visions, github, linkedin
   for (const link of await external.all()) {
     await expect(link).toHaveAttribute('target', '_blank');
     await expect(link).toHaveAttribute('rel', /\bnoopener\b/);
@@ -76,6 +76,9 @@ test('external links open in a new tab and say so to screen readers', async ({ p
     'https://www.cyncly.com/products/insight',
   );
   await expect(about.getByRole('link', { name: 'Cyncly', exact: true })).toHaveAttribute('href', 'https://www.cyncly.com/');
+  const experience = page.locator('section#experience');
+  await expect(experience.getByRole('link', { name: 'cyncly', exact: true })).toHaveAttribute('href', 'https://www.cyncly.com/');
+  await expect(experience.getByRole('link', { name: 'applied visions', exact: true })).toHaveAttribute('href', 'https://avi.com/');
 });
 
 test('the footer shows the current year', async ({ page }) => {
