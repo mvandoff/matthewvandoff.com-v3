@@ -114,8 +114,8 @@ export const site = {
       accent: 'one of the last of my kind.',
     },
     paragraphs: [
-      "Thanks for visiting my home on the web. I'm a full stack developer based in the Raleigh-Durham area of North Carolina, and I've been writing software since a friend handed me my first programming book in 2015. These days I'm on the Insight team at Cyncly, helping manufacturers move their factory workflows onto the modern web.",
-      "I've been a citizen of the internet since I was a kid, and old GeoCities-era sites and TechTV still give me a rush of nostalgia. It's probably why I care about software that's fast and feels good to use. Away from the keyboard I'm hanging with my family, making music or studying, and there's usually a side project or two on the go.",
+      "Thanks for visiting my home on the web. I'm a full stack developer based in the Raleigh-Durham area of North Carolina, and I've been writing software since a friend handed me my first programming book in 2015. These days I'm on the Insight team at Cyncly.",
+      "I've been a citizen of the internet since I was a kid, and old GeoCities-era sites and TechTV still give me a rush of nostalgia. Away from the keyboard I'm spending time with my family, making music, studying or building projects.",
     ],
   },
 
