@@ -186,17 +186,30 @@ export function startTerminal(box = document.querySelector<HTMLElement>('[data-t
     };
     loader.src = full;
   };
+  /** Starts loading the full size once per art, on the first sign of a click, so it's often ready when the dialog opens. */
+  const primeFull = () => {
+    if (shownArt && fullImg && !fullImg.src) loadFull(shownArt);
+  };
+  for (const intent of ['pointerenter', 'focus', 'pointerdown']) art.addEventListener(intent, primeFull);
   art.addEventListener('click', (event) => {
     event.stopPropagation();
     if (!shownArt) return;
-    // The full size loads only when the dialog first opens for this art.
-    if (fullImg && !fullImg.src) loadFull(shownArt);
+    primeFull();
     dialog.showModal();
   });
   // A click on the backdrop (the dialog itself, outside its content) closes it.
   dialog.addEventListener('click', (event) => {
     event.stopPropagation();
     if (event.target === dialog) dialog.close();
+  });
+  // The dialog hands focus back to the art. Closed with the pointer, it goes to the input
+  // instead, as any other click on the Terminal does; closed from the keyboard, it stays.
+  let pointerClose = false;
+  dialog.addEventListener('pointerdown', () => (pointerClose = true));
+  dialog.addEventListener('keydown', () => (pointerClose = false));
+  dialog.addEventListener('close', () => {
+    if (pointerClose) input.focus();
+    pointerClose = false;
   });
   const history = new History();
   let showingOutput = false;
