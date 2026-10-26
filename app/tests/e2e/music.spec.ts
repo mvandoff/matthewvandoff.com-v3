@@ -24,25 +24,28 @@ test('the idle status names the last played track with " · 2h ago" and no EQ', 
   await expect(listening.locator('[aria-hidden="true"]')).toHaveCount(0);
 });
 
-test('top tracks --week shows ten ranked bar rows with the meta line, expanded', async ({ page }) => {
+test('top tracks --week shows 25 ranked bar rows with the meta line, expanded', async ({ page }) => {
   const t = terminal(page);
   await t.run('top tracks --week');
   const rows = t.body.locator('.t-row');
-  await expect(rows).toHaveCount(10);
+  await expect(rows).toHaveCount(25);
   const cells = await rows.evaluateAll((els) =>
     els.map((el) => [...el.children].map((c) => (c as HTMLElement).innerText)),
   );
   expect(cells[0]).toEqual(['01', 'track.07 — artist.02', '', '3']);
   expect(cells[1]).toEqual(['02', 'track.12 — artist.01', '', '2']);
   expect(cells[9]).toEqual(['10', 'track.05 — artist.09', '', '1']);
-  // Bars: the fill's share of its track is the row's bar width (100% … 33%).
+  expect(cells[24]).toEqual(['25', 'track.25 — artist.03', '', '1']);
+  // Bars: the fill's share of its track is the row's bar width (100% … 9%).
   const shares = await rows.evaluateAll((els) =>
     els.map((el) => {
       const track = el.children[2]!;
       return Math.round((track.firstElementChild!.getBoundingClientRect().width / track.getBoundingClientRect().width) * 100);
     }),
   );
-  expect(shares).toEqual([100, 91, 80, 69, 61, 55, 48, 44, 38, 33]);
+  expect(shares).toEqual([
+    100, 91, 80, 69, 61, 55, 48, 44, 38, 33, 30, 28, 25, 23, 22, 20, 19, 17, 16, 14, 14, 13, 11, 11, 9,
+  ]);
   await expect(t.header).toContainText('01b · ~/now $ top tracks --week');
   await expect(t.header).toContainText('top tracks · 7 days · mock data');
   await expect(t.header.locator('[lang="ja"]')).toBeHidden();
@@ -60,7 +63,7 @@ test('np shows the last played track, expanded', async ({ page }) => {
   await expectExpanded(page);
 });
 
-test('recent lists the last 10 tracks with times, the artist in the second colour, expanded', async ({ page }) => {
+test('recent lists the mock tracks with times, the artist in the second colour, expanded', async ({ page }) => {
   const t = terminal(page);
   await t.run('recent');
   await expect.poll(() => t.lines()).toEqual([
@@ -74,6 +77,21 @@ test('recent lists the last 10 tracks with times, the artist in the second colou
     '5h   track.18 — artist.08',
     '6h   track.11 — artist.03',
     '6h   track.05 — artist.09',
+    '7h   track.14 — artist.07',
+    '7h   track.06 — artist.10',
+    '8h   track.19 — artist.02',
+    '9h   track.01 — artist.05',
+    '10h  track.23 — artist.03',
+    '11h  track.08 — artist.01',
+    '13h  track.16 — artist.04',
+    '15h  track.10 — artist.06',
+    '17h  track.22 — artist.08',
+    '20h  track.04 — artist.09',
+    '22h  track.17 — artist.02',
+    '1d   track.13 — artist.10',
+    '1d   track.20 — artist.07',
+    '2d   track.24 — artist.05',
+    '3d   track.25 — artist.03',
   ]);
   const span = (text: string) => t.body.locator('span').filter({ hasText: text }).first();
   await expect(span('2h')).toHaveCSS('color', DIM);

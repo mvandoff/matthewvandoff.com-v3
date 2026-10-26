@@ -194,7 +194,7 @@ const top: Command = async (call, ctx) => {
       : [line(['nothing played yet', 'dim'])];
     return out(call, lines, { meta, large: false });
   }
-  const items = list.items.slice(0, 10);
+  const items = list.items.slice(0, 25);
   const max = items[0]?.plays || 1;
   const rows = items.map(
     (item, i): Row => ({
@@ -263,7 +263,7 @@ const recent: Command = async (call, ctx) => {
   const recent = await ctx.music.recent();
   if (!recent.tracks.length) return unloaded(call, 'recent');
   const now = ctx.now();
-  const lines = recent.tracks.slice(0, 10).map(({ track, playing, at }) =>
+  const lines = recent.tracks.slice(0, 25).map(({ track, playing, at }) =>
     line(
       playing ? ['now'.padEnd(5), 'acc'] : [ago(at, now).padEnd(5), 'dim'],
       [`${track.title} — `],

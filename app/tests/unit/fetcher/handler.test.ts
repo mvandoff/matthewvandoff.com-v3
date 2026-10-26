@@ -128,11 +128,11 @@ describe('recent mode', () => {
       playing: true,
       at: null,
     });
-    // last.fm is asked for 12 rows so that dropping a duplicate still leaves 10.
+    // last.fm is asked for 30 rows so that dropping a duplicate still leaves 25.
     const url = new URL(String(fetch.mock.calls[0]![0]));
     expect(url.searchParams.get('user')).toBe(USERNAME);
-    expect(url.searchParams.get('limit')).toBe('12');
-    expect(file.tracks.length).toBeLessThanOrEqual(10);
+    expect(url.searchParams.get('limit')).toBe('30');
+    expect(file.tracks.length).toBeLessThanOrEqual(25);
   });
 
   it('writes an empty track list for an account with no plays', async () => {

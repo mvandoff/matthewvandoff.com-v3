@@ -29,10 +29,10 @@ export interface FetcherEvent {
 const API_URL = 'https://ws.audioscrobbler.com/2.0/';
 const TIMEOUT_MS = 8_000;
 const TOP_CONCURRENCY = 3;
-/** Asked of last.fm for recent tracks: mapping drops duplicates before applying its limit, so ask for more than the 10 kept. */
-const RECENT_FETCH_LIMIT = 12;
-const RECENT_LIMIT = 10;
-const TOP_LIMIT = 10;
+/** Asked of last.fm for recent tracks: mapping drops duplicates before applying its limit, so ask for more than the RECENT_LIMIT kept. */
+const RECENT_FETCH_LIMIT = 30;
+const RECENT_LIMIT = 25;
+const TOP_LIMIT = 25;
 const RECENT_CACHE = 'public, max-age=30';
 const TOP_CACHE = 'public, max-age=300';
 

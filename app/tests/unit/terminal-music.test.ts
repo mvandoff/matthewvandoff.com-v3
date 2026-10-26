@@ -17,7 +17,7 @@ const pairs = (line: Line) => line.map((span) => [span.text, span.tone ?? '']);
 const table = (rows: Row[] | undefined) => rows?.map((r) => [r.rank, r.name, r.pct, r.count]);
 
 describe('top', () => {
-  it('defaults to the top 10 artists over 12 months, as ranked bar rows', async () => {
+  it('defaults to the top 25 artists over 12 months, as ranked bar rows', async () => {
     const result = await execute('top', ctx);
     expect(table(result.output?.rows)).toEqual([
       ['01', 'artist.01', 100, '412'],
@@ -30,6 +30,21 @@ describe('top', () => {
       ['08', 'artist.08', 29, '118'],
       ['09', 'artist.09', 23, '96'],
       ['10', 'artist.10', 20, '81'],
+      ['11', 'artist.11', 17, '72'],
+      ['12', 'artist.12', 16, '66'],
+      ['13', 'artist.13', 14, '59'],
+      ['14', 'artist.14', 13, '53'],
+      ['15', 'artist.15', 12, '48'],
+      ['16', 'artist.16', 11, '44'],
+      ['17', 'artist.17', 10, '40'],
+      ['18', 'artist.18', 9, '36'],
+      ['19', 'artist.19', 8, '33'],
+      ['20', 'artist.20', 7, '30'],
+      ['21', 'artist.21', 7, '27'],
+      ['22', 'artist.22', 6, '25'],
+      ['23', 'artist.23', 5, '22'],
+      ['24', 'artist.24', 5, '20'],
+      ['25', 'artist.25', 4, '18'],
     ]);
     expect(result.output?.lines).toEqual([]);
     expect(result.meta).toBe('top artists · 12 months · mock data');
@@ -41,33 +56,60 @@ describe('top', () => {
   // Names, bar widths and counts for each kind and period. Bars keep the
   // 12-month shape; counts are scaled per period, rounded, at least 1.
   const names = {
-    artists: ['artist.01', 'artist.02', 'artist.03', 'artist.04', 'artist.05', 'artist.06', 'artist.07', 'artist.08', 'artist.09', 'artist.10'],
-    tracks: ['track.07 — artist.02', 'track.12 — artist.01', 'track.03 — artist.05', 'track.21 — artist.02', 'track.09 — artist.04', 'track.15 — artist.06', 'track.02 — artist.01', 'track.18 — artist.08', 'track.11 — artist.03', 'track.05 — artist.09'],
-    albums: ['album.02 — artist.01', 'album.05 — artist.02', 'album.01 — artist.03', 'album.04 — artist.02', 'album.03 — artist.05', 'album.06 — artist.07', 'album.09 — artist.04', 'album.07 — artist.01', 'album.08 — artist.10', 'album.10 — artist.06'],
+    artists: [
+      'artist.01', 'artist.02', 'artist.03', 'artist.04', 'artist.05', 'artist.06', 'artist.07', 'artist.08',
+      'artist.09', 'artist.10', 'artist.11', 'artist.12', 'artist.13', 'artist.14', 'artist.15', 'artist.16',
+      'artist.17', 'artist.18', 'artist.19', 'artist.20', 'artist.21', 'artist.22', 'artist.23', 'artist.24',
+      'artist.25',
+    ],
+    tracks: [
+      'track.07 — artist.02', 'track.12 — artist.01', 'track.03 — artist.05', 'track.21 — artist.02',
+      'track.09 — artist.04', 'track.15 — artist.06', 'track.02 — artist.01', 'track.18 — artist.08',
+      'track.11 — artist.03', 'track.05 — artist.09', 'track.14 — artist.07', 'track.06 — artist.10',
+      'track.19 — artist.02', 'track.01 — artist.05', 'track.23 — artist.03', 'track.08 — artist.01',
+      'track.16 — artist.04', 'track.10 — artist.06', 'track.22 — artist.08', 'track.04 — artist.09',
+      'track.17 — artist.02', 'track.13 — artist.10', 'track.20 — artist.07', 'track.24 — artist.05',
+      'track.25 — artist.03',
+    ],
+    albums: [
+      'album.02 — artist.01', 'album.05 — artist.02', 'album.01 — artist.03', 'album.04 — artist.02',
+      'album.03 — artist.05', 'album.06 — artist.07', 'album.09 — artist.04', 'album.07 — artist.01',
+      'album.08 — artist.10', 'album.10 — artist.06', 'album.11 — artist.03', 'album.12 — artist.08',
+      'album.13 — artist.02', 'album.14 — artist.11', 'album.15 — artist.05', 'album.16 — artist.01',
+      'album.17 — artist.09', 'album.18 — artist.12', 'album.19 — artist.04', 'album.20 — artist.06',
+      'album.21 — artist.13', 'album.22 — artist.07', 'album.23 — artist.10', 'album.24 — artist.14',
+      'album.25 — artist.02',
+    ],
   };
   const bars = {
-    artists: [100, 86, 72, 58, 45, 40, 34, 29, 23, 20],
-    tracks: [100, 91, 80, 69, 61, 55, 48, 44, 38, 33],
-    albums: [100, 91, 74, 65, 52, 45, 38, 32, 27, 23],
+    artists: [
+      100, 86, 72, 58, 45, 40, 34, 29, 23, 20, 17, 16, 14, 13, 12, 11, 10, 9, 8, 7, 7, 6, 5, 5, 4,
+    ],
+    tracks: [
+      100, 91, 80, 69, 61, 55, 48, 44, 38, 33, 30, 28, 25, 23, 22, 20, 19, 17, 16, 14, 14, 13, 11, 11, 9,
+    ],
+    albums: [
+      100, 91, 74, 65, 52, 45, 38, 32, 27, 23, 20, 18, 16, 15, 13, 12, 11, 10, 9, 7, 7, 6, 5, 5, 4,
+    ],
   };
   const combos = [
-    ['artists', '--week', '7 days', '16 14 12 10 7 7 6 5 4 3'],
-    ['artists', '--month', '30 days', '58 50 42 34 26 23 19 17 13 11'],
-    ['artists', '--year', '12 months', '412 356 298 241 187 164 139 118 96 81'],
-    ['artists', '--all', 'all time', '1483 1282 1073 868 673 590 500 425 346 292'],
-    ['tracks', '--week', '7 days', '3 2 2 2 2 1 1 1 1 1'],
-    ['tracks', '--month', '30 days', '9 8 7 6 5 5 4 4 3 3'],
-    ['tracks', '--year', '12 months', '64 58 51 44 39 35 31 28 24 21'],
-    ['tracks', '--all', 'all time', '230 209 184 158 140 126 112 101 86 76'],
-    ['albums', '--week', '7 days', '8 7 6 5 4 3 3 2 2 2'],
-    ['albums', '--month', '30 days', '26 24 20 17 14 12 10 9 7 6'],
-    ['albums', '--year', '12 months', '188 171 140 122 97 84 72 61 50 43'],
-    ['albums', '--all', 'all time', '677 616 504 439 349 302 259 220 180 155'],
+    ['artists', '--week', '7 days', '16 14 12 10 7 7 6 5 4 3 3 3 2 2 2 2 2 1 1 1 1 1 1 1 1'],
+    ['artists', '--month', '30 days', '58 50 42 34 26 23 19 17 13 11 10 9 8 7 7 6 6 5 5 4 4 4 3 3 3'],
+    ['artists', '--year', '12 months', '412 356 298 241 187 164 139 118 96 81 72 66 59 53 48 44 40 36 33 30 27 25 22 20 18'],
+    ['artists', '--all', 'all time', '1483 1282 1073 868 673 590 500 425 346 292 259 238 212 191 173 158 144 130 119 108 97 90 79 72 65'],
+    ['tracks', '--week', '7 days', '3 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1'],
+    ['tracks', '--month', '30 days', '9 8 7 6 5 5 4 4 3 3 3 3 2 2 2 2 2 2 1 1 1 1 1 1 1'],
+    ['tracks', '--year', '12 months', '64 58 51 44 39 35 31 28 24 21 19 18 16 15 14 13 12 11 10 9 9 8 7 7 6'],
+    ['tracks', '--all', 'all time', '230 209 184 158 140 126 112 101 86 76 68 65 58 54 50 47 43 40 36 32 32 29 25 25 22'],
+    ['albums', '--week', '7 days', '8 7 6 5 4 3 3 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1'],
+    ['albums', '--month', '30 days', '26 24 20 17 14 12 10 9 7 6 5 5 4 4 4 3 3 3 2 2 2 2 1 1 1'],
+    ['albums', '--year', '12 months', '188 171 140 122 97 84 72 61 50 43 38 34 31 28 25 22 20 18 16 14 13 12 10 9 8'],
+    ['albums', '--all', 'all time', '677 616 504 439 349 302 259 220 180 155 137 122 112 101 90 79 72 65 58 50 47 43 36 32 29'],
   ] as const;
 
   it.each(combos)('top %s %s: ranked rows and the meta line', async (kind, flag, label, counts) => {
     const result = await execute(`top ${kind} ${flag}`, ctx);
-    const ranks = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10'];
+    const ranks = Array.from({ length: 25 }, (_, i) => String(i + 1).padStart(2, '0'));
     expect(table(result.output?.rows)).toEqual(
       counts.split(' ').map((count, i) => [ranks[i], names[kind][i], bars[kind][i], count]),
     );
@@ -134,11 +176,29 @@ describe('recent', () => {
     ['track.18', 'artist.08'],
     ['track.11', 'artist.03'],
     ['track.05', 'artist.09'],
+    ['track.14', 'artist.07'],
+    ['track.06', 'artist.10'],
+    ['track.19', 'artist.02'],
+    ['track.01', 'artist.05'],
+    ['track.23', 'artist.03'],
+    ['track.08', 'artist.01'],
+    ['track.16', 'artist.04'],
+    ['track.10', 'artist.06'],
+    ['track.22', 'artist.08'],
+    ['track.04', 'artist.09'],
+    ['track.17', 'artist.02'],
+    ['track.13', 'artist.10'],
+    ['track.20', 'artist.07'],
+    ['track.24', 'artist.05'],
+    ['track.25', 'artist.03'],
   ];
 
-  it('lists the last 10 tracks with relative times, the artist in the second colour', async () => {
+  it('lists the mock tracks with relative times, the artist in the second colour', async () => {
     const result = await execute('recent', ctx);
-    const times = ['2h   ', '2h   ', '2h   ', '3h   ', '3h   ', '4h   ', '4h   ', '5h   ', '6h   ', '6h   '];
+    const times = [
+      '2h   ', '2h   ', '2h   ', '3h   ', '3h   ', '4h   ', '4h   ', '5h   ', '6h   ', '6h   ',
+      '7h   ', '7h   ', '8h   ', '9h   ', '10h  ', '11h  ', '13h  ', '15h  ', '17h  ', '20h  ', '22h  ', '1d   ', '1d   ', '2d   ', '3d   ',
+    ];
     expect(result.output?.lines.map(pairs)).toEqual(
       tracks.map(([track, artist], i) => [[times[i], 'dim'], [`${track} — `, ''], [artist, 'tl']]),
     );
@@ -151,7 +211,10 @@ describe('recent', () => {
   it('marks the playing track "now" in the Accent', async () => {
     const playing = { now, music: createMockMusic({ now, playing: true }), accent: noAccent };
     const result = await execute('recent', playing);
-    const times = ['now  ', '4m   ', '9m   ', '15m  ', '1h   ', '1h   ', '2h   ', '2h   ', '3h   ', '5h   '];
+    const times = [
+      'now  ', '4m   ', '9m   ', '15m  ', '1h   ', '1h   ', '2h   ', '2h   ', '3h   ', '5h   ',
+      '5h   ', '6h   ', '7h   ', '7h   ', '8h   ', '9h   ', '10h  ', '11h  ', '13h  ', '15h  ', '17h  ', '20h  ', '1d   ', '1d   ', '2d   ',
+    ];
     expect(result.output?.lines.map(pairs)).toEqual(
       tracks.map(([track, artist], i) => [[times[i], i ? 'dim' : 'acc'], [`${track} — `, ''], [artist, 'tl']]),
     );
@@ -203,7 +266,7 @@ describe('another music source (e.g. real last.fm)', () => {
     },
     async recent() {
       return {
-        tracks: Array.from({ length: 12 }, (_, i) => ({
+        tracks: Array.from({ length: 30 }, (_, i) => ({
           track: { title: `Song ${i + 1}`, artist: `Band ${i + 1}` },
           playing: false,
           at: minutesAgo([0, 59, 60, 1439, 1440, 4400][i] ?? 9000),
@@ -235,10 +298,11 @@ describe('another music source (e.g. real last.fm)', () => {
     expect(result.meta).toBe('last.fm');
   });
 
-  it('shows only its 10 newest tracks, in minutes, hours, then days', async () => {
+  it('shows only its 25 newest tracks, in minutes, hours, then days', async () => {
     const result = await execute('recent', real);
     expect(result.output?.lines.map((l) => l[0]!.text)).toEqual([
-      '0m   ', '59m  ', '1h   ', '23h  ', '1d   ', '3d   ', '6d   ', '6d   ', '6d   ', '6d   ',
+      '0m   ', '59m  ', '1h   ', '23h  ', '1d   ', '3d   ',
+      ...Array<string>(19).fill('6d   '),
     ]);
     expect(result.meta).toBe('last.fm');
   });
