@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../lib/content.ts';
 ---
 
-<BaseLayout title={site.notFound.title}>
+<BaseLayout title={site.notFound.title} noindex>
   <Header homeHref="/" here="404" />
   <main class="wrap nf">
     <p class="nf-ln">
