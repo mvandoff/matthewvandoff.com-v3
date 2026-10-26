@@ -1,12 +1,10 @@
 /**
- * Accent tuning (pure, no DOM): turns any `accent` input into an Accent hex, as the
- * board's tune() does (design/reference/warm-terminal.html). Anything that isn't
+ * Accent tuning (pure, no DOM): turns any `accent` input into an Accent hex. Anything that isn't
  * a preset is re-tuned to OKLCH L 0.78, C 0.08 (chroma reduced until in gamut);
  * grays (C < 0.02) become the warm neutral (L 0.8, C 0.012, H 80).
  *
  * Parsing an arbitrary CSS colour needs the browser, so it is injected
- * (`ColourParser`); everything else here is plain arithmetic, step for step the
- * board's, so the same input gives the same hex.
+ * (`ColourParser`); everything else here is plain arithmetic.
  */
 
 /** The default Accent (teal). tokens.css declares the same value as --accent-default. */
@@ -80,7 +78,7 @@ function toHex(L: number, C: number, H: number): string {
 /**
  * Tunes lower-cased input `n` (not a preset, not `reset`): `random`, a hue
  * 0–360 (optional `deg`), bare 3/6-digit hex, or any CSS colour. null = not a
- * colour. Order matters and is the board's: a number up to 360 is a hue even
+ * colour. Order matters: a number up to 360 is a hue even
  * when it is also valid hex (`210`); above 360, 3 digits read as hex (`400`).
  */
 export function tune(n: string, { parseColour, random }: TuneDeps): Tuned | null {
@@ -101,8 +99,8 @@ export function tune(n: string, { parseColour, random }: TuneDeps): Tuned | null
     g = parseInt(v.slice(3, 5), 16);
     b = parseInt(v.slice(5, 7), 16);
   } else {
-    // As on the board: the first three numbers of the serialisation, whatever
-    // its colour space (so oklch()/color() serialisations read oddly, the same way).
+    // The first three numbers of the serialisation, whatever its colour space
+    // (so oklch()/color() serialisations read oddly).
     const m = v.match(/[\d.]+/g);
     if (!m || m.length < 3) return null;
     r = +m[0]!;

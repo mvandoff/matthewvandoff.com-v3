@@ -1,5 +1,5 @@
 /**
- * Entrance timing, from the board's componentDidMount (warm-terminal.html 638-646).
+ * Entrance timing.
  *
  * The entrance starts in an inline script at the top of <body> (Boot.astro), not in
  * the Motion controller module: it must set its classes before first paint so the
@@ -9,8 +9,8 @@
  * static and fully visible).
  */
 export const entrance = {
-  /** `html.booting` shows the Boot overlay; removed after this (board: boot state). */
+  /** `html.booting` shows the Boot overlay; removed after this. */
   bootMs: 1450,
-  /** `html.glitching` runs the name glitch; removed after this (board: rise state with intro). */
+  /** `html.glitching` runs the name glitch; removed after this. */
   introMs: 3600,
 } as const;

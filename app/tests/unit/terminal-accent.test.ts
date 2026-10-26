@@ -1,7 +1,6 @@
 /**
- * The `accent` command and Accent tuning. Every expected hex is a literal read off
- * the board's own Terminal (design/reference/warm-terminal.html, tune()), run in
- * Chromium.
+ * The `accent` command and Accent tuning. Every expected hex is a literal, first
+ * read off the original design's Terminal running in Chromium.
  */
 import { describe, expect, it } from 'vitest';
 import { createMockMusic } from '../../src/lib/music/mock.ts';
@@ -68,7 +67,7 @@ describe('accent presets', () => {
   });
 });
 
-/** `accent <input>` → [label, tuned hex], read off the board. */
+/** `accent <input>` → [label, tuned hex]. */
 async function tuned(input: string, ctx = context()) {
   const { lines, effects } = await run(`accent ${input}`, ctx);
   const [[label, labelTone], [hex, hexTone]] = lines![0]!;
@@ -95,7 +94,7 @@ describe('accent hues', () => {
     expect(await tuned(input)).toEqual([label, hex]);
   });
 
-  it('reads 3-digit numbers above 360 as hex, as the board does', async () => {
+  it('reads 3-digit numbers above 360 as hex', async () => {
     expect(await tuned('400')).toEqual(['400', '#e6a49a']); // #400, a dark red
     expect(await tuned('361')).toEqual(['361', '#a0c491']); // #361, a dark green
   });
@@ -121,8 +120,8 @@ describe('accent CSS colours', () => {
     ['rgb(10,200,90)', '#93c69c'],
     ['rgb(255 0 0 / 50%)', '#e6a49a'],
     ['hsl(200 15% 50%)', '#80c2e1'],
-    // The board reads the first three numbers of whatever the canvas returns, so an
-    // oklch() colour comes out as if its numbers were rgb. Kept, for fidelity.
+    // Tuning reads the first three numbers of whatever the canvas returns, so an
+    // oklch() colour comes out as if its numbers were rgb.
     ['oklch(0.7 0.2 30)', '#a1b6ec'],
   ])('%s is re-tuned to the palette', async (input, hex) => {
     expect(await tuned(input)).toEqual([input.toLowerCase(), hex]);

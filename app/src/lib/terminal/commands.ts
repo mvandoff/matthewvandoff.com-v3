@@ -177,7 +177,7 @@ const music =
 const longer: Record<Period, Period | undefined> = { week: 'month', month: 'year', year: 'all', all: undefined };
 
 /**
- * `top [artists|tracks|albums] [--week|--month|--year|--all]`, as on the board:
+ * `top [artists|tracks|albums] [--week|--month|--year|--all]`:
  * the words may come in any order and anything else is ignored; tracks beat
  * albums beat artists, --week beats --month beats --all; otherwise 12 months.
  */

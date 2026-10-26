@@ -1,13 +1,12 @@
 /**
- * The github/linkedin glyph scramble (board `scramble()`, warm-terminal.html
- * 962-986). On hover or focus of a `.big` link the word in its `.dw-live` turns to
+ * The github/linkedin glyph scramble. On hover or focus of a `.big` link the word in its `.dw-live` turns to
  * noise, then resolves one letter per 34ms tick after 6 all-noise ticks: the live
  * span shows the resolved prefix plus a `.nz` noise tail of the remaining length,
  * then the plain word. The `.dw-ghost` copy reserves the word's width and the live
  * span is absolutely positioned, so nothing moves.
  *
- * Skipped under reduced motion. Restarts from noise if retriggered mid-scramble,
- * as on the board. Glyphs come from Math.random (seeded in the design harness).
+ * Skipped under reduced motion. Restarts from noise if retriggered mid-scramble.
+ * Glyphs come from Math.random.
  */
 import { reducedMotion } from './scroll.ts';
 

@@ -53,7 +53,7 @@ export function clearAccent(): void {
 
 /**
  * The browser's CSS-colour parsing for Accent tuning: what a canvas serialises
- * `css` to, or null when it isn't a colour (as the board does it).
+ * `css` to, or null when it isn't a colour.
  */
 export function parseColour(css: string): string | null {
   try {

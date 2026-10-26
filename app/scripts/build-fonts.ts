@@ -38,10 +38,9 @@ const LATIN =
   String.fromCodePoint(0x20ac, 0x2122, 0x2191, 0x2193, 0x2212, 0x2215, 0xfeff, 0xfffd);
 
 /**
- * Google Fonts' "latin-ext" subset. Martian Mono keeps latin + latin-ext, exactly
- * the subsets the board gets from Google Fonts, so characters outside them
- * (→ ↗ ■ ▶ ⌐ in the Terminal and ASCII art) fall back to ui-monospace as they
- * do on the board.
+ * Google Fonts' "latin-ext" subset. Martian Mono keeps latin + latin-ext, the
+ * subsets Google Fonts serves, so characters outside them (→ ↗ ■ ▶ ⌐ in the
+ * Terminal and ASCII art) fall back to ui-monospace.
  */
 const LATIN_EXT =
   range(0x0100, 0x02ba) +
@@ -84,9 +83,9 @@ const jobs: FontJob[] = [
     license: 'ofl/martianmono/OFL.txt',
     out: fontFiles.martianMono,
     text: LATIN + LATIN_EXT,
-    // Width pinned to 100 (normal), which is what Google Fonts serves the board
-    // (the source's own default is 112.5, semi-expanded). The board requests
-    // wght 300..800; the site uses 400, but keeping the axis means any bold
+    // Width pinned to 100 (normal), which is what Google Fonts serves
+    // (the source's own default is 112.5, semi-expanded). Weight keeps the
+    // 300..800 axis; the site uses 400, but keeping the axis means any bold
     // renders true rather than synthesised.
     variationAxes: { wdth: 100, wght: { min: 300, max: 800, default: 400 } },
   },
@@ -122,7 +121,7 @@ for (const job of jobs) {
     targetFormat: 'woff2',
     // Keep the post table's glyph names (format 2, as Google Fonts serves them).
     // Without them (format 3) Chrome rasterises the glyphs differently: Geist
-    // body copy and DotGothic16 kana visibly differ from the board (mvd-034.10).
+    // body copy and DotGothic16 kana visibly differ from the Google Fonts rendering (mvd-034.10).
     glyphNames: true,
     ...(job.variationAxes ? { variationAxes: job.variationAxes } : {}),
   });

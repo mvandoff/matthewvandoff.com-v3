@@ -35,7 +35,7 @@ test.describe('at 390px', () => {
       const b = await box(cel);
       expect(b.y).toBeGreaterThanOrEqual(previousBottom);
       expect(b.width).toBeCloseTo(name.width, 0);
-      expect(b.height).toBe(62); // 60px row plus its 1px borders, as on the board
+      expect(b.height).toBe(62); // 60px row plus its 1px borders
       // The label reads horizontally, followed by a → at the far end.
       const label = await box(cel.locator('.vlabel'));
       expect(label.width).toBeGreaterThan(label.height);

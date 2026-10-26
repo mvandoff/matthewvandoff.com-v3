@@ -1,5 +1,5 @@
 /**
- * Pointer tracking (board `_onMove`/`_onOut`, warm-terminal.html 655-674). On every
+ * Pointer tracking. On every
  * mousemove it writes to <html>:
  *   --mx/--my   cursor position in px (integers, registered in global.css with a
  *               resting value of -200): name ghosts, background field, Crosshair
@@ -11,14 +11,14 @@
  * and prints the zero-padded x/y into the HUD. When the mouse leaves the window,
  * --cv and --xh drop to 0.
  *
- * The board sets these even under reduced motion and on touch; CSS then hides the
- * Crosshair and drops the transitions. We do the same.
+ * These are set even under reduced motion and on touch; CSS then hides the
+ * Crosshair and drops the transitions.
  */
 import { zeroPad } from '../../lib/format.ts';
 
 const CLICKABLE = 'a, button, label, input, select, textarea, [role="button"], .tgt';
 
-/** A HUD coordinate: zero-padded to four digits, like the board's z4 counter style. */
+/** A HUD coordinate: zero-padded to four digits. */
 export const hudValue = (n: number): string => (n < 0 ? '-' + zeroPad(-n, 3) : zeroPad(n, 4));
 
 export function startPointer(): void {

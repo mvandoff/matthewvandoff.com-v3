@@ -1,6 +1,5 @@
 /*
  * Design tokens. Every colour, font stack and layout constant the components use.
- * Values are frozen from the Warm Terminal board (design/reference/warm-terminal.html).
  */
 :root {
   /* Ground: page, Strip item and Boot fills (--ground-2 sits one step above the page). */

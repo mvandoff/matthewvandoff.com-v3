@@ -1,5 +1,5 @@
 /**
- * Scroll tracking (board `track()`, warm-terminal.html 690-722), run on load and
+ * Scroll tracking, run on load and
  * on scroll/resize, throttled to one run per animation frame.
  *
  * Writes to <html>: --sp (scroll progress 0-1, 4 decimals; the background field,
@@ -9,7 +9,7 @@
  * (`.bar.down` once scrolled past 8px) and reveal-on-scroll (`.rv` on each Section
  * once JS runs, `.in` once seen, for good).
  *
- * Runs under reduced motion too, as on the board; CSS keeps the field still and
+ * Runs under reduced motion too; CSS keeps the field still and
  * shows every Section outright.
  */
 import { site } from '../../lib/content.ts';
@@ -49,8 +49,8 @@ export function startTracking(): void {
     }
   };
 
-  // Hidden-until-seen only once JS runs. As on the board (which first renders every
-  // Section revealed), what's in view is measured before .rv offsets anything, and
+  // Hidden-until-seen only once JS runs. What's in view is measured before .rv
+  // offsets anything, and
   // stays revealed. A Section named by the URL hash is where the browser is about
   // to land, so it starts seen too: offset by the reveal, the landing would be 32px short.
   const landing = decodeURIComponent(location.hash.slice(1));

@@ -58,7 +58,7 @@ const { section } = Astro.props;
       opacity: 0.55;
       transform-origin: left;
     }
-    /* Reveal on scroll (board 208-209): undrawn until the Section is seen. */
+    /* Reveal on scroll: undrawn until the Section is seen. */
     :global(.rv) .sh-r::after {
       transform: scaleX(0);
       transition: transform 1.4s var(--ease-snap) 0.25s;

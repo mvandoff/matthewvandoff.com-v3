@@ -10,7 +10,7 @@ import { site } from '../lib/content.ts';
 
 const { nameCard } = site;
 const [line1, line2] = nameCard.nameLines;
-const ghostOpacity = 0.55; // ghost strength 1 × 0.55, frozen from the board
+const ghostOpacity = 0.55;
 ---
 
 <div class="cel lead">
@@ -220,7 +220,7 @@ const ghostOpacity = 0.55; // ghost strength 1 × 0.55, frozen from the board
     .ln-i {
       display: block;
     }
-    /* Glitch intro (board: .intro.go.gl): starts after the Boot, line 2 just behind. */
+    /* Glitch intro: starts after the Boot, line 2 just behind. */
     :global(html.glitching) .ln-i {
       animation: glin 0.95s steps(1, end) 2.05s both;
     }

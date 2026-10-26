@@ -15,7 +15,7 @@
  *   scramble  the github/linkedin glyph scramble on hover and focus
  * Looping ambience (blob drift, fish, kaomoji, cursor blink) is pure CSS.
  *
- * Reduced motion: each piece is skipped or short-circuited as on the board; the
+ * Reduced motion: each piece is skipped or short-circuited; the
  * CSS side is the reduced-motion block at the bottom of styles/global.css.
  */
 import { startClock, startYear } from './clock.ts';

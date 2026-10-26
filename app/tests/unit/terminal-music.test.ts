@@ -38,8 +38,7 @@ describe('top', () => {
     expect(result.effects).toEqual([]);
   });
 
-  // Names, bar widths and counts as the board renders them for each kind and
-  // period (design/reference/warm-terminal.html, termExec). Bars keep the
+  // Names, bar widths and counts for each kind and period. Bars keep the
   // 12-month shape; counts are scaled per period, rounded, at least 1.
   const names = {
     artists: ['artist.01', 'artist.02', 'artist.03', 'artist.04', 'artist.05', 'artist.06', 'artist.07', 'artist.08', 'artist.09', 'artist.10'],
@@ -88,7 +87,7 @@ describe('top', () => {
     expect((await execute('top albums', ctx)).meta).toBe('top albums · 12 months · mock data');
   });
 
-  it('takes its words in any order and any case, ignoring the rest, as the board does', async () => {
+  it('takes its words in any order and any case, ignoring the rest', async () => {
     expect((await execute('TOP --All Tracks', ctx)).meta).toBe('top tracks · all time · mock data');
     expect((await execute('top --month nonsense albums', ctx)).meta).toBe('top albums · 30 days · mock data');
     // Several kinds or periods: tracks beat albums beat artists; --week beats --month beats --all.

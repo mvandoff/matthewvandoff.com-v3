@@ -1,13 +1,11 @@
 /**
- * Mock music source reproducing the design's placeholder data exactly (the board
- * script in design/reference/warm-terminal.html, `termExec`): top lists with the
- * board's per-period scaling, the now/last-played track and the recent tracks.
- * It is frozen at "last played", the board's declared default; `playing: true` gives
- * the board's other listening state.
+ * Mock music source reproducing the original design's placeholder data: top lists
+ * with per-period scaling, the now/last-played track and the recent tracks.
+ * It is frozen at "last played"; `playing: true` gives the other listening state.
  */
 import type { MusicSource, Period, PlayedTrack, TopItem, TopKind } from './source.ts';
 
-/** 12-month play counts. Other periods scale these (the board's per-period factors). */
+/** 12-month play counts. Other periods scale these. */
 const top12: Record<TopKind, Array<[string, string | undefined, number]>> = {
   artists: [
     ['artist.01', undefined, 412],
@@ -48,8 +46,8 @@ const top12: Record<TopKind, Array<[string, string | undefined, number]>> = {
 };
 
 /**
- * The board scales 12-month counts per period. Counts stay unrounded so the
- * bars keep the 12-month shape, exactly as on the board.
+ * 12-month counts scaled per period. Counts stay unrounded so the bars keep the
+ * 12-month shape.
  */
 const scale: Record<Period, number> = { week: 0.04, month: 0.14, year: 1, all: 3.6 };
 
@@ -67,7 +65,7 @@ const recentTracks: Array<[string, string]> = [
 ];
 
 /**
- * Minutes since each recent track, chosen so they read as the board's times:
+ * Minutes since each recent track, chosen so they read as:
  * playing `now 4m 9m 15m 1h 1h 2h 2h 3h 5h`, last played `2h 2h 2h 3h 3h 4h 4h 5h 6h 6h`.
  */
 const recentPlaying = [0, 4.5, 9.5, 15.5, 70, 95, 130, 155, 200, 320];

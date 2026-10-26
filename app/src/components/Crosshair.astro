@@ -2,15 +2,14 @@
 /**
  * Crosshair: faint cursor-tracking lines, a centre square that grows over clickable
  * things, and a HUD (bottom right) with zero-padded x/y, rulers and a mini-map with
- * a scroll marker. Board: warm-terminal.html 255-280 (CSS), 328-339 (markup).
+ * a scroll marker.
  *
  * Shown only on hover-capable fine pointers, and only once the mouse has moved
  * (opacity is --cv, set by scripts/motion/pointer.ts, which also writes the HUD
  * values). Hidden under reduced motion (global.css). Without JS it never shows.
  *
- * DEVIATION: the board prints the x/y values with CSS counters; the site writes them
- * as text (same glyphs, same box) so they can be read and tested. They start at
- * -200, the resting --mx/--my, as the board's counters do.
+ * The x/y values are written as text, not CSS counters, so they can be read and
+ * tested. They start at -200, the resting --mx/--my.
  */
 ---
 

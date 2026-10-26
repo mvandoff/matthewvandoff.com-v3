@@ -6,7 +6,7 @@
  * bar widths and relative times are the Terminal command module's job
  * (src/lib/terminal/commands.ts), so every source reads the same.
  *
- * last.fm mapping (design/terminal-handoff.md): `top` = user.gettopartists /
+ * last.fm mapping: `top` = user.gettopartists /
  * gettoptracks / gettopalbums with period 7day | 1month | 12month | overall;
  * `nowPlaying` and `recent` = user.getrecenttracks (its nowplaying flag).
  */

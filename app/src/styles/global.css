@@ -101,7 +101,7 @@
     color: var(--accent);
   }
 
-  /* Reveal on scroll (board 226-227): the Motion controller adds .rv to each
+  /* Reveal on scroll: the Motion controller adds .rv to each
      Section once it runs (so without JS they stay visible) and .in once seen. */
   .rv {
     opacity: 0;
@@ -115,7 +115,7 @@
     transform: none;
   }
 
-  /* Lock-on (board 238-241): a brief Accent bracket, with a "found ~/<id>" tag on
+  /* Lock-on: a brief Accent bracket, with a "found ~/<id>" tag on
      Section headings, shown after a smooth scroll lands. Rendered `hidden`; the
      scroll helper (scripts/motion/scroll.ts) unhides it, which restarts the run. */
   .lock {
@@ -150,7 +150,7 @@
   }
 }
 
-/* Terminal EQ bars, shown while a track plays (board line 82). */
+/* Terminal EQ bars, shown while a track plays. */
 @keyframes eqb {
   0% {
     transform: scaleY(0.2);
@@ -160,7 +160,7 @@
   }
 }
 
-/* ---- Entrance and ambient keyframes (board lines 135-137, 167-169, 184-191, 244-253) */
+/* ---- Entrance and ambient keyframes ---------------------------------------- */
 
 /* Boot: the overlay hides itself at 1.35s; the two halves split open from the line. */
 @keyframes bootgone {
@@ -474,13 +474,11 @@
    The phone layout (mvd-034.10) adds its rules here. */
 
 /* ---- Reduced motion (unlayered) -------------------------------------------- */
-/* The board's two reduced-motion blocks (lines 181 and 306), minus deleted variants.
-   The entrance script also skips the Boot and the name glitch under reduced motion;
+/* The entrance script also skips the Boot and the name glitch under reduced motion;
    these rules make that hold even if its classes were present. */
 /*
- * Narrow screens (board 180, 282-305, 308): the Episode reflow at ≤900px, then the
- * phone layout at ≤760px. Unlayered, so these beat the component rules; the board
- * needed !important only to beat its own inline styles.
+ * Narrow screens: the Episode reflow at ≤900px, then the phone layout at ≤760px.
+ * Unlayered, so these beat the component rules.
  */
 @media (max-width: 900px) {
   /* Episode: number and years on one row, the title and the description below. */
