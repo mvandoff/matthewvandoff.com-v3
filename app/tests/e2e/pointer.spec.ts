@@ -56,6 +56,32 @@ test.describe('Crosshair', () => {
     await expect.poll(() => squareInset(page)).toBe('0px');
   });
 
+  test('the square shrinks back when a Cel click scrolls the page from under a still cursor', async ({ page }) => {
+    await page.goto('/');
+    const cel = page.getByRole('link', { name: /^02 about/ });
+    // CI's Chromium can drop a mousemove sent the instant the page loads, so keep moving.
+    await expect(async () => {
+      await cel.hover();
+      await expect.poll(() => squareInset(page), { timeout: 1_000 }).toBe('-6px');
+    }).toPass();
+    await page.mouse.down();
+    await page.mouse.up(); // the click scrolls to ~/about; no mouse move after this
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300);
+    await expect.poll(() => squareInset(page)).toBe('0px');
+  });
+
+  test('the square shrinks back when the wheel scrolls the page from under a still cursor', async ({ page }) => {
+    await page.goto('/');
+    const cel = page.getByRole('link', { name: /^02 about/ });
+    await expect(async () => {
+      await cel.hover();
+      await expect.poll(() => squareInset(page), { timeout: 1_000 }).toBe('-6px');
+    }).toPass();
+    await page.mouse.wheel(0, 1200);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300);
+    await expect.poll(() => squareInset(page)).toBe('0px');
+  });
+
   test('fades out when the mouse leaves the window', async ({ page }) => {
     await page.goto('/');
     await page.mouse.move(400, 300);

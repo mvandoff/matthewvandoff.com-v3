@@ -11,6 +11,11 @@
  * and prints the zero-padded x/y into the HUD. When the mouse leaves the window,
  * --cv and --xh drop to 0.
  *
+ * Scrolling moves things under a still cursor (a Cel click, Terminal `cd`, the
+ * wheel), so --xh is also recomputed from the last cursor position after the
+ * page scrolls (once per frame, and so right at the end of a smooth scroll).
+ * Nothing else is rewritten then.
+ *
  * These are set even under reduced motion and on touch; CSS then hides the
  * Crosshair and drops the transitions.
  */
@@ -28,9 +33,14 @@ export function startPointer(): void {
   const set = (name: string, value: string) => root.style.setProperty(name, value);
   const fraction = (v: number, of: number) => Math.min(1, Math.max(0, v / (of || 1))).toFixed(4);
 
+  /** Last cursor position; null before the first real mouse move and after the mouse leaves. */
+  let last: { x: number; y: number } | null = null;
+  let frame = 0;
+
   const onMove = (e: MouseEvent) => {
     const x = Math.round(e.clientX);
     const y = Math.round(e.clientY);
+    last = { x: e.clientX, y: e.clientY };
     set('--mx', String(x));
     set('--my', String(y));
     set('--cv', '1');
@@ -44,10 +54,21 @@ export function startPointer(): void {
 
   const onOut = (e: MouseEvent) => {
     if (e.relatedTarget) return;
+    last = null;
     set('--cv', '0');
     set('--xh', '0');
   };
 
+  const onScroll = () => {
+    if (!last || frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      if (!last) return;
+      set('--xh', document.elementFromPoint(last.x, last.y)?.closest(CLICKABLE) ? '1' : '0');
+    });
+  };
+
   document.addEventListener('mousemove', onMove, { passive: true });
   document.addEventListener('mouseout', onOut);
+  window.addEventListener('scroll', onScroll, { passive: true });
 }
