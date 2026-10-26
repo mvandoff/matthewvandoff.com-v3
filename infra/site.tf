@@ -59,6 +59,7 @@ resource "aws_cloudfront_distribution" "site" {
   http_version        = "http2and3"
   is_ipv6_enabled     = true
   default_root_object = "index.html"
+  aliases             = ["www.matthewvandoff.com"]
 
   origin {
     origin_id                = "site"
