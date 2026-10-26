@@ -114,8 +114,8 @@ export const site = {
       accent: 'one of the last of my kind.',
     },
     paragraphs: [
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      "Thanks for visiting my home on the web. I'm a full stack developer based in the Raleigh-Durham area of North Carolina, and I've been writing software since a friend handed me my first programming book in 2015. These days I'm on the Insight team at Cyncly, helping manufacturers move their factory workflows onto the modern web.",
+      "I've been a citizen of the internet since I was a kid, and old GeoCities-era sites and TechTV still give me a rush of nostalgia. It's probably why I care about software that's fast and feels good to use. Away from the keyboard I'm hanging with my family, making music or studying, and there's usually a side project or two on the go.",
     ],
   },
 
@@ -134,7 +134,7 @@ export const site = {
       role: 'full stack developer',
       company: 'game builds',
       description:
-        'Helped build, launch and maintain diablobuilds.com, a Diablo IV community site centred on a character builder with detailed stats and customisation.',
+        'Helped build, launch and maintain diablobuilds.com, a Diablo IV community site centered on a character builder with detailed stats and customization.',
     },
     {
       number: 1,
