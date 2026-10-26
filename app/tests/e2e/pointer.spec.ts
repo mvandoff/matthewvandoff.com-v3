@@ -19,8 +19,12 @@ test.describe('Crosshair', () => {
   test('stays hidden until the mouse moves, then shows', async ({ page }) => {
     await page.goto('/');
     await expect(crosshair(page)).toHaveCSS('opacity', '0');
-    await page.mouse.move(400, 300);
-    await expect(crosshair(page)).toHaveCSS('opacity', '1');
+    // CI's Chromium can drop a mousemove sent the instant the page loads, so keep moving.
+    let x = 400;
+    await expect(async () => {
+      await page.mouse.move(x++, 300);
+      await expect(crosshair(page)).toHaveCSS('opacity', '1', { timeout: 1_000 });
+    }).toPass();
   });
 
   test('the HUD shows the zero-padded cursor position as it moves', async ({ page }) => {
