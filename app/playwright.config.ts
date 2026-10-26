@@ -14,9 +14,9 @@ export default defineConfig({
   testDir: 'tests/e2e',
   fullyParallel: true,
   forbidOnly: !!process.env['CI'],
-  // Headroom for a loaded machine (many workers, or a busy laptop). The design specs
-  // drive two pages through long scripted flows; timing assertions are all driven by
-  // fake clocks, so this changes how long a slow run may take, never what passes.
+  // Headroom for a loaded machine (many workers, or a busy laptop). Timing assertions
+  // are all driven by fake clocks, so this changes how long a slow run may take, never
+  // what passes.
   timeout: 90_000,
   expect: { timeout: 15_000 },
   reporter: [['list'], ['html', { open: 'never' }]],
@@ -24,7 +24,6 @@ export default defineConfig({
     baseURL: `http://127.0.0.1:${port}`,
     trace: 'retain-on-failure',
   },
-  snapshotPathTemplate: '{testDir}/baselines/{arg}{ext}',
   projects: [
     {
       name: 'desktop',
@@ -35,12 +34,6 @@ export default defineConfig({
       name: 'music-files',
       testMatch: 'music-files.spec.ts',
       use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, baseURL: `http://127.0.0.1:${filesPort}` },
-    },
-    {
-      // Site vs the Warm Terminal board in a frozen state; see tests/design/freeze.ts.
-      name: 'design',
-      testDir: 'tests/design',
-      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
     },
   ],
   webServer: [

@@ -2,8 +2,7 @@ import { devices, expect, test, type Page } from '@playwright/test';
 
 /**
  * Pointer-driven effects: the Crosshair and its HUD, the Cel and Episode hovers, and
- * the github/linkedin scramble. Exact looks are compared with the board in
- * tests/design/pointer.spec.ts; these tests pin the behaviour.
+ * the github/linkedin scramble. These tests pin the behaviour, not the exact looks.
  */
 
 const crosshair = (page: Page) => page.locator('.xh');

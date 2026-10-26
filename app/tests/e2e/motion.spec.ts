@@ -3,8 +3,7 @@ import { expect, test, type Page } from '@playwright/test';
 /**
  * Entrance and ambient motion (Boot, name glitch, ASCII coin flip, blobs, field).
  * Timers run on Playwright's fake clock; CSS animations run on real time, so these
- * tests look at which animations are attached, not at frames. Exact timings and
- * keyframes are compared with the board in tests/design/motion.spec.ts.
+ * tests look at which animations are attached, not at frames.
  */
 
 const boot = (page: Page) => page.locator('.boot');

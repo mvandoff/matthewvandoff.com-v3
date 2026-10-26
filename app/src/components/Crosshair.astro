@@ -7,7 +7,6 @@
  * Shown only on hover-capable fine pointers, and only once the mouse has moved
  * (opacity is --cv, set by scripts/motion/pointer.ts, which also writes the HUD
  * values). Hidden under reduced motion (global.css). Without JS it never shows.
- * data-freeze-hide: the design harness hides it (tests/design/freeze.ts).
  *
  * DEVIATION: the board prints the x/y values with CSS counters; the site writes them
  * as text (same glyphs, same box) so they can be read and tested. They start at
@@ -15,7 +14,7 @@
  */
 ---
 
-<div class="xh" aria-hidden="true" data-freeze-hide>
+<div class="xh" aria-hidden="true">
   <div class="xh-v"></div>
   <div class="xh-h"></div>
   <div class="xh-s"></div>

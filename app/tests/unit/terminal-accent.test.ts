@@ -1,7 +1,7 @@
 /**
  * The `accent` command and Accent tuning. Every expected hex is a literal read off
  * the board's own Terminal (design/reference/warm-terminal.html, tune()), run in
- * Chromium; tests/design/accent.spec.ts re-checks the site against the live board.
+ * Chromium.
  */
 import { describe, expect, it } from 'vitest';
 import { createMockMusic } from '../../src/lib/music/mock.ts';

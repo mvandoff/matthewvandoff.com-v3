@@ -3,8 +3,7 @@ import { terminal } from '../helpers/terminal.ts';
 
 /**
  * Phone and narrow layouts (spec stories 4, 46-49): the design's 760px phone
- * breakpoint and its 900px Episode reflow. Pixel accuracy against the board is
- * tests/design; these check the behaviour a phone visitor relies on.
+ * breakpoint and its 900px Episode reflow: the behaviour a phone visitor relies on.
  */
 
 const PHONE = { width: 390, height: 844 };
