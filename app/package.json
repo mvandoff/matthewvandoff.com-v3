@@ -17,7 +17,7 @@
     "test:e2e": "playwright test",
     "fonts": "node scripts/build-fonts.ts",
     "music:samples": "node scripts/music-samples.ts",
-    "fetcher:build": "esbuild fetcher/index.ts --bundle --platform=node --target=node24 --format=esm --outfile=dist-fetcher/index.mjs"
+    "fetcher:build": "esbuild fetcher/index.ts --bundle --platform=node --target=node24 --format=esm --outfile=dist-fetcher/index.mjs --banner:js=\"import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\""
   },
   "dependencies": {
     "astro": "7.3.8"
