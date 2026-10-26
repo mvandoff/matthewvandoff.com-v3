@@ -15,12 +15,14 @@ export const fontFiles = {
 
 /**
  * Every string the site sets in DotGothic16: the katakana name, the Terminal's
- * 現在, each Section's Japanese label and the Episode numbers ("ep." plus digits).
+ * 現在, the 404 card's label, each Section's Japanese label and the Episode numbers
+ * ("ep." plus digits).
  */
 export function dotGothicText(): string {
   return [
     site.nameCard.katakana,
     site.terminal.jp,
+    site.notFound.jp,
     ...site.sections.map((section) => section.jp),
     ...site.episodes.map(episodeLabel),
     // All ten digits, so renumbering Episodes never needs a regenerated font.

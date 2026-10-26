@@ -55,8 +55,28 @@ export const site = {
 
   notFound: {
     title: 'not found · matthew van doff',
+    /** The 404 card, laid out like the Name card. */
+    prompt: '404 · ~/??? $ pwd',
+    code: '404',
+    /** Vertical Japanese label, set in DotGothic16: "page not found". */
+    jp: 'ページが見つかりません',
+    heading: 'page not found',
+    tagline: 'it may have moved when the site was rebuilt',
+    fish: { art: '><(((º>', label: 'a little ascii fish, swimming in circles' },
+    /** The log box under the card. */
+    logPrompt: '~/404 $ cat error.log',
     /** Shown as-is without JavaScript; the script appends `: /<path>`. */
     line: 'cd: no such page',
+    /**
+     * Old paths (v2's pages) and the Section that took their place. When the visitor's
+     * path starts with one, the script adds a `try` line linking to that Section.
+     */
+    moved: [
+      { from: '/work', to: 'experience' },
+      { from: '/resume', to: 'experience' },
+    ] satisfies readonly { from: string; to: SectionId }[],
+    /** Followed by " cd ~/<section>". */
+    tryPrefix: 'try:',
     back: '[ back home ]',
   },
 
