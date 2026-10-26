@@ -1,0 +1,75 @@
+# Push to main tests and deploys v3 (mvd-pc7.6). Run it by hand to deploy again.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time; a newer push waits rather than racing the sync.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  # Terraform outputs from infra/. Not secrets.
+  AWS_REGION: us-east-1
+  DEPLOY_ROLE_ARN: arn:aws:iam::114946893883:role/matthewvandoff-com-v3-deploy
+  SITE_BUCKET: matthewvandoff-com-v3-site
+  DISTRIBUTION_ID: E1P3E6NGVEAXE
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+        with:
+          package_json_file: app/package.json
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: app/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm exec playwright install --with-deps chromium
+
+      - run: pnpm test
+
+      - run: pnpm check
+
+      # The e2e builds above write dist/ with the mock music source, so build again:
+      # a production build reads the fetched music files.
+      - run: pnpm build
+
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ env.DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # music/ belongs to the last.fm fetcher, so neither sync touches it.
+      - name: Upload hashed assets
+        run: >
+          aws s3 sync dist/_astro/ "s3://$SITE_BUCKET/_astro/" --delete
+          --exclude 'music/*'
+          --cache-control 'max-age=31536000, immutable'
+
+      - name: Upload everything else
+        run: >
+          aws s3 sync dist/ "s3://$SITE_BUCKET/" --delete
+          --exclude 'music/*' --exclude '_astro/*'
+          --cache-control 'no-cache'
+
+      - name: Invalidate
+        run: aws cloudfront create-invalidation --distribution-id "$DISTRIBUTION_ID" --paths '/*'
