@@ -58,12 +58,14 @@ jobs:
           role-to-assume: ${{ env.DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      # music/ belongs to the last.fm fetcher, so neither sync touches it.
+      # Hashed assets go first and old ones stay, so a page already open or cached
+      # never loses its CSS or JS mid-deploy. They're small; prune them by hand if ever.
       - name: Upload hashed assets
         run: >
-          aws s3 sync dist/_astro/ "s3://$SITE_BUCKET/_astro/" --delete
-          --exclude 'music/*'
+          aws s3 sync dist/_astro/ "s3://$SITE_BUCKET/_astro/"
           --cache-control 'max-age=31536000, immutable'
+
+      # music/ belongs to the last.fm fetcher, so this sync leaves it alone.
 
       - name: Upload everything else
         run: >

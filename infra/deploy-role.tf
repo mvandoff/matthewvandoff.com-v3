@@ -5,6 +5,8 @@ data "aws_iam_openid_connect_provider" "github" {
 }
 
 # Pushes and manual re-runs both run on main, so only main may assume the role.
+# New repos get GitHub's immutable subject (owner and repo IDs as well as names), so
+# a deleted-and-recreated repo of the same name can't assume it.
 data "aws_iam_policy_document" "deploy_trust" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -23,7 +25,7 @@ data "aws_iam_policy_document" "deploy_trust" {
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:mvandoff/matthewvandoff.com-v3:ref:refs/heads/main"]
+      values   = ["repo:mvandoff@26186973/matthewvandoff.com-v3@1433785413:ref:refs/heads/main"]
     }
   }
 }

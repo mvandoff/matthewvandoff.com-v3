@@ -137,7 +137,14 @@ resource "aws_iam_role_policy" "fetcher_scheduler" {
   policy = data.aws_iam_policy_document.fetcher_scheduler.json
 }
 
-# Each run is self-contained and the next one is never far off, so no retries.
+# Each run is self-contained and the next one is never far off, so no retries:
+# not from Scheduler, and not Lambda's own async retries either.
+resource "aws_lambda_function_event_invoke_config" "fetcher" {
+  function_name                = aws_lambda_function.fetcher.function_name
+  maximum_retry_attempts       = 0
+  maximum_event_age_in_seconds = 60
+}
+
 resource "aws_scheduler_schedule" "fetcher" {
   for_each = {
     recent = "rate(1 minute)"
