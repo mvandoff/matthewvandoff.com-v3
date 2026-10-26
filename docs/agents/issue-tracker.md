@@ -23,7 +23,7 @@ Issues and specs live in beads (`bd`), a local Dolt-backed tracker in `.beads/`.
 
 ## How work closes
 
-There are no PRs and no remote. Work closes with `bd close` once it's merged to `main` locally. **PRs as a request surface: no.**
+The remote is GitHub, `mvandoff/matthewvandoff.com-v3`. A push to `main` runs the tests and deploys the site (`.github/workflows/deploy.yml`), so push only work that's ready to go live. There are still no PRs: work closes with `bd close` once it's on `main`. **PRs as a request surface: no.**
 
 ## Sync
 
