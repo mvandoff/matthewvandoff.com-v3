@@ -7,7 +7,7 @@
  * On phones (≤760px) the prompt becomes the Section menu's button: a native
  * popover below the bar with one Cel row per Section, standing in for the Strip's
  * Cels, which phones hide. It opens and closes without JavaScript; the script
- * only closes it once a Section is picked.
+ * shows a picked row for a beat, then closes the menu and goes to the Section.
  */
 import { site } from '../lib/content.ts';
 import Cel from './Cel.astro';
@@ -44,10 +44,37 @@ const sectionBase = homeHref.startsWith('#') ? '' : homeHref;
 </header>
 
 <script>
-  // Close the menu once a Section is picked; the click itself still navigates.
+  /** How long a picked row shows as picked before the menu closes and the page moves:
+   *  about as long as its wash takes to fill (global.css). */
+  const PICK_MS = 300;
+
   const menu = document.getElementById('sections-menu');
+  let replaying = false;
+
+  // iOS Safari only applies :active (the rows' touch-down state) with a touch listener.
+  menu?.addEventListener('touchstart', () => {}, { passive: true });
+
+  // A pick shows first: the row holds as picked, then the menu closes and the click
+  // is replayed to navigate (scroll.ts on the main page, a plain link elsewhere).
   menu?.addEventListener('click', (event) => {
-    if ((event.target as Element | null)?.closest('a')) menu.hidePopover();
+    const link = (event.target as Element | null)?.closest('a');
+    if (!link || replaying) return;
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (menu.querySelector('.picked')) return;
+    link.classList.add('picked');
+    setTimeout(() => {
+      menu.hidePopover();
+      replaying = true;
+      link.click();
+      replaying = false;
+    }, PICK_MS);
+  });
+
+  // Fresh each time it opens.
+  menu?.addEventListener('beforetoggle', (event) => {
+    if ((event as ToggleEvent).newState === 'open') menu.querySelector('.picked')?.classList.remove('picked');
   });
 </script>
 

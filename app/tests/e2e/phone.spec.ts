@@ -58,15 +58,47 @@ test.describe('at 390px', () => {
       previousBottom = b.y + b.height;
     }
 
-    // Escape closes it; picking a Section closes it and goes there.
+    // Escape closes it; picking a Section shows the pick (accent border, → pushed on),
+    // then closes the menu and goes there.
     await page.keyboard.press('Escape');
     await expect(menu).toBeHidden();
     await button.click();
-    await menu.getByRole('link', { name: /^03 experience\b/ }).click();
+    const experience = menu.getByRole('link', { name: /^03 experience\b/ });
+    await experience.click();
+    await expect(experience).toHaveClass(/\bpicked\b/);
     await expect(menu).toBeHidden();
     await expect(page.locator('#experience')).toBeInViewport();
     await expect(button).toHaveText(/^~\/experience \$/);
     await expect(page).toHaveURL('/');
+
+    // It opens fresh, with nothing picked.
+    await button.click();
+    await expect(menu.locator('.picked')).toHaveCount(0);
+  });
+
+  test('a picked Section row shows the pick before the menu closes', async ({ page }) => {
+    // Reduced motion: no transitions, so the pick's styles are final as soon as it's set.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    await page.getByRole('button', { name: 'sections' }).click();
+    const menu = page.getByRole('navigation', { name: 'sections' });
+    const picked = await menu.getByRole('link', { name: /^04 links\b/ }).evaluate((el) => {
+      (el as HTMLElement).click();
+      const probe = document.createElement('i');
+      probe.style.color = 'var(--accent)';
+      document.body.append(probe);
+      const accent = getComputedStyle(probe).color;
+      probe.remove();
+      return {
+        open: document.getElementById('sections-menu')!.matches(':popover-open'),
+        border: getComputedStyle(el).borderTopColor === accent,
+        arrow: new DOMMatrixReadOnly(getComputedStyle(el, '::after').transform).e,
+        scrollY: window.scrollY,
+      };
+    });
+    expect(picked).toEqual({ open: true, border: true, arrow: 4, scrollY: 0 });
+    await expect(menu).toBeHidden();
+    await expect(page.locator('#links')).toBeInViewport();
   });
 
   test('the header prompt, Terminal hint and long clock are hidden; the clock is short', async ({ page }) => {

@@ -565,21 +565,51 @@
     margin-left: auto;
     font-size: 16px;
     color: var(--dim);
-    transition: color 0.1s;
+    transition:
+      color 0.25s,
+      transform 0.3s var(--ease-out);
   }
   a.cel:hover::after,
   a.cel:focus-visible::after {
     color: var(--accent);
   }
-  /* The dotted wash wipes in from the → end rather than from the top. */
+  /* The dotted wash wipes in from the → end rather than from the top. The row's
+     border, label and → ease in alongside it, slow enough to read on a tap. */
   a.cel .hov {
     -webkit-mask-image: linear-gradient(to left, #000 0%, rgba(0, 0, 0, 0.35) 45%, transparent 80%);
     mask-image: linear-gradient(to left, #000 0%, rgba(0, 0, 0, 0.35) 45%, transparent 80%);
     clip-path: inset(0 0 0 100%);
+    transition: clip-path 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  a.cel {
+    transition: border-color 0.25s;
+  }
+  a.cel .vlabel {
+    transition: color 0.25s;
   }
   a.cel:hover .hov,
   a.cel:focus-visible .hov {
     clip-path: inset(0 0 0 0);
+  }
+  /* A tap: the wash fills while the finger is down (:active) and holds, with the →
+     pushed on, while Header.astro's script lets the pick (.picked) play out before
+     the menu closes. */
+  a.cel:active,
+  a.cel.picked {
+    border-color: var(--accent);
+  }
+  a.cel:active .vlabel,
+  a.cel.picked .vlabel {
+    color: var(--accent);
+  }
+  a.cel:active .hov,
+  a.cel.picked .hov {
+    clip-path: inset(0 0 0 0);
+  }
+  a.cel:active::after,
+  a.cel.picked::after {
+    color: var(--accent);
+    transform: translateX(4px);
   }
 
   /* Name card: the name scales and may wrap; the katakana stays (it introduces the
@@ -693,6 +723,10 @@
   .ep,
   .big,
   .hov,
+  a.cel,
+  a.cel .vlabel,
+  a.cel .hov,
+  a.cel::after,
   .menu,
   .caret {
     transition: none;
