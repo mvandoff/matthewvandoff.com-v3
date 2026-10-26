@@ -62,7 +62,8 @@ export const site = {
     jp: 'ページが見つかりません',
     heading: 'page not found',
     tagline: 'it may have moved when the site was rebuilt',
-    fish: { art: '><(((º>', label: 'a little ascii fish, swimming in circles' },
+    /** `bubble` floats up from the fish now and then. */
+    fish: { art: '><(((º>', label: 'a little ascii fish, swimming in circles', bubble: '?' },
     /** The log box under the card. */
     logPrompt: '~/404 $ cat error.log',
     /** Shown as-is without JavaScript; the script appends `: /<path>`. */
@@ -75,8 +76,9 @@ export const site = {
       { from: '/work', to: 'experience' },
       { from: '/resume', to: 'experience' },
     ] satisfies readonly { from: string; to: SectionId }[],
-    /** Followed by " cd ~/<section>". */
+    /** Followed by " <tryCommand><section>", e.g. "try: cd ~/experience". */
     tryPrefix: 'try:',
+    tryCommand: 'cd ~/',
     back: '[ back home ]',
   },
 

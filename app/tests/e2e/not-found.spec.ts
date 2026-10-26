@@ -65,11 +65,23 @@ test.describe('404 page', () => {
     const context = await browser.newContext({ reducedMotion: 'reduce' });
     const page = await context.newPage();
     await page.goto('/no/such/page');
+    // The real 404 page, not a bare fallback, so "nothing animates" means something.
+    await expect(page.getByRole('heading', { level: 1, name: '404' })).toBeVisible();
+    await expect(page.locator('.fish')).toBeVisible();
     const running = await page.evaluate(() =>
       document.getAnimations().filter((animation) => animation.playState === 'running').length,
     );
     expect(running).toBe(0);
     await context.close();
+  });
+
+  test('with motion allowed, the same page does animate', async ({ page }) => {
+    await page.goto('/no/such/page');
+    await expect(page.getByRole('heading', { level: 1, name: '404' })).toBeVisible();
+    const running = await page.evaluate(() =>
+      document.getAnimations().filter((animation) => animation.playState === 'running').length,
+    );
+    expect(running).toBeGreaterThan(0);
   });
 
   test.describe('at 390px', () => {

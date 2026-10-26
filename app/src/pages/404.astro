@@ -50,7 +50,7 @@ const ghostOpacity = 0.55;
               <p class="nf-line">{notFound.tagline}</p>
             </div>
             <div class="aq">
-              <span class="fish" role="img" aria-label={notFound.fish.label}>{notFound.fish.art}</span>
+              <span class="fish" role="img" aria-label={notFound.fish.label} data-bubble={notFound.fish.bubble}>{notFound.fish.art}</span>
             </div>
           </div>
         </div>
@@ -59,7 +59,7 @@ const ghostOpacity = 0.55;
           <p class="nf-row">{notFound.logPrompt}</p>
           <div class="nf-body">
             <p class="nf-err">{notFound.line}<span id="nf-path"></span></p>
-            <p id="nf-try" data-moved={JSON.stringify(notFound.moved)} hidden>
+            <p id="nf-try" data-moved={JSON.stringify(notFound.moved)} data-command={notFound.tryCommand} hidden>
               {notFound.tryPrefix} <a class="nf-try-link" href="/"></a>
             </p>
           </div>
@@ -92,7 +92,7 @@ const ghostOpacity = 0.55;
     );
     if (moved && tryLine && tryLink) {
       tryLink.href = `/#${moved.to}`;
-      tryLink.textContent = `cd ~/${moved.to}`;
+      tryLink.textContent = `${tryLine.dataset['command'] ?? ''}${moved.to}`;
       tryLine.hidden = false;
     }
   </script>
@@ -262,7 +262,7 @@ const ghostOpacity = 0.55;
       animation: swim 11s steps(17, end) infinite;
     }
     .fish::after {
-      content: '?';
+      content: attr(data-bubble);
       position: absolute;
       right: -1ch;
       top: -0.85em;
