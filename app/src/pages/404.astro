@@ -12,21 +12,21 @@ import { site } from '../lib/content.ts';
     </p>
     <a class="navlink nf-back" href="/">{site.notFound.back}</a>
   </main>
-</BaseLayout>
-
-<script>
-  // The path comes from the URL, so it is only ever written as text.
-  const slot = document.getElementById('nf-path');
-  if (slot) {
-    let path = location.pathname;
-    try {
-      path = decodeURIComponent(path);
-    } catch {
-      /* keep the raw path */
+  {/* Inside the layout, so it runs before the analytics beacon (see AnalyticsBeacon.astro). */}
+  <script>
+    // The path comes from the URL, so it is only ever written as text.
+    const slot = document.getElementById('nf-path');
+    if (slot) {
+      let path = location.pathname;
+      try {
+        path = decodeURIComponent(path);
+      } catch {
+        /* keep the raw path */
+      }
+      slot.textContent = `: ${path}`;
     }
-    slot.textContent = `: ${path}`;
-  }
-</script>
+  </script>
+</BaseLayout>
 
 <style>
   @layer components {

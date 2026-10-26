@@ -1,10 +1,12 @@
 ---
 /**
  * Page shell: the document head (title, description, canonical URL or noindex,
- * Open Graph and Twitter card tags, favicon, font preloads) and the page root that every page renders inside. Pages put their content in the
- * default slot.
+ * Open Graph and Twitter card tags, favicon, font preloads), the page root that
+ * every page renders inside, and the analytics beacon. Pages put their content in
+ * the default slot.
  */
 import '../styles/global.css';
+import AnalyticsBeacon from '../components/AnalyticsBeacon.astro';
 import { site } from '../lib/content.ts';
 import { fontFiles } from '../lib/fonts.ts';
 import { accentStorageKey } from '../lib/accent.ts';
@@ -67,5 +69,6 @@ const preloads = [fontFiles.gridular, fontFiles.martianMono];
     <div id="top" class="root">
       <slot />
     </div>
+    <AnalyticsBeacon />
   </body>
 </html>
