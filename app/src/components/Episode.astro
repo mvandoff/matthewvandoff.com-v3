@@ -19,7 +19,17 @@ const { episode } = Astro.props;
   <span class="ep-y">{episode.years}</span>
   <div class="ep-h">
     <h3 class="ep-t">{episode.role}</h3>
-    <p class="ep-c">{episode.company}</p>
+    <p class="ep-c">
+      {
+        episode.companyHref ? (
+          <a class="ep-a" href={episode.companyHref} target="_blank" rel="noopener" aria-describedby="new-tab">
+            {episode.company}
+          </a>
+        ) : (
+          episode.company
+        )
+      }
+    </p>
   </div>
   <p class="ep-d">{episode.description}</p>
 </article>
@@ -73,6 +83,15 @@ const { episode } = Astro.props;
       margin: 0;
       font-size: 13px;
       color: var(--second);
+    }
+    .ep-a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .ep-a:hover,
+    .ep-a:focus-visible {
+      color: var(--accent);
     }
     .ep-d {
       margin: 0;

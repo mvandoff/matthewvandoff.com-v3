@@ -28,6 +28,8 @@ export interface Episode {
   years: string;
   role: string;
   company: string;
+  /** The company's website; the company name links to it. */
+  companyHref?: string;
   description: string;
 }
 
@@ -166,6 +168,7 @@ export const site = {
       years: '2024 — present',
       role: 'full stack developer',
       company: 'cyncly',
+      companyHref: 'https://www.cyncly.com/',
       description:
         'Moving Insight, an ERP system for manufacturers, off a monolithic legacy app and onto a modern React web app, while building new features along the way.',
     },
@@ -182,6 +185,7 @@ export const site = {
       years: '2021 — 2023',
       role: 'software engineer',
       company: 'applied visions',
+      companyHref: 'https://avi.com/',
       description:
         "Developed two enterprise apps for clients: a professional network for the insurance industry and an AI-assisted project management tool for government agencies. Also mentored the client's junior developers.",
     },
