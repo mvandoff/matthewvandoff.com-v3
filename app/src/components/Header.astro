@@ -3,8 +3,14 @@
  * Sticky header: [ mvd ] home link, the ~/<section> $ prompt and the scroll
  * progress line. The Motion controller (scripts/motion/track.ts) updates the prompt, the
  * progress line (--sp) and the scrolled border (.down).
+ *
+ * On phones (≤760px) the prompt becomes the Section menu's button: a native
+ * popover below the bar with one Cel row per Section, standing in for the Strip's
+ * Cels, which phones hide. It opens and closes without JavaScript; the script
+ * only closes it once a Section is picked.
  */
 import { site } from '../lib/content.ts';
+import Cel from './Cel.astro';
 
 interface Props {
   /** Where the [ mvd ] link goes: the page top on the main page, `/` elsewhere. */
@@ -14,6 +20,8 @@ interface Props {
 }
 
 const { homeHref = '#top', here = 'home' } = Astro.props;
+/** The menu's links: `#about` on the main page, `/#about` elsewhere. */
+const sectionBase = homeHref.startsWith('#') ? '' : homeHref;
 ---
 
 <header class="bar">
@@ -22,9 +30,26 @@ const { homeHref = '#top', here = 'home' } = Astro.props;
       <a class="navlink home" href={homeHref}>{site.header.home}</a>
       <span class="prompt" aria-live="polite">~/<span class="here acc">{here}</span> $</span>
     </div>
+    <button class="navlink menu-btn" type="button" popovertarget="sections-menu" aria-label={site.header.menu}>
+      <span aria-hidden="true">~/<span class="here acc">{here}</span> $</span>
+      <span class="caret" aria-hidden="true">▾</span>
+    </button>
   </div>
   <span class="prog" aria-hidden="true"></span>
+  <nav id="sections-menu" class="menu" popover aria-label={site.header.menu}>
+    <div class="wrap menu-in">
+      {site.sections.map((section) => <Cel section={section} href={`${sectionBase}#${section.id}`} />)}
+    </div>
+  </nav>
 </header>
+
+<script>
+  // Close the menu once a Section is picked; the click itself still navigates.
+  const menu = document.getElementById('sections-menu');
+  menu?.addEventListener('click', (event) => {
+    if ((event.target as Element | null)?.closest('a')) menu.hidePopover();
+  });
+</script>
 
 <style>
   @layer components {
@@ -73,6 +98,70 @@ const { homeHref = '#top', here = 'home' } = Astro.props;
       background: var(--accent);
       transform-origin: left;
       transform: scaleX(var(--sp, 0));
+    }
+
+    /* The Section menu: phones only (global.css shows the button at ≤760px). */
+    .menu-btn {
+      display: none;
+      gap: 10px;
+      margin-right: -4px;
+      border: 0;
+      background: none;
+      font-family: inherit;
+      color: var(--dim);
+      letter-spacing: 0.04em;
+      cursor: pointer;
+    }
+    .menu-btn:hover,
+    .menu-btn:focus-visible {
+      color: var(--ink);
+    }
+    .caret {
+      display: inline-block;
+      color: var(--ink);
+      transition: transform 0.2s var(--ease-out);
+    }
+    .bar:has(.menu:popover-open) .caret {
+      transform: rotate(180deg);
+    }
+    /* Pinned under the bar (65px with its border), full width like the bar. */
+    .menu {
+      inset: 65px 0 auto;
+      width: auto;
+      margin: 0;
+      padding: 0 0 12px;
+      border: 0;
+      border-bottom: 1px solid var(--rule);
+      background: color-mix(in srgb, var(--ground) 92%, transparent);
+      -webkit-backdrop-filter: blur(12px) saturate(1.2);
+      backdrop-filter: blur(12px) saturate(1.2);
+      color: var(--ink);
+      opacity: 0;
+      transform: translateY(-8px);
+      transition:
+        opacity 0.2s,
+        transform 0.2s var(--ease-out),
+        overlay 0.2s allow-discrete,
+        display 0.2s allow-discrete;
+    }
+    .menu:popover-open {
+      opacity: 1;
+      transform: none;
+    }
+    @starting-style {
+      .menu:popover-open {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+    }
+    .menu::backdrop {
+      background: color-mix(in srgb, var(--ground) 50%, transparent);
+    }
+    .menu-in {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-top: 4px;
     }
   }
 </style>

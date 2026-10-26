@@ -510,7 +510,8 @@
 
 @media (max-width: 760px) {
   /* Strip: one column. The lead column dissolves so its Name card and Terminal
-     become Strip items; the Terminal is moved after the Cels. */
+     become Strip items. The Cels give way to the header's Section menu, so the
+     Terminal follows the Name card. */
   .strip {
     flex-direction: column;
     height: auto;
@@ -521,6 +522,12 @@
   }
   .lead-col {
     display: contents;
+  }
+  .strip > a.cel {
+    display: none;
+  }
+  .menu-btn {
+    display: inline-flex;
   }
   .cel.lead {
     height: auto;
@@ -533,11 +540,10 @@
     inset: auto;
     flex: none;
     order: 9;
-    margin-top: 16px;
     min-height: 180px;
   }
 
-  /* Cels: full-width 60px rows with a horizontal label and a → at the end. */
+  /* Cels (in the Section menu): full-width 60px rows with a horizontal label and a → at the end. */
   a.cel {
     flex-direction: row;
     align-items: center;
@@ -565,8 +571,19 @@
   a.cel:focus-visible::after {
     color: var(--accent);
   }
+  /* The dotted wash wipes in from the → end rather than from the top. */
+  a.cel .hov {
+    -webkit-mask-image: linear-gradient(to left, #000 0%, rgba(0, 0, 0, 0.35) 45%, transparent 80%);
+    mask-image: linear-gradient(to left, #000 0%, rgba(0, 0, 0, 0.35) 45%, transparent 80%);
+    clip-path: inset(0 0 0 100%);
+  }
+  a.cel:hover .hov,
+  a.cel:focus-visible .hov {
+    clip-path: inset(0 0 0 0);
+  }
 
-  /* Name card: the name scales and may wrap; katakana gone; short clock. */
+  /* Name card: the name scales and may wrap; the katakana stays (it introduces the
+     Japanese labels further down); short clock. */
   .nmh {
     font-size: clamp(48px, 14vw, 100px);
   }
@@ -574,7 +591,6 @@
   .gh {
     white-space: normal;
   }
-  .kana,
   .prompt,
   .sh-x,
   .st-l,
@@ -676,7 +692,9 @@
   .cel,
   .ep,
   .big,
-  .hov {
+  .hov,
+  .menu,
+  .caret {
     transition: none;
   }
 }

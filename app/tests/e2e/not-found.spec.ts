@@ -97,9 +97,19 @@ test.describe('404 page', () => {
 
       const card = await page.getByRole('heading', { level: 1, name: '404' }).boundingBox();
       const back = await page.getByRole('link', { name: '[ back home ]' }).boundingBox();
-      const cel = await page.getByRole('link', { name: /^02 about\b/ }).boundingBox();
       expect(card!.y).toBeLessThan(back!.y);
-      expect(back!.y).toBeLessThan(cel!.y);
+    });
+
+    test('the Cels move to the header Section menu, which links to the home page', async ({ page }) => {
+      await page.goto('/no/such/page');
+      await expect(page.getByRole('link', { name: /^0[234] / })).toHaveCount(0);
+      await page.getByRole('button', { name: 'sections' }).click();
+      const menu = page.getByRole('navigation', { name: 'sections' });
+      for (const id of ['about', 'experience', 'links']) {
+        await expect(menu.getByRole('link', { name: new RegExp(`^\\d\\d ${id}\\b`) })).toHaveAttribute('href', `/#${id}`);
+      }
+      await menu.getByRole('link', { name: /^\d\d links\b/ }).click();
+      await expect(page.locator('section#links')).toBeInViewport();
     });
   });
 });

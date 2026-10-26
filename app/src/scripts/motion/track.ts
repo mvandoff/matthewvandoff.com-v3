@@ -5,7 +5,7 @@
  * Writes to <html>: --sp (scroll progress 0-1, 4 decimals; the background field,
  * the header progress line and the HUD mini-map's scroll marker read it), --spi
  * (0-100) and --hlift (px of footer showing, so the Crosshair HUD lifts above it).
- * Sets the header prompt's current Section (`.bar .here`), the header border
+ * Sets the header prompt's current Section (`.bar .here`, in the prompt and the phone menu button), the header border
  * (`.bar.down` once scrolled past 8px) and reveal-on-scroll (`.rv` on each Section
  * once JS runs, `.in` once seen, for good).
  *
@@ -20,7 +20,7 @@ export function startTracking(): void {
   const html = document.documentElement;
   const foot = document.getElementById('foot');
   const bar = document.querySelector<HTMLElement>('.bar');
-  const here = document.querySelector<HTMLElement>('.bar .here');
+  const heres = [...document.querySelectorAll<HTMLElement>('.bar .here')];
   const sections = site.sections.map(({ id }) => document.getElementById(id)).filter((el) => el !== null);
 
   const update = () => {
@@ -38,7 +38,7 @@ export function startTracking(): void {
     for (const section of sections) if (section.getBoundingClientRect().top <= 200) current = section.id;
     const scrolled = rect.top < -8;
     if (scrolled && vh && rect.bottom <= vh + 4) current = 'links';
-    if (here && here.textContent !== current) here.textContent = current;
+    for (const here of heres) if (here.textContent !== current) here.textContent = current;
     bar?.classList.toggle('down', scrolled);
 
     // Reveal: a Section is seen once its top is above 88% of the viewport, for good.

@@ -56,6 +56,8 @@ export const site = {
 
   header: {
     home: '[ mvd ]',
+    /** The phone Section menu's accessible name (its button reads as the prompt). */
+    menu: 'sections',
   },
 
   notFound: {
