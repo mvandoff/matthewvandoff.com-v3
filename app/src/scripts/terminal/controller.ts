@@ -127,9 +127,12 @@ function applyEffect(effect: Effect): void {
  */
 function focusOnLanding(input: HTMLInputElement): void {
   if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  // Noted as it happens: the hash is dropped from the URL once the page has landed on it.
+  let deepLink = location.hash !== '';
+  window.addEventListener('hashchange', () => (deepLink = true), { once: true });
   const root = document.documentElement;
   const focus = () => {
-    if (location.hash || document.activeElement !== document.body) return;
+    if (deepLink || document.activeElement !== document.body) return;
     input.focus({ preventScroll: true });
   };
   if (!root.classList.contains('booting')) {

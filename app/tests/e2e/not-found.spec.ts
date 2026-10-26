@@ -26,8 +26,8 @@ test.describe('404 page', () => {
       await page.goto(path);
       await expect(tryLine(page)).toBeVisible();
       await page.getByRole('link', { name: 'cd ~/experience' }).click();
-      await expect(page).toHaveURL('/#experience');
       await expect(page.locator('section#experience')).toBeInViewport();
+      await expect(page).toHaveURL('/');
     });
   }
 
@@ -43,8 +43,8 @@ test.describe('404 page', () => {
       await expect(page.getByRole('link', { name: new RegExp(`^\\d\\d ${id}\\b`) })).toHaveAttribute('href', `/#${id}`);
     }
     await page.getByRole('link', { name: /^\d\d links\b/ }).click();
-    await expect(page).toHaveURL('/#links');
     await expect(page.locator('section#links')).toBeInViewport();
+    await expect(page).toHaveURL('/');
   });
 
   test('without JavaScript it shows a generic line and still links home', async ({ browser }) => {

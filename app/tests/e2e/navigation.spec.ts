@@ -212,6 +212,8 @@ test.describe('hash URLs', () => {
       // ...and stays there once everything has settled.
       await page.waitForTimeout(1500);
       expect(await scrollTop(page)).toBe(await landingFor(page, id));
+      // ...and the hash is gone from the URL.
+      await expect(page).toHaveURL(/\/$/);
     });
   }
 
@@ -223,6 +225,7 @@ test.describe('hash URLs', () => {
     await page.goto('/#links');
     await page.evaluate(() => document.fonts.ready);
     await expect.poll(() => scrollTop(page)).toBe(await landingFor(page, 'links'));
+    await expect(page).toHaveURL(/\/$/);
   });
 
   test('changing the hash on the page lands on the Section too', async ({ page }) => {
@@ -231,6 +234,7 @@ test.describe('hash URLs', () => {
     await expect.poll(() => scrollTop(page)).toBe(await landingFor(page, 'experience'));
     await page.waitForTimeout(1200);
     expect(await scrollTop(page)).toBe(await landingFor(page, 'experience'));
+    await expect(page).toHaveURL(/\/$/);
   });
 
   test.describe('without JavaScript', () => {

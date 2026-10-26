@@ -52,9 +52,24 @@ export function goTo(target: ScrollTarget): void {
 
 const isTarget = (id: string): id is ScrollTarget => (scrollTargets as readonly string[]).includes(id);
 
+/** Drops the hash from the URL without scrolling or adding a history entry. */
+function clearHash(): void {
+  if (location.hash) history.replaceState(history.state, '', location.pathname + location.search);
+}
+
+/** Resolves once the page has loaded and its fonts have settled the layout. */
+function settled(): Promise<unknown> {
+  const loaded = new Promise((resolve) => {
+    if (document.readyState === 'complete') resolve(undefined);
+    else window.addEventListener('load', resolve, { once: true });
+  });
+  return Promise.all([loaded, document.fonts?.ready]);
+}
+
 /**
  * Routes clicks on in-page links to `#top`/`#about`/`#experience`/`#links`
- * through `goTo`. The URL keeps no hash. Modified clicks (new
+ * through `goTo`. The URL keeps no hash: a click never adds one, and one typed
+ * or landed on is dropped once the page is there. Modified clicks (new
  * tab, etc.) are left to the browser; without JS the links are plain anchors.
  */
 export function startNavigation(): void {
@@ -68,9 +83,14 @@ export function startNavigation(): void {
     goTo(id);
   });
   // A hash typed on the page: the browser jumps to the Section's offset box (32px
-  // short if it isn't revealed yet); settle it on the Section itself.
+  // short if it isn't revealed yet); settle it on the Section itself, then drop the hash.
   window.addEventListener('hashchange', () => {
     const el = document.getElementById(decodeURIComponent(location.hash.slice(1)));
     if (el && isTarget(el.id)) window.scrollTo({ top: layoutTop(el), behavior: 'auto' });
+    clearHash();
   });
+  // A hash in the landing URL (the 404's links, a shared link): the browser lands on
+  // it and keeps it in place while late fonts move the layout, so the hash goes only
+  // once that's done.
+  if (location.hash) settled().then(() => requestAnimationFrame(clearHash), () => {});
 }
