@@ -9,3 +9,7 @@ output "distribution_id" {
 output "distribution_domain_name" {
   value = aws_cloudfront_distribution.site.domain_name
 }
+
+output "deploy_role_arn" {
+  value = aws_iam_role.deploy.arn
+}
