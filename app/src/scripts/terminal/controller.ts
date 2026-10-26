@@ -29,6 +29,27 @@ const context: TerminalContext = {
   accent: { current: currentAccent, parseColour, random: () => Math.random() },
 };
 
+/**
+ * How often the listening line rereads the music data while the page is visible:
+ * the recent file's max-age (RECENT_CACHE in fetcher/handler.ts), so each read can
+ * see a newer file.
+ */
+const LISTENING_REFRESH_MS = 30_000;
+
+/** Runs `refresh` now and every `ms` while the page is visible. A hidden page makes no requests, and refreshes as soon as it is shown again. */
+function whileVisible(refresh: () => void, ms: number): void {
+  let timer: ReturnType<typeof setInterval> | undefined;
+  const sync = () => {
+    clearInterval(timer);
+    timer = undefined;
+    if (document.visibilityState !== 'visible') return;
+    refresh();
+    timer = setInterval(refresh, ms);
+  };
+  document.addEventListener('visibilitychange', sync);
+  sync();
+}
+
 /** Fills the idle status's "listening" line (same markup as Terminal.astro renders). */
 function renderListening(dd: HTMLElement, status: Listening): void {
   const nodes: Array<Node | string> = [];
@@ -140,44 +161,38 @@ export function startTerminal(box = document.querySelector<HTMLElement>('[data-t
 
   const { prompt = '', idleCommand = '', hint: idleHint = '', closeHint = '' } = box.dataset;
   const idleStatus = [...body.childNodes];
-  // The build rendered the listening line as a placeholder; fill it from the
-  // music source (a failing source keeps the placeholder).
+  // The build rendered the listening line as a placeholder; it is filled from the
+  // music source once the Terminal is wired up (a failing source keeps the placeholder).
   const listeningLine = body.querySelector<HTMLElement>('[data-listening]');
   /** Whether the album art loaded; until then, and if it fails, the header shows its kana. */
   let artLoaded = false;
-  artImg.addEventListener('load', () => {
-    artLoaded = true;
+  const setArtLoaded = (loaded: boolean) => {
+    artLoaded = loaded;
     showMeta(meta.hidden ? undefined : meta.textContent ?? undefined);
-  });
-  if (listeningLine) {
-    listening(context).then(
-      (status) => {
-        renderListening(listeningLine, status);
-        if (status.art) showArt(status.art);
-      },
-      () => {},
-    );
-  }
-
-  /** Loads the header thumbnail and readies the dialog; the full size loads only when it opens. */
-  const showArt = ({ thumb, full, caption }: NonNullable<Listening['art']>) => {
-    artImg.src = thumb;
-    art.setAttribute('aria-label', `${art.dataset.label ?? ''} ${caption}`);
-    const [fullImg, cap] = [dialog.querySelector('img'), dialog.querySelector('.art-cap')];
-    if (fullImg) fullImg.alt = caption;
-    if (cap) cap.textContent = caption;
-    art.addEventListener('click', (event) => {
-      event.stopPropagation();
-      // The thumbnail shows until the full size arrives.
-      if (fullImg && !fullImg.src) {
-        fullImg.src = thumb;
-        const loader = new Image();
-        loader.onload = () => (fullImg.src = full);
-        loader.src = full;
-      }
-      dialog.showModal();
-    });
   };
+  artImg.addEventListener('load', () => setArtLoaded(true));
+  artImg.addEventListener('error', () => setArtLoaded(false));
+
+  const [fullImg, artCap] = [dialog.querySelector('img'), dialog.querySelector('.art-cap')];
+  /** The art in the header, which the dialog shows full size. */
+  let shownArt: Listening['art'];
+  /** Shows the thumbnail in the dialog until the full size arrives. */
+  const loadFull = ({ thumb, full }: NonNullable<Listening['art']>) => {
+    if (!fullImg) return;
+    fullImg.src = thumb;
+    const loader = new Image();
+    loader.onload = () => {
+      if (shownArt?.full === full) fullImg.src = full;
+    };
+    loader.src = full;
+  };
+  art.addEventListener('click', (event) => {
+    event.stopPropagation();
+    if (!shownArt) return;
+    // The full size loads only when the dialog first opens for this art.
+    if (fullImg && !fullImg.src) loadFull(shownArt);
+    dialog.showModal();
+  });
   // A click on the backdrop (the dialog itself, outside its content) closes it.
   dialog.addEventListener('click', (event) => {
     event.stopPropagation();
@@ -208,6 +223,43 @@ export function startTerminal(box = document.querySelector<HTMLElement>('[data-t
     art.hidden = !!text || !artLoaded;
     kana.hidden = !!text || artLoaded;
   };
+
+  /** Swaps the header thumbnail and readies the dialog. With no art, the header shows its kana. */
+  const showArt = (next: Listening['art']) => {
+    if (next?.thumb === shownArt?.thumb && next?.caption === shownArt?.caption) return;
+    shownArt = next;
+    fullImg?.removeAttribute('src');
+    if (!next) {
+      artImg.removeAttribute('src');
+      setArtLoaded(false);
+      dialog.close();
+      return;
+    }
+    // The old thumbnail stays up until the new one loads; if it fails, the kana shows.
+    artImg.src = next.thumb;
+    art.setAttribute('aria-label', `${art.dataset.label ?? ''} ${next.caption}`);
+    if (fullImg) fullImg.alt = next.caption;
+    if (artCap) artCap.textContent = next.caption;
+    if (dialog.open) loadFull(next);
+  };
+
+  /** What the listening line last rendered, so an unchanged read leaves it (and its EQ) alone. */
+  let shownListening = '';
+  /** Bumped on every read, so a slow read can't overwrite a newer one. */
+  let listeningTicket = 0;
+  const refreshListening = async () => {
+    if (!listeningLine) return;
+    const ticket = ++listeningTicket;
+    const status = await listening(context).catch(() => null);
+    if (!status || ticket !== listeningTicket) return;
+    const key = JSON.stringify([status.track, status.ago, status.eq]);
+    if (key !== shownListening) {
+      renderListening(listeningLine, status);
+      shownListening = key;
+    }
+    showArt(status.art);
+  };
+  whileVisible(() => void refreshListening(), LISTENING_REFRESH_MS);
 
   const render = (result: Result) => {
     showBody(result.output?.lines ?? null, result.output?.rows);

@@ -61,6 +61,95 @@ test('the idle status is refreshed from the files on load', async ({ page }) => 
   await expect(terminal(page).body.locator('dd').nth(1)).toContainText('Spoonman — Soundgarden');
 });
 
+/** How often the listening line rereads the music data (LISTENING_REFRESH_MS in the controller). */
+const REFRESH_MS = 30_000;
+
+/** Serves recent.json with just `track` playing, in place of the sample. */
+async function servePlaying(page: Page, track: { title: string; artist: string; art?: { thumb: string; full: string } }) {
+  await page.unroute('**/music/recent.json');
+  await page.route('**/music/recent.json', (route) =>
+    route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({ fetchedAt: '2026-10-19T12:00:00.000Z', tracks: [{ track, playing: true, at: null }] }),
+    }),
+  );
+}
+
+test('the idle status follows a track change without a reload', async ({ page }) => {
+  await serveSamples(page);
+  await page.goto('/');
+  const listening = terminal(page).body.locator('dd').nth(1);
+  await expect(listening).toContainText('Spoonman — Soundgarden');
+  await servePlaying(page, { title: 'Black Hole Sun', artist: 'Soundgarden' });
+  await page.clock.runFor(REFRESH_MS);
+  await expect(listening).toContainText('Black Hole Sun — Soundgarden');
+});
+
+test('a hidden page reads no music data, and refreshes as soon as it is shown again', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      get: () => ((window as { testHidden?: boolean }).testHidden ? 'hidden' : 'visible'),
+    });
+  });
+  const setHidden = (hidden: boolean) =>
+    page.evaluate((hidden) => {
+      (window as { testHidden?: boolean }).testHidden = hidden;
+      document.dispatchEvent(new Event('visibilitychange'));
+    }, hidden);
+  let reads = 0;
+  page.on('request', (req) => {
+    if (req.url().endsWith('/music/recent.json')) reads++;
+  });
+  await serveSamples(page);
+  await page.goto('/');
+  const listening = terminal(page).body.locator('dd').nth(1);
+  await expect(listening).toContainText('Spoonman — Soundgarden');
+  expect(reads).toBe(1);
+
+  await setHidden(true);
+  await servePlaying(page, { title: 'Black Hole Sun', artist: 'Soundgarden' });
+  await page.clock.runFor(REFRESH_MS * 3);
+  expect(reads).toBe(1);
+  await expect(listening).toContainText('Spoonman — Soundgarden');
+
+  await setHidden(false);
+  await expect(listening).toContainText('Black Hole Sun — Soundgarden');
+  expect(reads).toBe(2);
+});
+
+test('when the new track\'s art fails to load, the header shows its kana', async ({ page }) => {
+  // A 1×1 PNG stands in for last.fm's art; broken.png is missing.
+  const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=', 'base64');
+  await page.route('https://art.test/**', (route) =>
+    route.request().url().endsWith('/broken.png')
+      ? route.fulfill({ status: 404 })
+      : route.fulfill({ contentType: 'image/png', body: png }),
+  );
+  await serveSamples(page);
+  await servePlaying(page, {
+    title: 'Spoonman',
+    artist: 'Soundgarden',
+    art: { thumb: 'https://art.test/a.png', full: 'https://art.test/a-full.png' },
+  });
+  await page.goto('/');
+  const t = terminal(page);
+  const art = t.header.locator('.sig-art');
+  const kana = t.header.locator('.sig-kana');
+  await expect(art).toBeVisible();
+  await expect(kana).toBeHidden();
+
+  await servePlaying(page, {
+    title: 'Black Hole Sun',
+    artist: 'Soundgarden',
+    art: { thumb: 'https://art.test/broken.png', full: 'https://art.test/broken.png' },
+  });
+  await page.clock.runFor(REFRESH_MS);
+  await expect(t.body.locator('dd').nth(1)).toContainText('Black Hole Sun — Soundgarden');
+  await expect(kana).toBeVisible();
+  await expect(art).toBeHidden();
+});
+
 test('with a file missing, np says it couldn\'t load the data, and the idle status keeps its placeholder', async ({ page }) => {
   await serveSamples(page, ['recent.json']);
   await page.goto('/');
