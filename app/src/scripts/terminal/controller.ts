@@ -60,7 +60,10 @@ function renderListening(dd: HTMLElement, status: Listening): void {
     eq.append(...Array.from({ length: 4 }, () => document.createElement('i')));
     nodes.push(eq);
   }
-  nodes.push(status.track);
+  const track = document.createElement('span');
+  track.className = 'track';
+  track.textContent = status.track;
+  nodes.push(track);
   if (status.ago) {
     const ago = document.createElement('span');
     ago.className = 'ago';

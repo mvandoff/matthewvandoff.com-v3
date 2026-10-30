@@ -287,7 +287,19 @@ const { terminal } = site;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+    /* A long track gives way, so the time after it always shows. */
+    .now dd[data-listening] {
+      display: flex;
+      align-items: baseline;
+    }
+    .now :global(.track) {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .now :global(.ago) {
+      flex-shrink: 0;
+      white-space: pre;
       color: var(--dim);
     }
     /* While a track plays: four animated EQ bars before it (the controller may
