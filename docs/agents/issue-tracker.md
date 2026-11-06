@@ -1,6 +1,6 @@
 # Issue tracker: Beads
 
-Issues and specs live in beads (`bd`), a local Dolt-backed tracker in `.beads/`. Use the `bd` CLI for every operation and pass `--json` when parsing output. IDs look like `mvd-a3f2dd`.
+Issues and specs live in beads (`bd`), a Dolt-backed tracker on the NAS, so `bd` needs the NAS and Tailscale. Use the `bd` CLI for every operation and pass `--json` when parsing output. IDs look like `mvd-a3f2dd`.
 
 ## Conventions
 
@@ -27,7 +27,7 @@ The remote is GitHub, `mvandoff/matthewvandoff.com-v3`. A push to `main` runs th
 
 ## Sync
 
-Beads commits every write to its own Dolt history, so don't hand-commit beads data. There's no Dolt remote yet; skip `bd dolt push` until one exists.
+Every write goes straight to the server and into its Dolt history, so nothing needs syncing, and the NAS's own backups cover it. Don't run `bd dolt push`. `.beads/` is gitignored, so a fresh clone has to copy `metadata.json`, `config.yaml` and `dolt-server.port` into its `.beads/` from an existing checkout.
 
 ## When a skill says "publish to the issue tracker"
 

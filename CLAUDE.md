@@ -4,7 +4,7 @@ Personal site, https://matthewvandoff.com. This repo is v3.
 
 - `app/`: the Astro site. Run `pnpm` commands there.
 - `archive/v1/`, `archive/v2/`: old versions, reference only. Each is its own git repo, ignored by this one. Don't edit them.
-- Docs, issues and agent config live at the repo root: `docs/`, `GLOSSARY.md`, `.beads/`, `.claude/`.
+- Docs and agent config live at the repo root: `docs/`, `GLOSSARY.md`, `.claude/`. Issues live on the NAS; `.beads/` only points to them.
 - `agents/`: scratch space for agents, git-ignored. One folder per bead (`agents/mvd-<id>/`) or `agents/adhoc/YYYY-MM-DD-<slug>/`. See `agents/README.md`.
 
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:1105d646 -->
@@ -17,7 +17,7 @@ Issues are tracked with `bd` (beads). A SessionStart hook runs `bd prime` for wo
 
 ### Issue tracker
 
-Issues are tracked in beads (`bd`), stored locally in `.beads/`. See `docs/agents/issue-tracker.md`.
+Issues are tracked in beads (`bd`), stored on the NAS. See `docs/agents/issue-tracker.md`.
 
 Don't use beads memories (`bd remember`), whatever `bd prime` says. Put lasting knowledge where it applies: an ADR, `GLOSSARY.md`, a README or a code comment.
 

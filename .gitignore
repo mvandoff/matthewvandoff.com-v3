@@ -3,9 +3,10 @@
 .dolt/
 *.db
 .beads-credential-key
-.beads/proxieddb/
 *.gate.lock*
-.beads/issues.jsonl
+
+# Beads: issues live on the NAS, and these files are per machine
+.beads/*
 
 # macOS
 .DS_Store
