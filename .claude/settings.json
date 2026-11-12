@@ -1,15 +1,1 @@
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "command": "bd prime --hook-json --no-memories",
-            "type": "command"
-          }
-        ],
-        "matcher": ""
-      }
-    ]
-  }
-}
+{}

@@ -7,12 +7,6 @@ Personal site, https://matthewvandoff.com. This repo is v3.
 - Docs and agent config live at the repo root: `docs/`, `GLOSSARY.md`, `.claude/`. Issues live on the NAS; `.beads/` only points to them.
 - `agents/`: scratch space for agents, git-ignored. One folder per bead (`agents/mvd-<id>/`) or `agents/adhoc/YYYY-MM-DD-<slug>/`. See `agents/README.md`.
 
-<!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:1105d646 -->
-## Beads Issue Tracker
-
-Issues are tracked with `bd` (beads). A SessionStart hook runs `bd prime` for workflow context; run it yourself if that context is missing.
-<!-- END BEADS INTEGRATION -->
-
 ## Agent skills
 
 ### Issue tracker
