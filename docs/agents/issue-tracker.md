@@ -11,7 +11,7 @@ Issues and specs live in beads (`bd`), a Dolt-backed tracker on the NAS, so `bd`
 - **Blocking**: `--deps blocked-by:<id>` on create, or `bd dep add <blocked> <blocker>`. `bd ready` lists open issues with no open blockers.
 - **Comment**: `bd comment <id> --stdin` with a heredoc.
 - **Labels**: `bd update <id> --add-label <l>` / `--remove-label <l>`. Labels need no creation.
-- **Claim**: `bd update <id> --claim` (assigns you, sets `in_progress`).
+- **Start**: `bd update <id> -s in_progress`. A hook refuses `--claim`.
 - **Close**: `bd close <id> --reason "<summary + commit sha>"`.
 
 ## Specs and tickets
@@ -43,5 +43,5 @@ Create a beads issue (an `epic` for a spec).
 - **Child ticket**: `bd create --id=<map>.<slug> --deps parent-child:<map> --labels wayfinder:<type> ...`.
 - **Blocking**: as above.
 - **Frontier**: `bd ready --parent <map> --unassigned --sort oldest --json`; first wins.
-- **Claim**: `bd update <id> --claim`.
+- **Start**: `bd update <id> -s in_progress`.
 - **Resolve**: `bd comment` the answer, `bd close`, then append a pointer to the map's Decisions-so-far.
