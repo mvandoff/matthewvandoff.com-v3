@@ -1,0 +1,15 @@
+{
+  "label": "matthewvandoff.com",
+  "about": "The site, his own",
+  "repo": "https://github.com/mvandoff/matthewvandoff.com-v3.git",
+  "nas": true,
+  "beads": {
+    "database": "mvd",
+    "projectId": "f00f8859-c311-4884-b5c7-ab826018e4fe",
+    "config": {
+      "agents": {
+        "file": "CLAUDE.md"
+      }
+    }
+  }
+}
